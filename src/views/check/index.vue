@@ -17,15 +17,30 @@
                                             <el-option label="天字一号房" value="4"></el-option>
                                         </el-select>
                                     </el-form-item>
-                                    <el-form-item label="入住日期-离店日期" >
-                                        <el-date-picker
-                                            v-model="formData.checkTime"
-                                            type="daterange"
-                                            range-separator="至"
-                                            start-placeholder="开始日期"
-                                            end-placeholder="结束日期">
-                                        </el-date-picker>
-                                    </el-form-item>
+                                  <!--改编版-->
+                                  <el-form-item label="入住时间" prop="checkTime">
+                                  <el-date-picker
+                                    v-model="formData.checkTime"
+                                    type="datetime"
+                                    placeholder="选择日期时间">
+                                  </el-date-picker>
+                                </el-form-item>
+                                <el-form-item label="离店时间" prop="leaveTime">
+                                  <el-date-picker
+                                    v-model="formData.leaveTime"
+                                    type="datetime"
+                                    placeholder="选择日期时间">
+                                  </el-date-picker>
+                                </el-form-item>
+                                    <!--<el-form-item label="入住日期-离店日期" >-->
+                                        <!--<el-date-picker-->
+                                            <!--v-model="formData.checkTime"-->
+                                            <!--type="daterange"-->
+                                            <!--range-separator="至"-->
+                                            <!--start-placeholder="开始日期"-->
+                                            <!--end-placeholder="结束日期">-->
+                                        <!--</el-date-picker>-->
+                                    <!--</el-form-item>-->
                                     <el-form-item label="房间编号" prop="houseId" >
                                         <el-input class="w300" v-model="formData.houseId"></el-input>
                                     </el-form-item>
@@ -228,7 +243,7 @@
                         phoneIsOk:false
                     })
                 }else{
-                      this.$message.warning('请先完善上一入住人信息哦~')  
+                      this.$message.warning('请先完善上一入住人信息哦~')
                 }
             },
             handleCheck(){

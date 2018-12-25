@@ -14,39 +14,33 @@
           </div> -->
            <div class="seachBox  clearfix">
                 <div class="seek-box">
-                    <input type="text" v-model="searchData.text" placeholder="订单号/预定人/预订人手机号">
+                    <input type="text" v-model="orderData.text" placeholder="订单号/预定人/预订人手机号">
                     <div class="seek" @click="handleClick">搜索</div>
                 </div>
            </div>
-         
+
         </div>
       </el-card>
     </div>
     <div class="orderDetails">
-        <el-menu 
-            :default-active="activeIndex" 
-            class="el-menu-demo" 
+        <el-menu
+            :default-active="activeIndex"
+            class="el-menu-demo"
             mode="horizontal"
             @select="handleSelect">
             <el-menu-item index="1">全部订单</el-menu-item>
-            <el-menu-item index="2">未处理订单</el-menu-item>   
+            <el-menu-item index="2">未处理订单</el-menu-item>
             <el-menu-item index="3">已接单订单</el-menu-item>
-            <el-menu-item index="4">
-            <a href="#" >已入住订单</a>
-            </el-menu-item>
-            <el-menu-item index="5">
-            <a href="#" >已离店订单</a>
-            </el-menu-item>
-            <el-menu-item index="6">
-            <a href="#" >失效订单</a>
-            </el-menu-item>
+            <el-menu-item index="4">已入住订单</el-menu-item>
+            <el-menu-item index="5">已离店订单</el-menu-item>
+            <el-menu-item index="6">失效订单</el-menu-item>
         </el-menu>
 
       <el-card class="clearfix">
           <div class="orderDetail-right flr">
                 <el-card class="box-card carditem">
                     <div slot="header" class="header"><span class="title">订单详情</span> </div>
-                   
+
                     <div class="table" :model='orderData'>
                         <table class="table1">
                             <tr>
@@ -73,7 +67,7 @@
                                 <th>预订日期</th>
                                 <td class="blue">{{orderData.orderDate}} <span>共<span class="blue">1</span>晚</span></td>
                                 <th>最晚抵店时间</th>
-                                <td>{{orderData.endTime}}</td> 
+                                <td>{{orderData.endTime}}</td>
                             </tr>
                         </table>
                         <table class="desc">
@@ -105,37 +99,37 @@
                     </div>
                 </el-card>
           </div>
-          <div class="orderDetail-left clearfix" :model="searchData">
+          <div class="orderDetail-left clearfix" >
               <div class="searchTitle clearfix">
-                <span class="span flr">共{{searchData.orderDetails.length}}条消息 </span>
-                <span class="span">查询 "{{searchData.text}}"</span>
+                <span class="span flr">共{{searchData.length}}条消息 </span>
+                <span class="span">查询 ""</span>
               </div>
             <el-scrollbar class="scollbar">
-                <div class="searchContent clearfix" v-for="o in 4" :key="o">
+                <div class="searchContent clearfix" v-for="(item, index) in searchData" :key="index">
                   <el-card class='clearfix  active parts'>
                       <div class="type clearfix part">
-                          <span class="flr overTime">{{searchData.overTime}}</span>
+                          <span class="flr overTime">{{item.overTime}}</span>
                           <el-button type='primary' class="none">失效</el-button>
-                          <span class="blue">{{searchData.orderId}}</span>       
+                          <span class="blue">{{item.orderId}}</span>
                       </div>
                       <div class="roomType part">
                           <span class="flr fs14">共 <span class="blue">1</span> 间</span>
-                          <strong class="fw fs14">豪华大床房</strong>     
+                          <strong class="fw fs14">豪华大床房</strong>
                       </div>
-                      <div class="user mb5 fs14">{{searchData.username}}</div>
-                      <div class="totalMoney part fs14">{{searchData.totalMoney}}</div>
+                      <div class="user mb5 fs14">{{item.username}}</div>
+                      <div class="totalMoney part fs14">{{item.totalMoney}}</div>
                       <div class="startTime clearfix fs14">
                           <div class="flr fw fs14">共 <span class="blue">1</span> 晚</div>
-                          <span class="blue">{{searchData.startTime}}</span> 至 
-                          <span class="blue">{{searchData.endTime}}</span>
+                          <span class="blue">{{item.startTime}}</span> 至
+                          <span class="blue">{{item.endTime}}</span>
                       </div>
                   </el-card>
                 </div>
             </el-scrollbar>
           </div>
-      </el-card>  
+      </el-card>
     </div>
-  </div> 
+  </div>
 </template>
 
 <script>
@@ -144,7 +138,7 @@ export default {
   data() {
     return {
         isClick:true,
-        activeIndex:'',
+        activeIndex:'1',
          orderData:{
              username:'梁朝伟',
              orderId:'234567522134',
@@ -161,7 +155,8 @@ export default {
              discounts:'666',
              loseCause:'商家拒绝，拒绝原因“禁止携带宠物。”'
          },
-        searchData: {
+        searchData: [
+          {
             text: "梁朝伟",
             orderDetails:[1,2,3,4],
             orderId:'12345324664',
@@ -170,27 +165,76 @@ export default {
             totalMoney:'150 0000 0000',
             startTime:'2018-07-04',
             endTime:'2018-07-05'
-        }
+          },
+          {
+            text: "梁朝伟",
+            orderDetails:[1,2,3,4],
+            orderId:'12345324664',
+            overTime:'06-29 12:32',
+            username:'梁朝伟',
+            totalMoney:'150 0000 0000',
+            startTime:'2018-07-04',
+            endTime:'2018-07-05'
+          },
+          {
+            text: "梁朝伟",
+            orderDetails:[1,2,3,4],
+            orderId:'12345324664',
+            overTime:'06-29 12:32',
+            username:'梁朝伟',
+            totalMoney:'150 0000 0000',
+            startTime:'2018-07-04',
+            endTime:'2018-07-05'
+          },
+          {
+            text: "梁朝伟",
+            orderDetails:[1,2,3,4],
+            orderId:'12345324664',
+            overTime:'06-29 12:32',
+            username:'梁朝伟',
+            totalMoney:'150 0000 0000',
+            startTime:'2018-07-04',
+            endTime:'2018-07-05'
+          }
+        ]
     };
   },
   methods: {
     handleSearch() {},
     handleSelect(key, keyPath) {
         console.log(key, keyPath);
-      },
-       handleClick(e){
-                if(this.isClick){
-                    this.isClick = false
-                    console.log(e);
-                    console.log('111111');
-                    setTimeout(()=>{
-                        this.isClick = true
-                    },4000)
-                }
-               
+        this.activeIndex = key
+        console.log('index',this.activeIndex);
+    },
+   handleClick(e){
+            if(this.isClick){
+                this.isClick = false
+                console.log(e);
+                console.log('111111');
+                setTimeout(()=>{
+                    this.isClick = true
+                },4000)
             }
+        }
+    },
+  watch:{
+    activeIndex(val){
+        if(val == 1){
+          console.log("1111111111");
+        } else if(val == 2){
+          console.log('22222222222');
+        }else if(val == 3){
+          console.log('333333');
+        }else if(val == 4){
+          console.log('4444444444');
+        }else if(val == 5){
+          console.log('5555555');
+        }else if(val == 6){
+          console.log('6666666666');
+        }
+    }
   }
-};
+  }
 </script>
 
 <style scoped lang='scss'>
@@ -201,10 +245,10 @@ export default {
     border-radius: 0px;
 }
 .order {
-    box-sizing: border-box; 
+    box-sizing: border-box;
     // overflow-x: hidden;
     //顶部查询框样式
-  .orderScreen{  
+  .orderScreen{
      position: relative;
      border: 0.1px solid #fff;
     .carditem {
@@ -222,10 +266,11 @@ export default {
     .seek-box {
         display: inline-block;
         width: 316px;
+        font-size: 12px;
         box-sizing: border-box;
         line-height: 36px;
         input {
-            box-sizing: border-box; 
+            box-sizing: border-box;
             height:36px;
             width: 260px;
             padding-left: 50px;
@@ -245,7 +290,7 @@ export default {
             text-align: center;
             font-size: 14px;
             color: #fff;
-            margin-top: 1px;
+            /*margin-top: 1px;*/
             background: #518dfd;
             height: 36px;
             // border: 1px solid #518dfd;
@@ -270,7 +315,7 @@ export default {
         .scollbar{
             height: 100%;
         }
-       
+
          .part{ margin-bottom: 10px; }
          .searchTitle{margin-bottom: 15px;}
          .span{ font-size: 12px; color:#c1c1c1;}
@@ -282,7 +327,7 @@ export default {
         /deep/ .el-card__header,.el-card{
             border: none;
         }
-        .table{  
+        .table{
             table{
                 margin-bottom: 15px;
                 text-align: center;
@@ -293,9 +338,9 @@ export default {
             }
             .desc{height: 60px; width:100%;
                 th{ height: 60px; width:22%; background: #f7faff; }
-                td{ width:78%; height: 60px; font-size: 14px ; color:#b9b9b9;} 
+                td{ width:78%; height: 60px; font-size: 14px ; color:#b9b9b9;}
                  }
-            .table4 { 
+            .table4 {
                 th{ height: 45px; width:22%; background: #f7faff; }
                 td{ width:78%; height: 45px; font-size: 14px ; color:#b9b9b9; }  }
         }
