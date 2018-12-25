@@ -7,7 +7,7 @@
           {{item.text}}
         </div>
       </Checkbox>
-    </CheckboxGroup>
+    </CheckboxGroup>  
   </div>
 </template>
 

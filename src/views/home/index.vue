@@ -56,13 +56,25 @@ import userComment from '@/components/userComment.vue'
         },
         data(){
             return{
-               
+               data1:{
+                   mchid:'100023'
+               }
             }
         },
         methods:{
            
         },
         created(){
+        //    var s = location.search.split("?")[1].split("=")
+        //     console.log('s',s);
+        //     let mchid = s[1]
+        //     this.data1.mchid = mchid
+        //     console.log('this.data1.mchid',this.data1.mchid);
+        //     console.log('this.$store',this.$store);
+        //     let data = this.data1
+        //     console.log('data',data);
+        //     this.$store.commit('GET_USERINFO',mchid)
+        //     console.log(this.$store.mchid);
         }
 
     }

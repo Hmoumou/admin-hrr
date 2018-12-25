@@ -23,12 +23,13 @@
     </div>
 
     <!--上传图片用-->
+    <!--   action="http://192.168.3.9/zftds/uploadFileS" -->
     <el-upload
       v-if="allArr<5"
       style="float:left;width: 19%;box-sizing:border-box;margin-bottom:20px;margin-left: 10px;"
       class="el-upload--change"
       v-show="isCanUpload"
-      action="https://upload-z1.qiniup.com"
+      action="http://zftds.zhifupaytech.com/uploadFileS"
       :show-file-list="false"
       :data="data"
       :limit="currentMax"
@@ -45,7 +46,7 @@
     <el-upload
      class="dy-upload-wrap"
       v-show="false"
-      action="https://upload-z1.qiniup.com"
+      action="http://zftds.zhifupaytech.com/zftds/uploadFileS"
       :show-file-list="false"
       :data="data"
       :on-success="handleChangeSuccess">
@@ -96,7 +97,9 @@
     data () {
       return {
         data: {
-          token: ''
+          // token: '',
+          type:"hotel",
+          mchid:'8888'
         },
         isCanUpload: true,
         currentValue: this.value,
@@ -110,8 +113,9 @@
       }
     },
     created() {
-      this.getToken()
+      // this.getToken()
       this.currentMax = this.max - this.imgList.length;
+     
     },
     methods: {
       getToken() { // 获得上传token
@@ -119,6 +123,7 @@
           this.data.token = res.data.data
         })
       },
+      // 上传图片
       handleSuccess(img) { // 上传成功后
           this.currentValue.push(img.url)
           this.$emit('input', this.currentValue)

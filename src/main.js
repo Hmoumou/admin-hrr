@@ -11,6 +11,10 @@ import {$axios} from './utils/index.js'
 import VueCookies from 'vue-cookies'
 import 'element-ui/lib/theme-chalk/index.css';
 import 'iview/dist/styles/iview.css';
+import store from './store/store.js'
+
+
+
 
 Vue.prototype.$axios = $axios;
 
@@ -22,6 +26,7 @@ Vue.config.productionTip = false
 new Vue({
   el: '#app',
   router,
+  store,
   components: { App },
   template: '<App/>'
 })

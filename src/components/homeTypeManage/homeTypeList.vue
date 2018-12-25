@@ -27,7 +27,7 @@
                 <div class="edit flr">
                   <el-button type="text" class="editBtn" @click="handleChange(index)">修改</el-button>
                   <span class="blue fll fs14 line">|</span>
-                  <el-button type="text" class="editBtn" @click="handleDelete(index)">删除</el-button>
+                  <el-button type="text" class="editBtn" @click="handleDelete(item)">删除</el-button>
                 </div>
 
                 <img
@@ -36,18 +36,18 @@
                     float: left; margin-right: 15px;"
                 >
                 <div class="homeInfo clearfix">
-                  <strong class="fs14">{{item.homeType}}</strong>
+                  <strong class="fs14">{{item.houseinfo}}</strong>
                   <div class="infoTitleDiv">
                     <span class="infoTitle">面积</span>
                     <span class="infoTitle">床宽</span>
-                    <span class="infoTitle">卫浴</span>
+                    <!-- <span class="infoTitle">卫浴</span> -->
                     <span class="infoTitle">最多入住</span>
                   </div>
                   <div class="infoDataDiv">
-                    <span class="infoData">{{item.area}}</span>
-                    <span class="infoData">{{item.bedWidth}}</span>
-                    <span class="infoData">{{item.bath}}</span>
-                    <span class="infoData">{{item.limit}}人</span>
+                    <span class="infoData">{{item.acreage}}</span>
+                    <span class="infoData">{{item.bedinfo}}</span>
+                    <!-- <span class="infoData">{{item.bath}}</span> -->
+                    <span class="infoData">{{item.person}}人</span>
                   </div>
                 </div>
               </div>
@@ -75,7 +75,7 @@
         <div slot="header" class="header clearfix">
           <!-- {{homeData[activeIndex].homeType}} -->
           <span class="title">
-            {{homeData[activeIndex].homeType}}
+            {{homeData[activeIndex].houseinfo}}
           </span>
         </div>
 
@@ -180,7 +180,7 @@
         </div>
         <!-- <p class="facility-desc">请选择该房型包含的设施</p> -->
         <div class="facility-container"> 
-          <dyCheckbox v-model="homeData[activeIndex].facilities" :options="checkBoxOptions" :disabled="true" ></dyCheckbox>
+          <dyCheckbox v-model="homeData[activeIndex].facility1" :options="checkBoxOptions" :disabled="true" ></dyCheckbox>
         </div>
       </el-card>
       <!--设施详情结束-->
@@ -270,6 +270,9 @@ export default {
         'http://placehold.it/423x300/409eff',
         'http://placehold.it/423x300/ff0'
       ],
+      data1:{
+        merchantid:'100023',
+      },
       photoArr2: [
         'http://placehold.it/423x300/ccc',
         'http://placehold.it/423x300/c10',
@@ -283,109 +286,32 @@ export default {
       index: "",
       homeData: [
         {
-          homeType: "豪华大床房1",
-          area: "33平方米",
-          bedWidth: "大床1.8m",
-          bath: "独立卫浴",
-          limit: "2",
-          floor:'1-5层',//楼层
-          bath:'淋浴',//卫浴，
-          window:'有窗户',
+          houseinfo: "豪华大床房1",
+          acreage: "33平方米",
+          bedinfo: "大床1.8m",
+          person: "2",
           smoke:'该房型有无烟房，可无烟处理',//无烟信息，
-          food:'有早餐',
-          wifi:'有wifi',
-          desc:'房间禁止小朋友嬉戏打闹，禁止吸烟',
+          remark:'房间禁止小朋友嬉戏打闹，禁止吸烟',
           // 新增
-          houseNum:30,
+          roomsnum:30,
           price:'998',
-          bedNum:'1',
-          facilities: ["1","2","3","4","5","6","7"],
-        },
-        {
-          homeType: "豪华大床房2",
-          area: "34平方米",
-          bedWidth: "大床1.8m",
-          bath: "独立卫浴",
-          limit: "2",
-          floor:'6-10层',//楼层
-          bath:'淋浴',//卫浴，
-          window:'有窗户',
-          smoke:'该房型有无烟房，可无烟处理',//无烟信息，
-          food:'有早餐',
-          wifi:'有wifi',
-          desc:'房间禁止小朋友嬉戏打闹，禁止吸烟',
-            // 新增
-          houseNum:30,
-          price:'998',
-          bedNum:'1',
-           facilities: ["1","2","3","4","5","6","7"],
-        },
-        {
-          homeType: "双标间3",
-          area: "55立方米",
-          bedWidth: "大床1.8m",
-          bath: "独立卫浴",
-          limit: "2",
-          floor:'11-15层',//楼层
-          bath:'淋浴',//卫浴，
-          window:'有窗户',
-          smoke:'该房型有无烟房，可无烟处理',//无烟信息，
-          food:'有早餐',
-          wifi:'有wifi',
-          desc:'房间禁止小朋友嬉戏打闹，禁止吸烟',
-            // 新增
-          houseNum:30,
-          price:'998',
-          bedNum:'1',
-           facilities: ["1","2","3","4","5","6","7"],
-        },
-        {
-          homeType: "双标间4",
-          area: "66立方米",
-          bedWidth: "大床1.8m",
-          bath: "独立卫浴",
-          limit: "2",
-          floor:'16-20层',//楼层
-          bath:'淋浴',//卫浴，
-          window:'有窗户',
-          smoke:'该房型有无烟房，可无烟处理',//无烟信息，
-          food:'有早餐',
-          wifi:'有wifi',
-          desc:'房间禁止小朋友嬉戏打闹，禁止吸烟',
-            // 新增
-          houseNum:30,
-          price:'998',
-          bedNum:'1',
-           facilities: ["1","2","3","4","5","6","7"],
-        },
-        {
-          homeType: "豪华大床房5",
-          area: "88平方米",
-          bedWidth: "大床1.8m",
-          bath: "独立卫浴",
-          limit: "2",
-          floor:'25-30层',//楼层
-          bath:'淋浴',//卫浴，
-          window:'有窗户',
-          smoke:'该房型有无烟房，可无烟处理',//无烟信息，
-          food:'有早餐',
-          wifi:'有wifi',
-          desc:'房间禁止小朋友嬉戏打闹，禁止吸烟',
-            // 新增
-          houseNum:30,
-          price:'998',
-          bedNum:'1',
-           facilities: ["1","2","3","4","5","6","7"],
+          bednum:'1',
+          facility: ["1","2","3","4","5","6","7"],
         }
       ]
     };
   },
   methods: {
-    // getData(){
-    // this.$axios.get('').then(res=>{
-    //   console.log(res);
-    // })
-    // },
+    getData(){
+      this.$axios.post(`/zftds/hotel/house/selectHotelHouse`,this.data1).then(res=>{
+        console.log(res.data);
+        if(res.code == 1){
+          this.homeData = res.data
+        }else if(res.code == 0){
+          console.log(res.msg);
+        }
+      })
+    },
     handleClickThumbs(index) {
       console.log(index, index);
       this.$refs.mySwiper1.swiper.slideTo(index + 1)
@@ -404,18 +330,25 @@ export default {
           abc:this.homeData[index]
         }
       })
-
     },//点击修改
     handleClick(index) { // 点击房型item
       this.activeIndex = index
       // console.log(this.activeIndex);
     },
-    handleDelete(index) { // 点击删除
+    handleDelete(item) { // 点击删除
+    console.log(item.id);
       this.isdialog = true;
-      this.index = index;
+      this.index = item.id;
     },
-    ensureDelete() { // 确认删除
-      console.log(this.index);
+    ensureDelete(index) { // 确认删除
+      // console.log(this.index);
+      this.$axios.post(`/zftds/hotel/house/deleteHotelHouse`,{id:this.index}).then(res=>{
+        console.log(res)
+        if(res.code == 0||res.code == 1){
+            this.$message(res.msg)
+            this.getData()
+        }
+      })
       this.isdialog = false;
     },
     // details---------------------------------------
@@ -432,7 +365,7 @@ export default {
     },
   },
   created() {
-    // this.getData()
+   this.getData()
   }
 };
 </script>

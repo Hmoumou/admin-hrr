@@ -86,7 +86,7 @@
         </div>
         <span class="secondTitle">*图片尺寸：1920*900</span>
         <div class="imageDiv ">
-          <upload :img-list='arr' v-model='uploadimg'></upload>
+          <upload :img-list='formData.arr' v-model='formData.arr'></upload>
         </div>
       </el-card>
     </div>
@@ -142,6 +142,8 @@ export default {
     return {
       // data start
       formData:{
+        arr:[],
+        uploadimg:[],
         area:'',
         bedNum:'',
         bedWidth:'',
@@ -151,35 +153,35 @@ export default {
         houseNum:'',
         limit:'',
         price:'',
-        smoke:''
+        smoke:'',
+        merchantid:'100023',
+
+      // 需要的东西
+        // acreage:"33平米",
+        // addtime:"2018-12-25 15:32:38",
+        // bedinfo:"1.8米",
+        // bednum:"1",
+        // facility:"1,2,3,4,5,6,7,8",
+        // houseinfo:"豪华大床房",
+        // id:6,
+        // img1:"http://140.143.229.89:8099/static_img/hotel/1545723003127024.jpg",
+        // img2:"http://140.143.229.89:8099/static_img/hotel/1545723003159168.jpg",
+        // img3:"http://140.143.229.89:8099/static_img/hotel/1545723003264942.jpg",
+        // img4:"http://140.143.229.89:8099/static_img/hotel/1545723003264942.jpg",
+        // img4:"http://140.143.229.89:8099/static_img/hotel/1545723003264942.jpg",
+        // merchantid:100023,
+        // person:"2",
+        // price:"199",
+        // remark:"该房型有无烟房，可无烟处理",
+        // roomsnum:"30",
+        // smoke:"该房型有无烟房，可无烟处理",
       },
+      formData1:{
+
+      },
+    
       // data end
-
-      //newcreatestart
-      formRightData: {
-        smokeInfo: "",
-        maxPeople: "",
-        breakfast: "",
-        internet: "",
-        describe: ""
-      },
-      formLeftData: {
-        price:"",
-        houseArea: "",
-        houseType: "",
-        floor: "",
-        bedWidth: "",
-        bathroom: "",
-        window: "",
-        houseNum:'',
-
-      },
-      //end
-      //photo start
-      arr:['http://img2.imgtn.bdimg.com/it/u=500808421,1575925585&fm=200&gp=0.jpg'],
-      uploadimg:[],
-      //photo end
-      facilities: [], // 设施详情
+      // facilities: [], // 设施详情
       checkBoxOptions: [
         {
           label: '1',
@@ -227,9 +229,41 @@ export default {
   },
   methods: {
     createComplete() {
-      console.log(this.facilities);
-      console.log('修改或新建的房型数据...',this.formData);
-      // this.$axios.post('')
+      if(this.$route.meta.title == "房型修改"){
+        console.log(this.$route);
+      }
+      // console.log(this.facilities);
+      //  let  formData1 = {
+      //    merchantid:this.formData.merchantid,//商户ID
+      //    houseinfo:this.formData.homeType, //房型、户型描述   
+      //    acreage:this.formData.area,// 房屋面积 
+      //    bedinfo:this.formData.bedWidth, //床型描述
+      //    bednum:this.formData.bedNum, //床数
+      //    smoke:this.formData.smoke,//烟控描述
+      //    person:this.formData.limit, // 居住人数
+      //    price:this.formData.price,// 价格
+      //    img1:this.formData.arr[0],//
+      //    img2:this.formData.arr[1],//
+      //    img3:this.formData.arr[2],//
+      //    img4:this.formData.arr[3],//
+      //    img5:this.formData.arr[4], //
+      //    remark:this.formData.desc,//备注描述
+      //    roomsnum:this.formData.houseNum,//房间总数
+      //    facility:this.formData.facilities.toString(),//屋内设施
+      // }
+      // console.log('修改或新建的房型数据...',formData1);
+      // // console.log('修改或新建的房型数据...',formData);
+      // if(formData1.merchantid){
+      //     this.$axios.post('/zftds/hotel/house/insertHotelHouse',formData1).then(res=>{
+      //     console.log(res);
+      //     if(res.code == 1){
+      //       this.$message.success(res.msg)
+      //       setTimeout(()=>{
+      //         this.$router.push('/layout/houseType')
+      //       },1000)
+      //     }
+      //   })
+      // }
     },
     showManageView() {
       // this.$emit("showManageView");
@@ -239,8 +273,17 @@ export default {
   created() {
     if(this.$route.meta.title == "房型修改"){
       console.log('我想带过来的数据',this.$route.params)
-      this.formData = this.$route.params.abc
+      this.formData1 = this.$route.params.abc
+    }else{
+      console.log(this.$route.meta.title);
     }
+    // else if(this.$route.meta.title == "房型新建"){
+    //    this.$axios.post('/zftds/hotel/house/selectHotelHouse',this.formData.mchid).then(res=>{
+    //     console.log('22222');
+    //     console.log(res);
+    //     console.log('3333');
+    //   })
+    // }
   }
 };
 </script>
