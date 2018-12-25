@@ -129,7 +129,7 @@
           <div class="item">
             <div class="itemDetail clearfix">
               <span class="itemTitle">房间面积</span>
-              <span class="detail">{{homeData[activeIndex].area}}</span>
+              <span class="detail">{{homeData[activeIndex].acreage}}</span>
             </div>
             <div class="itemDetail clearfix">
               <span class="itemTitle">房型</span>
@@ -170,7 +170,7 @@
               <span class="detailText ">{{homeData[activeIndex].desc}}</span>
             </div>
           </div>
-        </div> 
+        </div>
       </el-card>
 
       <!--设施详情开始-->
@@ -179,8 +179,8 @@
           <span class="title">设施详情</span>
         </div>
         <!-- <p class="facility-desc">请选择该房型包含的设施</p> -->
-        <div class="facility-container"> 
-          <dyCheckbox v-model="homeData[activeIndex].facility1" :options="checkBoxOptions" :disabled="true" ></dyCheckbox>
+        <div class="facility-container">
+          <dyCheckbox v-model="homeData[activeIndex].facility" :options="checkBoxOptions" :disabled="true" ></dyCheckbox>
         </div>
       </el-card>
       <!--设施详情结束-->
@@ -306,7 +306,11 @@ export default {
       this.$axios.post(`/zftds/hotel/house/selectHotelHouse`,this.data1).then(res=>{
         console.log(res.data);
         if(res.code == 1){
-          this.homeData = res.data
+          this.homeData = res.data.map(item => {
+            item.facility = item.facility.split(",");
+            return item
+          })
+          this.handleClick(this.activeIndex)
         }else if(res.code == 0){
           console.log(res.msg);
         }
@@ -332,8 +336,19 @@ export default {
       })
     },//点击修改
     handleClick(index) { // 点击房型item
-      this.activeIndex = index
-      // console.log(this.activeIndex);
+      let obj = this.homeData[index]
+      let photoArr = [];
+      for(let key in obj) {
+        if(key.indexOf("img")!=-1){
+          if(obj[key]) {
+            photoArr.push(obj[key])
+          }
+        }
+      }
+
+      this.activeIndex = index;
+
+      this.photoArr = photoArr
     },
     handleDelete(item) { // 点击删除
     console.log(item.id);
@@ -508,6 +523,11 @@ export default {
     background: #333;
     text-align: center;
     padding: 20px 0;
+
+    img {
+      width: 423px;
+      height: 300px;
+    }
   }
 }
 
@@ -517,12 +537,14 @@ export default {
 
   .thumbs-item-wrap {
     width: 20%;
+    height: 167px;
     box-sizing: border-box;
     padding: 0 20px;
 
     img {
       display: block;
       width: 100%;
+      height: 100%;
       border: 4px solid transparent;
     }
   }

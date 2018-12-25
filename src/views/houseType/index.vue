@@ -1,24 +1,25 @@
 <template>
   <div class="houseType">
-    <div v-if="!isShowCreate">
-      <house-type-manage @showCreateView="showCreateView" />
-    </div>
+    <house-type-manage @showCreateView="showCreateView" />
 
-    <div v-if="isShowCreate">
-      <house-type-new-create @showManageView="showManageView" />
-    </div>
+    <!--<div v-if="!isShowCreate">-->
+    <!--</div>-->
+
+    <!--<div v-if="isShowCreate">-->
+      <!--<house-type-new-create @showManageView="showManageView" />-->
+    <!--</div>-->
   </div>
 </template>
 
 <script>
 import houseTypeManage from "@/views/houseType/houseTypeManage.vue";
-import houseTypeNewCreate from "@/views/houseType/houseTypeNewCreate.vue";
+// import houseTypeNewCreate from "@/views/houseType/houseTypeNewCreate.vue";
 
 export default {
   name: "houseType",
   components: {
     houseTypeManage,
-    houseTypeNewCreate
+    // houseTypeNewCreate
   },
   data() {
     return {
