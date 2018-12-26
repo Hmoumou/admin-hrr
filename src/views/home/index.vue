@@ -1,7 +1,7 @@
 <template>
     <div class="home">
         <el-row :gutter="12">
-          
+
             <el-col :span="15">
                 <div class="grid-content bg-purple">
                     <div class="left">
@@ -9,11 +9,11 @@
                         <todaySummary/>
                         <!-- 待处理订单 -->
                         <pendingOrder/>
-                        <!-- 住客看板 -->                
+                        <!-- 住客看板 -->
                         <lodgerKB/>
                         <!-- 审核离店 -->
                         <auditLeave/>
-                    </div>  
+                    </div>
                 </div>
             </el-col>
               <el-col :span="9">
@@ -26,13 +26,13 @@
                             <calendar/>
                         </el-card>
                         <!-- 评价/回复 -->
-                        <userComment/>    
+                        <userComment/>
                     </div>
                 </div>
             </el-col>
         </el-row>
-      
-        
+
+
     </div>
 </template>
 
@@ -62,19 +62,19 @@ import userComment from '@/components/userComment.vue'
             }
         },
         methods:{
-           
+
         },
         created(){
-        //    var s = location.search.split("?")[1].split("=")
-        //     console.log('s',s);
-        //     let mchid = s[1]
-        //     this.data1.mchid = mchid
-        //     console.log('this.data1.mchid',this.data1.mchid);
-        //     console.log('this.$store',this.$store);
-        //     let data = this.data1
-        //     console.log('data',data);
-        //     this.$store.commit('GET_USERINFO',mchid)
-        //     console.log(this.$store.mchid);
+           // var s = location.search.split("?")[1].split("=")
+           //  console.log('s',s);
+           //  let mchid = s[1]
+           //  this.data1.mchid = mchid
+           //  console.log('this.data1.mchid',this.data1.mchid);
+           //  console.log('this.$store',this.$store);
+           //  let data = this.data1
+           //  console.log('data',data);
+            this.$store.commit('GET_USERINFO', "hrr1020")
+            console.log(this.$store.state.mchid);
         }
 
     }
@@ -83,10 +83,10 @@ import userComment from '@/components/userComment.vue'
 <style scoped lang='scss'>
 .home{
     .right{
-        .subtitle{ color:#409eff;margin-bottom: 10px;}      
+        .subtitle{ color:#409eff;margin-bottom: 10px;}
     }
     .left{
-        
+
     }
     .carditem{
         margin-bottom: 10px;

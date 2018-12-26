@@ -326,12 +326,16 @@ export default {
       this.$router.push('/layout/houseType/create')
     },
     handleChange(index) {
+      // console.log('修改')
       // console.log('1111',this.homeData[index])
       this.$router.push({
         // path:'/layout/houseType/edit',
         name:'edit',
-        params: {
-          abc:this.homeData[index]
+        // params: {
+        //   abc:this.homeData[index]
+        // }
+        query: {
+          id: this.homeData[index].id
         }
       })
     },//点击修改

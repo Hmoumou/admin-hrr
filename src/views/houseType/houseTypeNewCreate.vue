@@ -179,7 +179,7 @@ export default {
   methods: {
     getdetails(){
       // let facility = [],
-      
+
     },
     // 得到相册
     getphoto(){
@@ -240,13 +240,18 @@ export default {
     },
     showManageView() {
       this.$router.push('/layout/houseType')
+    },
+    getData() {
+      const url = "";
+      this.$axios.get("")
+      this.getphoto()
     }
   },
   created() {
     if(this.$route.meta.title == "房型修改"){
       // console.log('我想带过来的数据',this.$route.params)
-      this.formData = this.$route.params.abc
-      this.getphoto()
+      // this.formData = this.$route.params.abc
+      this.getData()
     }else{
       console.log(this.$route.meta.title);
     }

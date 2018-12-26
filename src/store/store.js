@@ -27,11 +27,10 @@ const store = new Vuex.Store({
             storage: {
               getItem: key => sessionStorage.getItem(key),
               // Please see https://github.com/js-cookie/js-cookie#json, on how to handle JSON.
-              setItem: (key, value) =>
-              sessionStorage.setItem(key, value),
+              setItem: (key, value) => sessionStorage.setItem(key, value),
               removeItem: key => sessionStorage.removeItem(key),
             },
-        }), 
+        }),
     ]
 
 })

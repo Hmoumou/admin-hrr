@@ -41,19 +41,19 @@
                 <el-card class="box-card carditem">
                     <div slot="header" class="header"><span class="title">订单详情</span> </div>
 
-                    <div class="table" :model='orderData'>
+                    <div class="table" >
                         <table class="table1">
                             <tr>
                                 <th>订单编号</th>
-                                <td class="blue">{{orderData.orderId}}</td>
+                                <td class="blue">{{searchData[dataIndex] && searchData[dataIndex].totalMoney}}</td>
                                  <th>订单状态</th>
-                                <td class="blue fw fs16">{{orderData.type}}</td>
+                                <td class="blue fw fs16">{{searchData[dataIndex]&&searchData[dataIndex].type}}</td>
                             </tr>
                         </table>
                          <table class="table2">
                             <tr class="bg">
                                 <th>预订人姓名</th>
-                                <td >{{orderData.username}}</td>
+                                <td >{{searchData[dataIndex]&&searchData[dataIndex].username}}</td>
                                  <th>预订房型</th>
                                 <td class="blue fw fs16">{{orderData.houseType}}</td>
                             </tr>
@@ -106,7 +106,7 @@
               </div>
             <el-scrollbar class="scollbar">
                 <div class="searchContent clearfix" v-for="(item, index) in searchData" :key="index">
-                  <el-card class='clearfix  active parts'>
+                  <el-card class='clearfix  parts' :class="{active: dataIndex == index}" @click.native="activeData(index)">
                       <div class="type clearfix part">
                           <span class="flr overTime">{{item.overTime}}</span>
                           <el-button type='primary' class="none">失效</el-button>
@@ -139,6 +139,7 @@ export default {
     return {
         isClick:true,
         activeIndex:'1',
+        dataIndex: 0,
          orderData:{
              username:'梁朝伟',
              orderId:'234567522134',
@@ -157,11 +158,11 @@ export default {
          },
         searchData: [
           {
-            text: "梁朝伟",
+            text: "梁朝伟111",
             orderDetails:[1,2,3,4],
             orderId:'12345324664',
             overTime:'06-29 12:32',
-            username:'梁朝伟',
+            username:'姚君荣',
             totalMoney:'150 0000 0000',
             startTime:'2018-07-04',
             endTime:'2018-07-05'
@@ -203,20 +204,24 @@ export default {
     handleSearch() {},
     handleSelect(key, keyPath) {
         console.log(key, keyPath);
+        this.dataIndex = 0;
         this.activeIndex = key
         console.log('index',this.activeIndex);
     },
-   handleClick(e){
-            if(this.isClick){
-                this.isClick = false
-                console.log(e);
-                console.log('111111');
-                setTimeout(()=>{
-                    this.isClick = true
-                },4000)
-            }
-        }
+    handleClick(e){
+      if(this.isClick){
+          this.isClick = false
+          console.log(e);
+          console.log('111111');
+          setTimeout(()=>{
+              this.isClick = true
+          },4000)
+      }
     },
+    activeData(index) {
+      this.dataIndex = index;
+    }
+  },
   watch:{
     activeIndex(val){
         if(val == 1){

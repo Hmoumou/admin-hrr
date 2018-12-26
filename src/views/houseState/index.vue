@@ -117,6 +117,11 @@
       }
     },
     methods: {
+      getPrice(){
+        this.$axios.post('/zftds/hotel/house/selectHotelCalendar',{merchantid:'100023'}).then(res=>{
+          console.log(res);
+        })
+      },
       getClass(item) {
         if(item.isPre) { // 是否可以预定
           if(item.surplus>0) {  // 没有满
@@ -219,7 +224,8 @@
         line.style.transform = `rotateZ(${rotateDeg}deg)`;
       },
       getData() {
-        let url = 'https://www.easy-mock.com/mock/5c1227fa8df72453e91aac7a/shuzhen/week';
+        // let url = 'https://www.easy-mock.com/mock/5c1227fa8df72453e91aac7a/shuzhen/week';
+        let url = 'http://zftds.zhifupaytech.com/zftds/hotel/house/selectHotelCalendar';
         axios.get(url).then(res => {
           console.log(res);
           this.houseData = res.data.data;
@@ -261,10 +267,13 @@
           vm.setLine()
         }
       });
-      this.getData()
+      // this.getData()
     },
     beforeDestroy () {
       window.onresize = null
+    },
+    created(){
+      this.getPrice()
     }
   }
 </script>
