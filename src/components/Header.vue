@@ -34,15 +34,16 @@
             </div>
         </div>
         <div class="left clearfix">
-            <div class="logo fll" @click="gohome">
-                <img src="../image/首页-通知-退出/图标切图_03_06.png" alt="logo">
+            <!-- <div class="logo fll" @click="gohome">
+                
             </div>
             <div class="line fll">
             </div>
             <div class="title1 fll">
                 <span class="span1">酒店管理系统</span>
                 <span class="span2">HOTEL MANAGEMENT</span>
-            </div>
+            </div> -->
+            <img src="../image/LOGO.png" alt="logo" style="margin-top:15px">
         </div>
       
     </div>

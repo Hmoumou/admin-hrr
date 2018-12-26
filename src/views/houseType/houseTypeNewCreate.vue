@@ -1,7 +1,5 @@
 <template>
   <div class="houseTypeNewCreate">
-    <!--<home-type-create />-->
-    <!--<home-type-photo />-->
     <!--新建房型列表start-->
     <div class="houseTypeCreate">
       <el-card class="box-card  carditem">
@@ -16,53 +14,32 @@
           <el-form-item label="无烟信息" prop="smoke">
             <el-input class="detailInfo" v-model="formData.smoke"  placeholder='该房型有无烟房，可无烟处理'></el-input>
           </el-form-item>
-          <el-form-item label="最多入住" prop="limit">
-            <el-input class="detailInfo" v-model="formData.limit"   placeholder='请输入人数'></el-input>
+          <el-form-item label="最多入住" prop="person">
+            <el-input class="detailInfo" v-model="formData.person"   placeholder='请输入人数'></el-input>
             人
           </el-form-item>
-          <el-form-item label="描述" prop="desc">
-            <el-input class="describeInfo" v-model="formData.desc"  type="textarea" :rows="5"  placeholder='大床1.8米'></el-input>
+          <el-form-item label="描述" prop="remark">
+            <el-input class="describeInfo" v-model="formData.remark"  type="textarea" :rows="5"  placeholder='大床1.8米'></el-input>
           </el-form-item>
         </el-form>
         <!-- 左表格 -->
         <el-form  class="leftForm" :model='formData' label-width="100px" label-position='left'>
-          <el-form-item label="房间面积" prop="area">
-            <el-input class="detailInfo" v-model="formData.area"  placeholder='请输入房间面积'></el-input>
+          <el-form-item label="房间面积" prop="acreage">
+            <el-input class="detailInfo" v-model="formData.acreage"  placeholder='请输入房间面积'></el-input>
           </el-form-item>
-          <el-form-item  label="房间房型" prop="homeType" >
-             <el-input class="detailInfo"  v-model="formData.homeType"  placeholder='请输入房间房型'></el-input>
-            <!-- <el-select class="detailInfo" v-model="formLeftData.houseType" placeholder="请选择房型">
-              <el-option label="豪华大床房" value="0"></el-option>
-              <el-option label="双标签" value="1"></el-option>
-              <el-option label="豪华海景大床房" value="2"></el-option>
-              <el-option label="豪华家庭房" value="3"></el-option>
-              <el-option label="天字一号房" value="4"></el-option>
-            </el-select> -->
+          <el-form-item  label="房间房型" prop="houseinfo" >
+             <el-input class="detailInfo"  v-model="formData.houseinfo"  placeholder='请输入房间房型'></el-input>
           </el-form-item>
           <!--新添房间数量-->
-          <el-form-item label="房间数量" prop="houseNum">
-            <el-input class="detailInfo" v-model="formData.houseNum"  placeholder='请输入房间数量'></el-input>
+          <el-form-item label="房间数量" prop="roomsnum">
+            <el-input class="detailInfo" v-model="formData.roomsnum"  placeholder='请输入房间数量'></el-input>
           </el-form-item>
-          <!--<el-form-item  label="楼层" prop="floor" >-->
-          <!--<el-select class="detailInfo" v-model="formLeftData.floor" placeholder="请选择楼层">-->
-          <!--<el-option label="1-5层" value="0"></el-option>-->
-          <!--<el-option label="6-10层" value="1"></el-option>-->
-          <!--<el-option label="11-15层" value="2"></el-option>-->
-          <!--<el-option label="16-20层" value="3"></el-option>-->
-          <!--<el-option label="21-25层" value="4"></el-option>-->
-          <!--</el-select> -->
-          <!--</el-form-item>-->
-          <el-form-item label="床宽" prop="bedWidth">
-            <!--<el-select class="detailInfo" v-model="formRightData.bedWidth" placeholder="请选择床宽">-->
-            <!--<el-option label="大床 1.8米" value="0"></el-option>-->
-            <!--<el-option label="大床 2.0米" value="1"></el-option>-->
-            <!--<el-option label="大床 2.5米" value="2"></el-option>-->
-            <!--</el-select> -->
-            <el-input class="detailInfo" v-model="formData.bedWidth" placeholder='请输入床宽'> </el-input>
+          <el-form-item label="床宽" prop="bedinfo">
+            <el-input class="detailInfo" v-model="formData.bedinfo" placeholder='请输入床宽'> </el-input>
           </el-form-item>
           <!--新加床数-->
-          <el-form-item label="床数" prop="bedNum">
-            <el-input class="detailInfo" v-model="formData.bedNum" placeholder='请输入床的数量'> </el-input>
+          <el-form-item label="床数" prop="bednum">
+            <el-input class="detailInfo" v-model="formData.bednum" placeholder='请输入床的数量'> </el-input>
           </el-form-item>
           <!-- 添加 单价 -->
           <el-form-item label="价格" prop="price">
@@ -86,7 +63,7 @@
         </div>
         <span class="secondTitle">*图片尺寸：1920*900</span>
         <div class="imageDiv ">
-          <upload  v-model='formData.arr'></upload>
+          <upload  v-model='photoArr'></upload>
         </div>
       </el-card>
     </div>
@@ -99,17 +76,13 @@
       </div>
       <p class="facility-desc blue">*请选择该房型包含的设施</p>
       <div class="facility-container">
-        <dyCheckbox v-model="formData.facilities" :options="checkBoxOptions" :disabled="false" ></dyCheckbox>
+        <dyCheckbox v-model="formData.facility" :options="checkBoxOptions" :disabled="false" ></dyCheckbox>
       </div>
     </el-card>
     <!--设施详情结束-->
 
-    <!--<home-type-photo-detail />-->
-
-    <div
-      class="btn"
-      @click="createComplete"
-    >完成</div>
+    <div class="btn" v-if="this.$route.meta.title == '房型新建'" @click="createComplete">完成</div>
+    <div class="btn" v-else @click="handleisEdit">完成</div>
     <el-button
       class="backBtn clearfix"
       type="text"
@@ -123,65 +96,41 @@
 
 <script>
 import dyCheckbox from '@/components/homeTypeManage/dy-checkbox'
-import homeTypeCreate from "@/components/homeTypeManage/homeTypeCreate.vue";
-import homeTypePhoto from "@/components/homeTypeManage/homeTypePhoto.vue";
-import homeTypePhotoDetail from "@/components/homeTypeManage/homeTypePhotoDetail.vue";
 import upload from '@/components/imgupload/dy-upload.vue'
 
 export default {
   name: "houseTypeNewCreate",
   components: {
-    homeTypeCreate,
-    homeTypePhoto,
-    homeTypePhotoDetail,
     dyCheckbox,
     upload
-
   },
   data() {
     return {
       // data start
       formData:{
-        arr:[],
-        uploadimg:[],
-        area:'',
-        bedNum:'',
-        bedWidth:'',
-        desc:'',
-        facilities:[],
-        homeType:'',
-        houseNum:'',
-        limit:'',
-        price:'',
-        smoke:'',
-        merchantid:'100023',
-
       // 需要的东西
-        // acreage:"33平米",
-        // addtime:"2018-12-25 15:32:38",
-        // bedinfo:"1.8米",
-        // bednum:"1",
-        // facility:"1,2,3,4,5,6,7,8",
-        // houseinfo:"豪华大床房",
-        // id:6,
-        // img1:"http://140.143.229.89:8099/static_img/hotel/1545723003127024.jpg",
-        // img2:"http://140.143.229.89:8099/static_img/hotel/1545723003159168.jpg",
-        // img3:"http://140.143.229.89:8099/static_img/hotel/1545723003264942.jpg",
-        // img4:"http://140.143.229.89:8099/static_img/hotel/1545723003264942.jpg",
-        // img4:"http://140.143.229.89:8099/static_img/hotel/1545723003264942.jpg",
-        // merchantid:100023,
-        // person:"2",
-        // price:"199",
-        // remark:"该房型有无烟房，可无烟处理",
-        // roomsnum:"30",
-        // smoke:"该房型有无烟房，可无烟处理",
+        acreage:"",
+        addtime:" ",
+        bedinfo:"",
+        bednum:"",
+        facility:[],
+        houseinfo:"",
+        id:6,
+        img1:"",
+        img2:"",
+        img3:"",
+        img4:"",
+        img4:"",
+        merchantid:100023,
+        person:"",
+        price:"",
+        remark:"",
+        roomsnum:"",
+        smoke:"",
       },
-      formData1:{
-
-      },
+      photoArr:[],
 
       // data end
-      // facilities: [], // 设施详情
       checkBoxOptions: [
         {
           label: '1',
@@ -228,62 +177,79 @@ export default {
     };
   },
   methods: {
-    createComplete() {
-      if(this.$route.meta.title == "房型修改"){
-        console.log(this.$route);
+    getdetails(){
+      // let facility = [],
+      
+    },
+    // 得到相册
+    getphoto(){
+      let obj = this.formData
+      let photoArr = [];
+      for(let key in obj) {
+        if(key.indexOf("img")!=-1){
+          if(obj[key]) {
+            photoArr.push(obj[key])
+          }
+        }
       }
-      // console.log(this.facilities);
-      //  let  formData1 = {
-      //    merchantid:this.formData.merchantid,//商户ID
-      //    houseinfo:this.formData.homeType, //房型、户型描述
-      //    acreage:this.formData.area,// 房屋面积
-      //    bedinfo:this.formData.bedWidth, //床型描述
-      //    bednum:this.formData.bedNum, //床数
-      //    smoke:this.formData.smoke,//烟控描述
-      //    person:this.formData.limit, // 居住人数
-      //    price:this.formData.price,// 价格
-      //    img1:this.formData.arr[0],//
-      //    img2:this.formData.arr[1],//
-      //    img3:this.formData.arr[2],//
-      //    img4:this.formData.arr[3],//
-      //    img5:this.formData.arr[4], //
-      //    remark:this.formData.desc,//备注描述
-      //    roomsnum:this.formData.houseNum,//房间总数
-      //    facility:this.formData.facilities.toString(),//屋内设施
-      // }
-      // console.log('修改或新建的房型数据...',formData1);
-      // // console.log('修改或新建的房型数据...',formData);
-      // if(formData1.merchantid){
-      //     this.$axios.post('/zftds/hotel/house/insertHotelHouse',formData1).then(res=>{
-      //     console.log(res);
-      //     if(res.code == 1){
-      //       this.$message.success(res.msg)
-      //       setTimeout(()=>{
-      //         this.$router.push('/layout/houseType')
-      //       },1000)
-      //     }
-      //   })
-      // }
+      // console.log(photoArr);
+      this.photoArr = photoArr
+    },
+    // 提交修改
+    handleisEdit(){
+      let  formData1 = this.formData
+      if(formData1.merchantid){
+        formData1.img1 = this.photoArr[0]
+        formData1.img2 = this.photoArr[1]
+        formData1.img3 = this.photoArr[2]
+        formData1.img4 = this.photoArr[3]
+        formData1.img5 = this.photoArr[4]
+        formData1.facility = formData1.facility.toString()
+        // console.log('修改之后需要提交的数据',formData1);
+        this.$axios.post('/zftds/hotel/house/updateHotelHouse',formData1).then(res=>{
+          // console.log(res);
+          if(res.code == 1){
+            this.$message.success(res.msg)
+            setTimeout(()=>{
+              this.$router.push('/layout/houseType')
+            },1000)
+          }
+        })
+      }
+    },
+    // 提交新建Q
+    createComplete() {
+      let  formData1 = this.formData
+      if(formData1.merchantid){
+        formData1.img1 = this.photoArr[0]
+        formData1.img2 = this.photoArr[1]
+        formData1.img3 = this.photoArr[2]
+        formData1.img4 = this.photoArr[3]
+        formData1.img5 = this.photoArr[4]
+        formData1.facility = formData1.facility.toString()
+        this.$axios.post('/zftds/hotel/house/insertHotelHouse',formData1).then(res=>{
+          console.log(res);
+          if(res.code == 1){
+            this.$message.success(res.msg)
+            setTimeout(()=>{
+              this.$router.push('/layout/houseType')
+            },1000)
+          }
+        })
+      }
     },
     showManageView() {
-      // this.$emit("showManageView");
       this.$router.push('/layout/houseType')
     }
   },
   created() {
     if(this.$route.meta.title == "房型修改"){
-      console.log('我想带过来的数据',this.$route.params)
-      this.formData1 = this.$route.params.abc
+      // console.log('我想带过来的数据',this.$route.params)
+      this.formData = this.$route.params.abc
+      this.getphoto()
     }else{
       console.log(this.$route.meta.title);
     }
-    // else if(this.$route.meta.title == "房型新建"){
-    //    this.$axios.post('/zftds/hotel/house/selectHotelHouse',this.formData.mchid).then(res=>{
-    //     console.log('22222');
-    //     console.log(res);
-    //     console.log('3333');
-    //   })
-    // }
   }
 };
 </script>
@@ -411,8 +377,6 @@ export default {
     padding-bottom: 30px;
   }
 }
-
-
 </style>
 <style scoped lang='scss'>
   .houseTypeDetail {

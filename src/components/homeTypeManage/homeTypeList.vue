@@ -133,11 +133,11 @@
             </div>
             <div class="itemDetail clearfix">
               <span class="itemTitle">房型</span>
-              <span class="detail">{{homeData[activeIndex].homeType}}</span>
+              <span class="detail">{{homeData[activeIndex].houseinfo}}</span>
             </div>
             <div class="itemDetail clearfix">
               <span class="itemTitle">房间数量</span>
-              <span class="detail">{{homeData[activeIndex].houseNum}}</span>
+              <span class="detail">{{homeData[activeIndex].roomsnum}}</span>
             </div>
              <div class="itemDetail clearfix">
               <span class="itemTitle">房间价格</span>
@@ -148,11 +148,11 @@
           <div class="item">
             <div class="itemDetail clearfix">
               <span class="itemTitle">床宽</span>
-              <span class="detail">{{homeData[activeIndex].bedWidth}}</span>
+              <span class="detail">{{homeData[activeIndex].bedinfo}}</span>
             </div>
             <div class="itemDetail clearfix">
               <span class="itemTitle">床数</span>
-              <span class="detail">{{homeData[activeIndex].bedNum}}</span>
+              <span class="detail">{{homeData[activeIndex].bednum}}</span>
             </div>
              <div class="itemDetail clearfix">
               <span class="itemTitle">无烟信息</span>
@@ -160,14 +160,14 @@
             </div>
             <div class="itemDetail clearfix">
               <span class="itemTitle">最多入住</span>
-              <span class="detail">{{homeData[activeIndex].limit}}人</span>
+              <span class="detail">{{homeData[activeIndex].person}}人</span>
             </div>
           </div>
           <!-- describe  -->
           <div class="item">
             <div class="itemDetail clearfix">
               <span class="itemTitle ">描述</span>
-              <span class="detailText ">{{homeData[activeIndex].desc}}</span>
+              <span class="detailText ">{{homeData[activeIndex].remark}}</span>
             </div>
           </div>
         </div>
@@ -326,7 +326,7 @@ export default {
       this.$router.push('/layout/houseType/create')
     },
     handleChange(index) {
-      console.log('1111',this.homeData[index])
+      // console.log('1111',this.homeData[index])
       this.$router.push({
         // path:'/layout/houseType/edit',
         name:'edit',
@@ -347,7 +347,6 @@ export default {
       }
 
       this.activeIndex = index;
-
       this.photoArr = photoArr
     },
     handleDelete(item) { // 点击删除
@@ -537,9 +536,9 @@ export default {
 
   .thumbs-item-wrap {
     width: 20%;
-    height: 167px;
+    height: 104px;
     box-sizing: border-box;
-    padding: 0 20px;
+    padding: 0 5px;
 
     img {
       display: block;
@@ -551,7 +550,7 @@ export default {
 
   .active {
     img {
-      border-color: #fff;
+      border-color: #ff0;
     }
   }
 }
