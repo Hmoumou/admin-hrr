@@ -7,9 +7,9 @@
           <span :class="{avtiveBlue:activeIndex == 1}">房态日历</span>
           <span> | </span>
           <span :class="{avtiveBlue:activeIndex == 0}">价格日历</span>
-        </div> 
+        </div>
         <span class="title">{{activeIndex == 1?"房态日历":"价格日历"}}</span>
-        
+
       </div>
       <div class="main-wrap">
         <div class="house-title" >
@@ -125,7 +125,7 @@
         testData: {
           time: 1544683731, // unix时间戳
         },
-        houseType: ['豪华大床房', '双标间', '豪华海景大床房', '豪华家庭房', '天字一号房']
+        houseType: [] // 控制多少行表格
       }
     },
     methods: {
@@ -275,12 +275,12 @@
           if(res.code == 1){
             console.log(res)
             // 把大数组转成对象
-            let arr = res.data
-            let obj = {}
-            for(let key in arr){        
-              obj[key] = arr[key].houseinfo
-            }
-            console.log('oooo',obj)
+            this.houseType = res.data
+            // let obj = {}
+            // for(let key in arr){
+            //   obj[key] = arr[key].houseinfo
+            // }
+            // console.log('oooo',obj)
             // this.houseData = obj
           }
         })
