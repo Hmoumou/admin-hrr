@@ -3,6 +3,7 @@
         <el-row class="tac">
         <el-col :span="24">
           <el-menu
+            style="min-height: 100vh;"
             :router=true
             default-active="2"
             class="el-menu-vertical-demo"
@@ -16,7 +17,7 @@
                 <router-link to='/layout/home'>首页</router-link>
               </template>
             </el-menu-item>
-            
+
             <el-menu-item index="/layout/check" id="item" :class="{active:$route.name === 'check'}">
               <template slot="title">
                 <router-link   to='/layout/check'>办理入住</router-link>
@@ -38,7 +39,7 @@
               </template>
               <el-menu-item-group>
                 <el-menu-item index="/layout/order" :class="{active1:$route.name === 'order'}"><span>订单查询</span></el-menu-item>
-                <el-menu-item index="/layout/orderSelect" :class="{active1:$route.name === 'orderSelect'}"><span>未处理订单</span></el-menu-item> 
+                <el-menu-item index="/layout/orderSelect" :class="{active1:$route.name === 'orderSelect'}"><span>未处理订单</span></el-menu-item>
               </el-menu-item-group>
             </el-submenu>
 

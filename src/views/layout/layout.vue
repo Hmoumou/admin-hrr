@@ -1,13 +1,19 @@
 <template>
     <div class="layout">
         <el-container>
-        <el-header id="header" height='70px' ><Header/></el-header>
-        <el-container>
-            <el-aside width="200px" class="bar"><Sidbar/></el-aside>
+          <el-header id="header" height='70px' >
+            <Header/>
+          </el-header>
+          <el-container>
+            <el-aside width="200px" class="bar">
+              <Sidbar/>
+            </el-aside>
             <el-container>
-            <el-main class="main"><router-view/></el-main>
+              <el-main class="main">
+                <router-view/>
+              </el-main>
             </el-container>
-        </el-container>
+          </el-container>
         </el-container>
     </div>
 </template>
