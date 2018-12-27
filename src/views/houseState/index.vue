@@ -48,11 +48,11 @@
                 </div>
               </td>
             </tr>
-            <tr class="row" v-for="(item,idx) in houseData.arr" v-if="houseData" :key='idx'>
+            <tr class="row" v-for="(item,idx) in houseType" :key='idx'>
               <td class="row-title" >
-                {{item.typeName}}
+                {{item.houseinfo}}
               </td>
-              <td class="item-num" v-for="(it,index) in item.arr" :key='index' :class="getClass(it)" :data-row="idx" :data-col="index">
+              <td class="item-num" v-for="(it,index) in 15" :key='index' >
                 <span class="item-num-inner" v-if="it.isPre" :data-row="idx" :data-col="index">
                     {{it.surplus==0?'满': it.surplus}}
                 </span>
