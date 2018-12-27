@@ -107,6 +107,12 @@ export default {
   data() {
     return {
       // data start
+      data1:{
+        merchantid:this.$store.state.mchid,
+        page:1,
+        rows:6,
+        id:8
+      },
       formData:{
       // 需要的东西
         acreage:"",
@@ -149,7 +155,7 @@ export default {
         },
         {
           label: '4',
-          text: '淋浴',
+          text: 'WIFI',
           icon: 'icon-wifi'
         },
         {
@@ -172,6 +178,11 @@ export default {
           text: '早餐',
           icon: 'icon-a-breakfast',
           spe: true
+        },
+         {
+          label: '9',
+          text: '宽带上网',
+          icon: 'icon-shangwangxiguan'
         },
       ]
     };
@@ -242,15 +253,22 @@ export default {
       this.$router.push('/layout/houseType')
     },
     getData() {
-      const url = "";
-      this.$axios.get("")
-      this.getphoto()
+      this.$axios.post("/zftds/hotel/house/selectHotelHouse",this.data1).then(res=>{
+        // console.log(res.data.rows[0]);
+       if(res.code == 1){
+          this.formData = res.data.rows[0]
+          this.formData.facility = this.formData.facility.split(",")
+          this.getphoto()
+       }
+      })
+     
     }
   },
   created() {
     if(this.$route.meta.title == "房型修改"){
-      // console.log('我想带过来的数据',this.$route.params)
-      // this.formData = this.$route.params.abc
+      // console.log(this.$route.query);
+      this.data1.id =this.$route.query.id
+      this.data1.page = this.$route.query.page
       this.getData()
     }else{
       console.log(this.$route.meta.title);

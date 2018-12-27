@@ -29,7 +29,7 @@
       style="float:left;width: 19%;box-sizing:border-box;margin-bottom:20px;margin-left: 10px;"
       class="el-upload--change"
       v-show="isCanUpload"
-      action="http://zftds.zhifupaytech.com/uploadFileS"
+      action="http://zftds.zhifupaytech.com/zftds/uploadFileS"
       :show-file-list="false"
       :data="data"
       :limit="currentMax"
@@ -46,7 +46,7 @@
     <el-upload
      class="dy-upload-wrap"
       v-show="false"
-      action="http://zftds.zhifupaytech.com/zftds/uploadFileS"
+     action="http://zftds.zhifupaytech.com/zftds/uploadFileS"
       :show-file-list="false"
       :data="data"
       :on-success="handleChangeSuccess">

@@ -45,57 +45,59 @@
                         <table class="table1">
                             <tr>
                                 <th>订单编号</th>
-                                <td class="blue">{{searchData[dataIndex] && searchData[dataIndex].totalMoney}}</td>
+                                <td class="blue">{{searchData[dataIndex].totalMoney}}</td>
                                  <th>订单状态</th>
-                                <td class="blue fw fs16">{{searchData[dataIndex]&&searchData[dataIndex].type}}</td>
+                                <td class="blue fw fs16">{{searchData[dataIndex].type}}</td>
                             </tr>
                         </table>
                          <table class="table2">
                             <tr class="bg">
                                 <th>预订人姓名</th>
-                                <td >{{searchData[dataIndex]&&searchData[dataIndex].username}}</td>
+                                <td >{{searchData[dataIndex].username}}</td>
                                  <th>预订房型</th>
-                                <td class="blue fw fs16">{{orderData.houseType}}</td>
+                                <td class="blue fw fs16">{{searchData[dataIndex].houseType}}</td>
                             </tr>
                             <tr>
                                 <th>预订人电话</th>
-                                <td>{{orderData.userPhonenum}}</td>
+                                <td>{{searchData[dataIndex].userPhonenum}}</td>
                                 <th>房间价格</th>
-                                <td>{{orderData.price}}</td>
+                                <td>{{searchData[dataIndex].price}}</td>
                             </tr>
                             <tr class="bg">
                                 <th>预订日期</th>
-                                <td class="blue">{{orderData.orderDate}} <span>共<span class="blue">1</span>晚</span></td>
+                                <td class="blue">{{searchData[dataIndex].orderDate}} <span>共<span class="blue">1</span>晚</span></td>
                                 <th>最晚抵店时间</th>
-                                <td>{{orderData.endTime}}</td>
+                                <td>{{searchData[dataIndex].endTime}}</td>
                             </tr>
                         </table>
                         <table class="desc">
                             <tr>
                                 <th>备注</th>
-                                <td>{{orderData.desc}}</td>
+                                <td>{{searchData[dataIndex].desc}}</td>
                             </tr>
                         </table>
                          <table class="table3">
                             <tr class="bg">
                                 <th>支付方式</th>
-                                <td >{{orderData.payType}}</td>
+                                <td >{{searchData[dataIndex].payType}}</td>
                                  <th>订单来源</th>
-                                <td>{{orderData.source}}</td>
+                                <td>{{searchData[dataIndex].source}}</td>
                             </tr>
                              <tr>
                                 <th>合计金额</th>
-                                <td class="blue">RMB {{orderData.totalMoney}}</td>
+                                <td class="blue">RMB {{searchData[dataIndex].totalMoney}}</td>
                                  <th>优惠价格</th>
-                                <td class="blue fw fs14">RMB {{orderData.discounts}}</td>
+                                <td class="blue fw fs14">RMB {{searchData[dataIndex].discounts}}</td>
                             </tr>
                         </table>
-                         <table class="table4">
+                        <div class="disabledOrder">
+                            <table class="table4">
                             <tr>
                                 <th>失效原因</th>
-                                <td >{{orderData.loseCause}}</td>
+                                <td >{{searchData[dataIndex].loseCause}}</td>
                             </tr>
                         </table>
+                        </div>
                     </div>
                 </el-card>
           </div>
@@ -143,32 +145,50 @@ export default {
          orderData:{
              username:'梁朝伟',
              orderId:'234567522134',
-             type:'失效订单',
-             houseType:'豪华大床房',
-             userPhonenum:'1212124312',
-             price:'299',
+            
              orderDate:'2018/11/21-2018/11/22',
              endTime:'2018/11/21',
-             desc:'请打扫人员提前打扫房间，我有洁癖。',
-             payType:'支付宝',
-             source:'网络订单',
+             
+             
              totalMoney:'998',
-             discounts:'666',
-             loseCause:'商家拒绝，拒绝原因“禁止携带宠物。”'
+             
+            
          },
         searchData: [
           {
+            //   start
+            discounts:'666',
+            userPhonenum:'1212124312',
+            source:'网络订单',
+            loseCause:'商家拒绝，拒绝原因“禁止携带宠物。”',
+            type:'失效订单',
+            houseType:'豪华大床房',         
+            price:'299',
+            desc:'请打扫人员提前打扫房间，我有洁癖。',
+            payType:'支付宝',
+            // end
             text: "梁朝伟111",
             orderDetails:[1,2,3,4],
             orderId:'12345324664',
             overTime:'06-29 12:32',
-            username:'姚君荣',
+            username:'周润发',
             totalMoney:'150 0000 0000',
             startTime:'2018-07-04',
             endTime:'2018-07-05'
           },
           {
-            text: "梁朝伟",
+              //   start
+            discounts:'666',
+            userPhonenum:'1212124312',
+            source:'网络订单',
+            loseCause:'商家拒绝，拒绝原因“禁止携带宠物。”',
+            type:'失效订单',
+            houseType:'豪华大床房',         
+            price:'299',
+            desc:'请打扫人员提前打扫房间，我有洁癖。',
+            payType:'支付宝',
+            // end
+            text: "梁朝伟222",
             orderDetails:[1,2,3,4],
             orderId:'12345324664',
             overTime:'06-29 12:32',
@@ -178,21 +198,22 @@ export default {
             endTime:'2018-07-05'
           },
           {
+              //   start
+            discounts:'666',
+            userPhonenum:'1212124312',
+            source:'网络订单',
+            loseCause:'商家拒绝，拒绝原因“禁止携带宠物。”',
+            type:'失效订单',
+            houseType:'豪华大床房',         
+            price:'299',
+            desc:'请打扫人员提前打扫房间，我有洁癖。',
+            payType:'支付宝',
+            // end
             text: "梁朝伟",
             orderDetails:[1,2,3,4],
             orderId:'12345324664',
             overTime:'06-29 12:32',
-            username:'梁朝伟',
-            totalMoney:'150 0000 0000',
-            startTime:'2018-07-04',
-            endTime:'2018-07-05'
-          },
-          {
-            text: "梁朝伟",
-            orderDetails:[1,2,3,4],
-            orderId:'12345324664',
-            overTime:'06-29 12:32',
-            username:'梁朝伟',
+            username:'小马哥',
             totalMoney:'150 0000 0000',
             startTime:'2018-07-04',
             endTime:'2018-07-05'

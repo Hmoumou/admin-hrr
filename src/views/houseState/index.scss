@@ -1,5 +1,17 @@
 @import '../../../style/color';
 
+  .switchover{
+    display: inline-block;
+    margin-right: 10px;
+    font-size: 14px;
+    span{
+      font-weight: 600;
+    }
+  }
+  .avtiveBlue{
+    color:#518dfd;
+  }
+
 .main-wrap {
   max-width: 1100px;
 }
@@ -27,8 +39,8 @@
     width: 550px;
     margin: 0 auto;
     line-height: 1;
-    border-left: 1px solid #000;
-    border-right: 1px solid #000;
+    // border-left: 1px solid #000;
+    // border-right: 1px solid #000;
     color: #333;
 
     /deep/ .ivu-input { // 修改iview 默认样式
@@ -203,3 +215,5 @@
     height: 1px;
   }
 }
+.title{ padding-left: 6px;border-left:3px solid #75b8fc; font-weight: 700;}
+.header{}

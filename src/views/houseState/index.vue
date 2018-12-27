@@ -1,64 +1,75 @@
 <template>
   <div class="box">
-    <div class="main-wrap">
-      <div class="house-title" >
-        <div class="center-wrap" >
-        <span class="btn-default btn-left" @click="handleClickPrev(-15)" :class="{active: btnLeftActive}">
-          <i class="el-icon-arrow-left icon-btn"></i>
-          前15天
-        </span>
-          <span class="btn-default btn-right active" @click="handleClickNext(15)">
-          后15天
-          <i class="el-icon-arrow-right icon-btn"></i>
-        </span>
-          <date-picker
-            class="dy-datepicker"
-            type="date"
-            v-model="currentDate"
-            :options="pickerOptions"
-            @on-change="pickerChange"
-            placeholder="请选择想查看的日期" />
-        </div>
+    <el-card>
+      <!-- 后加房价日历start -->
+      <div slot="header" class="header clearfix">
+        <div class="switchover flr">
+          <span :class="{avtiveBlue:activeIndex == 1}">房态日历</span>
+          <span> | </span>
+          <span :class="{avtiveBlue:activeIndex == 0}">价格日历</span>
+        </div> 
+        <span class="title">{{activeIndex == 1?"房态日历":"价格日历"}}</span>
+        
       </div>
-      <table class="main-table" @click="handleClick">
-
-        <tbody>
-        <tr class="first-row">
-          <td class="cell-spe" ref="speCell">
-            <div class="date-text">日期</div>
-            <div class="housetype-text">房型</div>
-            <i class="line" ref="line"></i>
-          </td>
-          <td v-for="(item, index) in dateData.weekDate" :key='index' class="cell-item">
-            <div class="cell-top">
-              {{item.num}}
-            </div>
-            <div class="cell-bottom">
-              {{item.day}}
-            </div>
-          </td>
-        </tr>
-        <tr class="row" v-for="(item,idx) in houseData.arr" v-if="houseData" :key='idx'>
-          <td class="row-title" >
-            {{item.typeName}}
-          </td>
-          <td class="item-num" v-for="(it,index) in item.arr" :key='index' :class="getClass(it)" :data-row="idx" :data-col="index">
-          <span class="item-num-inner" v-if="it.isPre" :data-row="idx" :data-col="index">
-              {{it.surplus==0?'满': it.surplus}}
-          </span>
-            <div v-else :data-row="idx" :data-col="index">
-              <div :data-row="idx" :data-col="index">
-                暂不
-              </div>
-              <div :data-row="idx" :data-col="index">
-                可订
-              </div>
-            </div>
-          </td>
-        </tr>
-        </tbody>
-      </table>
-    </div>
+      <div class="main-wrap">
+        <div class="house-title" >
+          <div class="center-wrap" >
+            <span class="btn-default btn-left" @click="handleClickPrev(-15)" :class="{active: btnLeftActive}">
+              <i class="el-icon-arrow-left icon-btn"></i>
+              前15天
+            </span>
+            <span class="btn-default btn-right active" @click="handleClickNext(15)">
+              后15天
+              <i class="el-icon-arrow-right icon-btn"></i>
+            </span>
+            <date-picker
+              class="dy-datepicker"
+              type="date"
+              v-model="currentDate"
+              :options="pickerOptions"
+              @on-change="pickerChange"
+              placeholder="请选择想查看的日期" />
+          </div>
+        </div>
+        <table class="main-table" @click="handleClick">
+          <tbody>
+            <tr class="first-row">
+              <td class="cell-spe" ref="speCell">
+                <div class="date-text">日期</div>
+                <div class="housetype-text">房型</div>
+                <i class="line" ref="line"></i>
+              </td>
+              <td v-for="(item, index) in dateData.weekDate" :key='index' class="cell-item">
+                <div class="cell-top">
+                  {{item.num}}
+                </div>
+                <div class="cell-bottom">
+                  {{item.day}}
+                </div>
+              </td>
+            </tr>
+            <tr class="row" v-for="(item,idx) in houseData.arr" v-if="houseData" :key='idx'>
+              <td class="row-title" >
+                {{item.typeName}}
+              </td>
+              <td class="item-num" v-for="(it,index) in item.arr" :key='index' :class="getClass(it)" :data-row="idx" :data-col="index">
+                <span class="item-num-inner" v-if="it.isPre" :data-row="idx" :data-col="index">
+                    {{it.surplus==0?'满': it.surplus}}
+                </span>
+                <div v-else :data-row="idx" :data-col="index">
+                  <div :data-row="idx" :data-col="index">
+                    暂不
+                  </div>
+                  <div :data-row="idx" :data-col="index">
+                    可订
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </el-card>
 
     <dyDialog
       v-model="isShowDialog"
@@ -81,6 +92,7 @@
     },
     data() {
       return {
+        activeIndex:1,
         pickerOptions: { // 日期选择器选项
           disabledDate (date) { // 禁用的日期 返回真值禁用
             return date && date.valueOf() < Date.now() - 86400000;
@@ -118,7 +130,7 @@
     },
     methods: {
       getPrice(){
-        this.$axios.post('/zftds/hotel/house/selectHotelCalendar',{merchantid:'100023'}).then(res=>{
+        this.$axios.post('/zftds/hotel/house/selectHotelCalendar',{merchantid:'88888'}).then(res=>{
           console.log(res);
         })
       },
@@ -224,8 +236,8 @@
         line.style.transform = `rotateZ(${rotateDeg}deg)`;
       },
       getData() {
-        // let url = 'https://www.easy-mock.com/mock/5c1227fa8df72453e91aac7a/shuzhen/week';
-        let url = 'http://zftds.zhifupaytech.com/zftds/hotel/house/selectHotelCalendar';
+        let url = 'https://www.easy-mock.com/mock/5c1227fa8df72453e91aac7a/shuzhen/week';
+        // let url = 'http://zftds.zhifupaytech.com/zftds/hotel/house/selectHotelCalendar';
         axios.get(url).then(res => {
           console.log(res);
           this.houseData = res.data.data;
@@ -257,6 +269,21 @@
         this.$nextTick(() => {
           this.setLine()
         })
+      },
+      getHouseType(){
+        this.$axios.post('/zftds/hotel/house/selectHotelHouseS',{merchantid:this.$store.state.mchid}).then(res=>{
+          if(res.code == 1){
+            console.log(res)
+            // 把大数组转成对象
+            let arr = res.data
+            let obj = {}
+            for(let key in arr){        
+              obj[key] = arr[key].houseinfo
+            }
+            console.log('oooo',obj)
+            // this.houseData = obj
+          }
+        })
       }
     },
     mounted() {
@@ -267,13 +294,14 @@
           vm.setLine()
         }
       });
-      // this.getData()
+      this.getData()
     },
     beforeDestroy () {
       window.onresize = null
     },
     created(){
-      this.getPrice()
+      // this.getPrice()
+      this.getHouseType()
     }
   }
 </script>

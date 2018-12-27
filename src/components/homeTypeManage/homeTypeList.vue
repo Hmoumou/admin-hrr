@@ -65,8 +65,8 @@
         </el-row>
       </div>
       <div class="pageBtn">
-        <el-button type="primary" plain>上一页</el-button>
-        <el-button type="primary" plain>下一页</el-button>
+        <el-button type="primary" @click='handlelast' plain>上一页</el-button>
+        <el-button type="primary" @click="handlenext" plain>下一页</el-button>
       </div>
     </el-card>
     <!-- details -->
@@ -204,6 +204,7 @@ export default {
     const vm = this; // 保存this 值给swiper 使用
     return {
       // details
+      total:'',
       slideIndex: 0,
       // 设施详情
       checkBoxOptions: [
@@ -224,7 +225,7 @@ export default {
         },
         {
           label: '4',
-          text: '淋浴',
+          text: 'WIFI',
           icon: 'icon-wifi'
         },
         {
@@ -247,6 +248,11 @@ export default {
           text: '早餐',
           icon: 'icon-a-breakfast',
           spe: true
+        },
+        {
+          label: '9',
+          text: '宽带上网',
+          icon: 'icon-shangwangxingwei',
         },
       ],
       swiperOption1:{
@@ -271,7 +277,9 @@ export default {
         'http://placehold.it/423x300/ff0'
       ],
       data1:{
-        merchantid:'100023',
+        merchantid:this.$store.state.mchid,
+        page:1,
+        rows:6
       },
       photoArr2: [
         'http://placehold.it/423x300/ccc',
@@ -298,19 +306,41 @@ export default {
           bednum:'1',
           facility: ["1","2","3","4","5","6","7"],
         }
-      ]
+      ],
+     
     };
   },
   methods: {
+    handlelast(){
+      console.log(this.data1.page);
+      if(this.data1.page >1){
+        this.data1.page = this.data1.page-1
+        this.getData()
+      }else{
+        this.$message('已经是第一页了哦')
+      }
+    },
+    handlenext(){
+      console.log(this.data1.page);
+      if(this.total-(this.data1.page*this.data1.rows)>0){
+       this.data1.page = this.data1.page+1
+       console.log(this.data1.page);
+       this.getData() 
+      }else{
+        this.$message('已经是最后一页了哦')
+      }
+    },
     getData(){
       this.$axios.post(`/zftds/hotel/house/selectHotelHouse`,this.data1).then(res=>{
         console.log(res.data);
         if(res.code == 1){
-          this.homeData = res.data.map(item => {
+          this.homeData = res.data.rows.map(item => {
             item.facility = item.facility.split(",");
             return item
           })
           this.handleClick(this.activeIndex)
+          this.total = res.data.total
+          
         }else if(res.code == 0){
           console.log(res.msg);
         }
@@ -326,16 +356,12 @@ export default {
       this.$router.push('/layout/houseType/create')
     },
     handleChange(index) {
-      // console.log('修改')
       // console.log('1111',this.homeData[index])
       this.$router.push({
-        // path:'/layout/houseType/edit',
         name:'edit',
-        // params: {
-        //   abc:this.homeData[index]
-        // }
         query: {
-          id: this.homeData[index].id
+          id: this.homeData[index].id,
+          page:this.data1.page
         }
       })
     },//点击修改
