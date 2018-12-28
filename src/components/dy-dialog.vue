@@ -5,7 +5,7 @@
     center>
     <div class="contents  " v-if="options">
       <p class="mb5 fw">
-        <span>{{options.time}}</span>
+        <span>{{formatTime}}</span>
         <span>{{options.houseType}}</span>
       </p>
       <p class="clearfix">
@@ -45,7 +45,8 @@
     data () {
       return {
         currentValue: this.value,
-        isOpen: false
+        isOpen: false,
+        formatTime: ""
       }
     },
     methods: {
@@ -59,6 +60,13 @@
       },
       currentValue (val) {
         this.$emit('input', val)
+      },
+      options: {
+        deep: true,
+        immediate: true,
+        handler(val) {
+          this.formatTime = ``
+        }
       }
     }
   }

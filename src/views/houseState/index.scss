@@ -1,7 +1,10 @@
 @import '../../../style/color';
-
+  .min-card {
+    min-height: 88vh;
+  }
   .switch-title {
     cursor: pointer;
+    user-select: none;
   }
 
   .switchover{
@@ -173,6 +176,7 @@
   td {
     cursor: pointer;
     max-height: 100px;
+    height: 70px;
     font-size: 14px;
     text-align: center;
     padding: 14px 0;
