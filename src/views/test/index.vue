@@ -1,19 +1,23 @@
 <template>
     <div class="test">
-        <imgupload></imgupload>
+        <!-- <imgupload></imgupload> -->
         <!--<upload></upload>-->
         <!--<Dupload></Dupload>-->
-        <div class="box">
+        <!-- <div class="box">
             <div class="text">
             </div>
             <i class="iconfont icon-duigou4"></i>
         </div>
-        <searchBox></searchBox>
+        <searchBox></searchBox> -->
+        <button @click="isShow == true ">点击显示</button>
+        <Box
+        v-model="isShow"
+        :formatTime="formatTime"
+        :options="dialogOptions"></Box>
 
 
 
-
-        <button class="btn" @click="handleclick">按钮</button>
+        <!-- <button class="btn" @click="handleclick">按钮</button> -->
     </div>
 </template>
 
@@ -22,6 +26,7 @@ import imgupload from '@/components/imgupload/upload.vue'
 import upload from '@/components/imgupload/dy-upload.vue'
 import Dupload from '@/components/imgupload/hotel-photo.vue'
 import searchBox from '@/components/searchBox/index.vue'
+import Box from '@/components/bigBox.vue'
     export default {
         name:'test',
         props:{
@@ -32,14 +37,18 @@ import searchBox from '@/components/searchBox/index.vue'
         },
         data(){
             return{
-                isok:false
+                isok:false,
+                isShow:false,
+                formatTime:'',
+                dialogOptions:{}
             }
         },
         components:{
             imgupload,
             upload,
             Dupload,
-            searchBox
+            searchBox,
+            Box
 
         },
         methods:{

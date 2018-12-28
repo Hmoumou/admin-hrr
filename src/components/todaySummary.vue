@@ -44,7 +44,7 @@
             box-sizing: border-box;
             .todayitem{
                 overflow: hidden;
-                width: 22.5%;
+                width: 21.5%;
                 font-size: 14px;
                 padding:5px; 
                 line-height: 2;

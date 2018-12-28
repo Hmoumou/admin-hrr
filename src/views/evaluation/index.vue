@@ -113,13 +113,12 @@
                           </div>
                         </el-col>
                       </el-row>
-
                     </div>
                     <el-button  v-if="!item.adminAsk&&!item.isShow" class="flr" type='primary' @click="handleReply(index)">
                       回复
                     </el-button>
                     <div class="box-Reply clearfix"    v-if="item.isShow" data-index="index">
-                        <textarea v-model='userData.adminAsk' name="adminAsk" class="reply"  cols="42" rows="5">
+                        <textarea v-model='item.adminAsk' name="adminAsk" class="reply"  cols="42" rows="5">
                         </textarea>
                         <el-button @click="handleNo(index)" class="flr">取消</el-button>
                         <el-button @click="handleYes" type='primary flr mr10'>回复</el-button>
@@ -149,19 +148,19 @@ export default {
       isEdit:false,
       appraise: 0,
       title: "服务",
-
-      // userData: {
-      //   username: "小强",
-      //   adminAsk:'你的满意就是我们最大的动力',
-      //   //
-      //   common:'今天天气不错，就是有点冷，对的就是冷~~~~，卡卡啦啦啦',
-      //   houseType:'豪华大床房',
-      //   evaluationTime: "2018-11-22",
-      //   hourTime: "12:02:50",
-      //   commonTime:'2018-11-22 12:02:50'
-      // },
       userData: [
         {
+          username: "小强",
+          adminAsk:'',
+          //
+          common:'今天天气不错，就是有点冷，对的就是冷~~~~，卡卡啦啦啦',
+          houseType:'豪华大床房',
+          evaluationTime: "2018-11-22",
+          hourTime: "12:02:50",
+          commonTime:'2018-11-22 12:02:50',
+          EditData:''
+        },
+         {
           username: "小强",
           adminAsk:'',
           //
@@ -456,5 +455,11 @@ export default {
 .el-card__header{
   padding: 12px 20px;
   border-bottom: 1px solid #ebeef5;
+}
+.el-date-editor .el-range-separator{
+  width:10%;
+}
+textarea{
+  padding:10px;
 }
 </style>

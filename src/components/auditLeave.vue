@@ -39,10 +39,10 @@
 
 <style scoped lang='scss'>
 .orderitem{  
-    width: 184px;
+    width: 30.8%;
     border: 1px solid #f1f1f1;
-    padding: 10px;
-    margin-right: 8px;
+    padding: 20px;
+    margin-right: 10px;
     display: inline-block;
         span,strong{
         display: block;

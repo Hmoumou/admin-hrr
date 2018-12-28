@@ -10,12 +10,12 @@
           <!-- <div class="searchBox" :model="searchData">
             <i class="iconfont icon-sousuo"></i>
             <el-input v-model="searchData.text" placeholder="订单号/预订人/预订人手机号" class="input"></el-input>
-            <el-button type="primary" class="btn" @click="handleSearch">搜索</el-button>
+            <el-button type="primary" class="btn" @click="">搜索</el-button>
           </div> -->
            <div class="seachBox  clearfix">
                 <div class="seek-box">
-                    <input type="text" v-model="orderData.text" placeholder="订单号/预定人/预订人手机号">
-                    <div class="seek" @click="handleClick">搜索</div>
+                    <input type="text" v-model="boxData.username" placeholder="订单号/预定人/预订人手机号">
+                    <div class="seek" @click="handleSearch">搜索</div>
                 </div>
            </div>
 
@@ -90,13 +90,48 @@
                                 <td class="blue fw fs14">RMB {{searchData[dataIndex].discounts}}</td>
                             </tr>
                         </table>
-                        <div class="disabledOrder">
+                        <!-- 未处理订单 -->
+                        <div class="untreated clearfix" v-if="isUntreated">
+                            <el-button class="flr" type="primary"  @click="dialogFormVisible = true">拒绝订单</el-button>
+                            <el-button class="fll" type="primary" @click="handleUntreated">接受订单</el-button>
+                            <el-dialog title="拒绝原因" :visible.sync="dialogFormVisible">
+                                <el-input v-model='searchData[dataIndex].loseCause'></el-input>
+                                <div slot="footer" class="dialog-footer">
+                                    <el-button  @click="dialogFormVisible = false">取 消</el-button>
+                                    <el-button type="primary" @click="handleRefase">确 定</el-button>
+                                </div>
+                            </el-dialog>
+                        </div>
+                        <!-- 已接单订单 -->
+                        <div class="accepted" v-if="isAccepted">
                             <table class="table4">
-                            <tr>
-                                <th>失效原因</th>
-                                <td >{{searchData[dataIndex].loseCause}}</td>
-                            </tr>
-                        </table>
+                                <tr>
+                                    <th>分配房间号</th>
+                                    <td class="need">
+                                        <el-input v-model='searchData[dataIndex].roomId' placeholder="请输入房间号"></el-input>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <!-- 已入住订单 -->
+                        <div class="insert clearfix" v-if="isInsert">
+                            <el-button class="flr" type="primary" style="width:98px" @click="handleGoon">续 住</el-button>
+                            <el-button class="fll" type="primary" style="width:98px" @click="dialogVisible = true">离 店</el-button>
+                            <el-dialog title="确认离店" :visible.sync="dialogVisible">
+                                <div slot="footer" class="dialog-footer">
+                                    <el-button  @click="dialogVisible = false">取 消</el-button>
+                                    <el-button type="primary" @click="handleLeaveYES">确 定</el-button>
+                                </div>
+                            </el-dialog>
+                        </div>
+                        <!-- 失效订单 -->
+                        <div class="disabledOrder" v-if="isLose">
+                            <table class="table4">
+                                <tr>
+                                    <th>失效原因</th>
+                                    <td >{{searchData[dataIndex].loseCause}}</td>
+                                </tr>
+                            </table>
                         </div>
                     </div>
                 </el-card>
@@ -104,7 +139,7 @@
           <div class="orderDetail-left clearfix" >
               <div class="searchTitle clearfix">
                 <span class="span flr">共{{searchData.length}}条消息 </span>
-                <span class="span">查询 ""</span>
+                <span class="span">查询 "{{boxData.username}}"</span>
               </div>
             <el-scrollbar class="scollbar">
                 <div class="searchContent clearfix" v-for="(item, index) in searchData" :key="index">
@@ -139,26 +174,24 @@ export default {
   name: "order",
   data() {
     return {
+        dialogVisible:false,//离店弹框
+        dialogFormVisible:false,//拒绝订单弹框
+        isUntreated:false,//是否未处理
+        isAccepted:false,//是否已接单
+        isInsert:false,//是否已入住
+        isLeave:false,//是否已离店
+        isLose:false,//是否已失效
         isClick:true,
         activeIndex:'1',
         dataIndex: 0,
-         orderData:{
-             username:'梁朝伟',
-             orderId:'234567522134',
-            
-             orderDate:'2018/11/21-2018/11/22',
-             endTime:'2018/11/21',
-             
-             
-             totalMoney:'998',
-             
-            
-         },
+        boxData:{
+            username:'梁朝伟'
+        },
         searchData: [
           {
             //   start
-            discounts:'666',
-            userPhonenum:'1212124312',
+            discounts:'666',//优惠价格
+            userPhonenum:'110',
             source:'网络订单',
             loseCause:'商家拒绝，拒绝原因“禁止携带宠物。”',
             type:'失效订单',
@@ -174,17 +207,18 @@ export default {
             username:'周润发',
             totalMoney:'150 0000 0000',
             startTime:'2018-07-04',
-            endTime:'2018-07-05'
+            endTime:'2018-07-05',
+            roomId:'101'
           },
           {
               //   start
-            discounts:'666',
-            userPhonenum:'1212124312',
+            discounts:'888',
+            userPhonenum:'120',
             source:'网络订单',
             loseCause:'商家拒绝，拒绝原因“禁止携带宠物。”',
             type:'失效订单',
             houseType:'豪华大床房',         
-            price:'299',
+            price:'399',
             desc:'请打扫人员提前打扫房间，我有洁癖。',
             payType:'支付宝',
             // end
@@ -195,17 +229,18 @@ export default {
             username:'梁朝伟',
             totalMoney:'150 0000 0000',
             startTime:'2018-07-04',
-            endTime:'2018-07-05'
+            endTime:'2018-07-05',
+            roomId:'102'
           },
           {
               //   start
-            discounts:'666',
-            userPhonenum:'1212124312',
+            discounts:'222',
+            userPhonenum:'119',
             source:'网络订单',
             loseCause:'商家拒绝，拒绝原因“禁止携带宠物。”',
             type:'失效订单',
             houseType:'豪华大床房',         
-            price:'299',
+            price:'100',
             desc:'请打扫人员提前打扫房间，我有洁癖。',
             payType:'支付宝',
             // end
@@ -216,12 +251,52 @@ export default {
             username:'小马哥',
             totalMoney:'150 0000 0000',
             startTime:'2018-07-04',
-            endTime:'2018-07-05'
+            endTime:'2018-07-05',
+            roomId:'103'
+          },
+          {
+              //   start
+            discounts:'99999',
+            userPhonenum:'99999',
+            source:'网络订单',
+            loseCause:'商家拒绝，拒绝原因“禁止携带宠物。”',
+            type:'已入住',
+            houseType:'豪华大床房',         
+            price:'100',
+            desc:'请打扫人员提前打扫房间，我有洁癖。',
+            payType:'支付宝',
+            // end
+            text: "周杰伦",
+            orderDetails:[1,2,3,4],
+            orderId:'999999',
+            overTime:'06-29 12:32',
+            username:'周杰伦',
+            totalMoney:'2018',
+            startTime:'2018-07-04',
+            endTime:'2018-07-05',
+            roomId:'104'
           }
         ]
     };
   },
   methods: {
+    handleLeaveYES(){},//确认离店，退押金
+    handleGoon(){},//点击续住
+    // 点击接受订单
+    handleUntreated(){
+        console.log('okok')
+        // this.$axios.post('').then(res=>{
+        //     console.log(res)
+        // })
+    },
+    // 点击拒绝订单
+    handleRefase(){
+        // this.$axios.post("").then(res=>{
+        //     comsole.log(res)
+        // })
+        this.dialogFormVisible = false
+        console.log('我拒绝')
+    },
     handleSearch() {},
     handleSelect(key, keyPath) {
         console.log(key, keyPath);
@@ -229,7 +304,7 @@ export default {
         this.activeIndex = key
         console.log('index',this.activeIndex);
     },
-    handleClick(e){
+    handleSearch(e){
       if(this.isClick){
           this.isClick = false
           console.log(e);
@@ -246,17 +321,42 @@ export default {
   watch:{
     activeIndex(val){
         if(val == 1){
-          console.log("1111111111");
+            this.isUntreated = false,//是否未处理
+            this.isAccepted = false,//是否已接单
+            this.isInsert = false,//是否已入住
+            this.isLeave = false,//是否已离店
+            this.isLose = false
         } else if(val == 2){
-          console.log('22222222222');
+            this.isInsert = false,//是否已入住
+            this.isLose = false,//是否已失效
+            this.isAccepted = false,//是否已接单
+            this.isLeave = false,//是否已离店
+          this.isUntreated = true
         }else if(val == 3){
-          console.log('333333');
+            this.isUntreated = false,//是否未处理
+            this.isInsert = false,//是否已入住
+            this.isLose = false,//是否已失效
+            this.isLeave = false,//是否已离店
+            this.isAccepted = true;
         }else if(val == 4){
-          console.log('4444444444');
+            this.isUntreated = false,//是否未处理
+            this.isAccepted = false,//是否已接单
+            this.isLose = false,//是否已失效
+            this.isLeave = false,//是否已离店
+            this.isInsert = true
         }else if(val == 5){
-          console.log('5555555');
+            this.isUntreated = false,//是否未处理
+            this.isAccepted = false,//是否已接单
+            this.isInsert = false,//是否已入住
+            this.isLose = false
+            this.isLeave = true
         }else if(val == 6){
-          console.log('6666666666');
+            this.isUntreated = false,//是否未处理
+            this.isAccepted = false,//是否已接单
+            this.isInsert = false,//是否已入住
+            this.isLeave = false,//是否已离店
+            this.isLose = true
+        console.log(this.isLose)
         }
     }
   }
@@ -264,6 +364,25 @@ export default {
 </script>
 
 <style scoped lang='scss'>
+// 新增样式
+.untreated{//未处理订单
+    margin: 0 auto;
+    width: 240px;
+    margin-top: 40px;
+}
+/deep/ input.el-input__inner{
+    padding-left:20px;
+}
+// 已接单
+.need{
+    background: #eff5ff;
+}
+//已入住
+.insert{
+    margin: 0 auto;
+    width: 240px;
+    margin-top: 40px;
+}
 .active{ border: 1px solid #9dccfa;}
 .parts{
     margin-bottom: 15px;
@@ -285,7 +404,7 @@ export default {
         }
     .seachBox{
         margin-top: 5px;
-        margin-left: 54%;
+        margin-left: 48%;
         display: inline-block;
         width: 316px;
     }

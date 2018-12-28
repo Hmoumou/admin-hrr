@@ -48,13 +48,14 @@
                 </div>
               </td>
             </tr>
-            <tr class="row" v-for="(item,idx) in houseType"  :key='idx'>
+            <tr class="row" v-for="(item,idx) in houseType"   :key='idx'>
               <td class="row-title" >
                 {{item.houseinfo}}
               </td>
-              <td class="item-num" v-for="(it,index) in 15" :key='index' :class="getClass(it)" :data-row="idx" :data-col="index">
+              <td class="item-num" v-if="activeIndex == 1" v-for="(it,index) in 15" :key='index' :class="getClass(it)" :data-row="idx" :data-col="index">
                 <span class="item-num-inner" v-if="it.isPre" :data-row="idx" :data-col="index">
                     {{it.surplus==0?'满': it.surplus}}
+                    
                 </span>
                 <div v-else :data-row="idx" :data-col="index">
                   <div :data-row="idx" :data-col="index">
@@ -65,17 +66,23 @@
                   </div>
                 </div>
               </td>
+               <td class="item-num" v-if="activeIndex == 0" v-for="(ite,index) in 15" :key='index'  :data-row="idx" :data-col="index">
+                <div class="item-price" v-if="activeIndex == 0" :data-row="idx" :data-col="index">
+                  {{item.price}}
+                </div>
+              </td>
             </tr>
           </tbody>
         </table>
       </div>
     </el-card>
-
+    
     <dyDialog
+      v-if="activeIndex == 1&&isShowDialog"
       v-model="isShowDialog"
       @changeIsPre="handleChangePre"
       :formatTime="formatTime"
-      :options="dialogOptions"  />
+      :options="dialogOptions"/>
   </div>
 </template>
 
@@ -130,9 +137,12 @@
     },
     methods: {
       getPrice(){
-        this.$axios.post('/zftds/hotel/house/selectHotelCalendar',{merchantid:'88888'}).then(res=>{
-          console.log(res);
-        })
+        // this.$axios.post('/zftds/hotel/house/selectHotelCalendar',{merchantid:'88888'}).then(res=>{
+        //   console.log(res);
+        // })
+        //  this.$axios.post('/zftds/hotel/house/selectHotelHouseS',{merchantid:this.$store.state.mchid}).then(res=>{
+        //   console.log(res);
+        // })
       },
       getClass(item) {
         if(item.isPre) { // 是否可以预定
@@ -219,7 +229,7 @@
         let isPre = obj.value;
         console.log(obj);
         this.houseData.arr[row].arr[col].isPre = isPre
-        this.houseDagta = {...this.houseData}
+        this.houseData = {...this.houseData}//this.houseDagta是什么鬼？
       },
       setLine () { //斜线设置
         let box = this.$refs.speCell;
@@ -276,6 +286,7 @@
             console.log(res)
             // 把大数组转成对象
             this.houseType = res.data
+            console.log(this.houseType)
             // let obj = {}
             // for(let key in arr){
             //   obj[key] = arr[key].houseinfo
