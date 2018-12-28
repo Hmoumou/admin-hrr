@@ -3,7 +3,7 @@
     <el-card class="box-card auditLeave carditem">
       <div slot="header" class="header clearfix">
         <span class="title">住客看板</span>
-        <el-button style="float: right; padding: 3px 0" type="text">查看全部<i class="iconfont icon-arw-top-copy"></i>
+        <el-button style="float: right; padding: 3px 0;width:40px" type="text">查看全部<i class="iconfont icon-arw-top-copy"></i>
         </el-button>
       </div>
       <div class="progress clearfix">
@@ -67,10 +67,10 @@
 
 <style scoped lang='scss'>
   .orderitem {
-    width: 28.5%;
+    width: 30.8%;
     border: 1px solid #f1f1f1;
-    padding: 10px;
-    margin-right: 8px;
+    padding: 18px;
+    margin-right: 10px;
     display: inline-block;
     span, strong {
       display: block;
@@ -83,6 +83,7 @@
       line-height: 1.5;
     }
     .auditLeave-btm {
+      width: 105%;
       span, strong {
         display: block;
       }

@@ -4,9 +4,9 @@
       <!-- 后加房价日历start -->
       <div slot="header" class="header clearfix">
         <div class="switchover flr">
-          <span :class="{avtiveBlue:activeIndex == 1}">房态日历</span>
+          <span class="switch-title" :class="{avtiveBlue:activeIndex == 1}" @click="activeIndex = 1">房态日历</span>
           <span> | </span>
-          <span :class="{avtiveBlue:activeIndex == 0}">价格日历</span>
+          <span class="switch-title" :class="{avtiveBlue:activeIndex == 0}" @click="activeIndex = 0">价格日历</span>
         </div>
         <span class="title">{{activeIndex == 1?"房态日历":"价格日历"}}</span>
 
@@ -34,10 +34,10 @@
         <table class="main-table" @click="handleClick">
           <tbody>
             <tr class="first-row">
-              <td class="cell-spe" ref="speCell">
+              <td class="cell-spe">
                 <div class="date-text">日期</div>
                 <div class="housetype-text">房型</div>
-                <i class="line" ref="line"></i>
+                <!--<i class="line"></i>-->
               </td>
               <td v-for="(item, index) in dateData.weekDate" :key='index' class="cell-item">
                 <div class="cell-top">
@@ -48,13 +48,14 @@
                 </div>
               </td>
             </tr>
-            <tr class="row" v-for="(item,idx) in houseType" :key='idx'>
+            <tr class="row" v-for="(item,idx) in houseType"   :key='idx'>
               <td class="row-title" >
                 {{item.houseinfo}}
               </td>
-              <td class="item-num" v-for="(it,index) in 15" :key='index' >
+              <td class="item-num" v-if="activeIndex == 1" v-for="(it,index) in 15" :key='index' :class="getClass(it)" :data-row="idx" :data-col="index">
                 <span class="item-num-inner" v-if="it.isPre" :data-row="idx" :data-col="index">
                     {{it.surplus==0?'满': it.surplus}}
+                    
                 </span>
                 <div v-else :data-row="idx" :data-col="index">
                   <div :data-row="idx" :data-col="index">
@@ -65,17 +66,29 @@
                   </div>
                 </div>
               </td>
+               <td class="item-num" v-if="activeIndex == 0" v-for="(ite,index) in 15" :key='index'  :data-row="idx" :data-col="index">
+                <div class="item-price" v-if="activeIndex == 0" :data-row="idx" :data-col="index">
+                  {{item.price}}
+                </div>
+              </td>
             </tr>
           </tbody>
         </table>
       </div>
     </el-card>
-
+    
     <dyDialog
+      v-if="activeIndex == 1&&isShowDialog"
       v-model="isShowDialog"
       @changeIsPre="handleChangePre"
       :formatTime="formatTime"
-      :options="dialogOptions"  />
+      :options="dialogOptions"/>
+      <bigBox
+      v-if="activeIndex == 0&&isShowDialog1"
+      v-model="isShowDialog1"
+      @changeIsPre="handleChangePre"
+      :formatTime="formatTime"
+      :options="dialogOptions"></bigBox>
   </div>
 </template>
 
@@ -83,12 +96,14 @@
   import axios from 'axios'
   import {DatePicker} from 'iview'
   import dyDialog from '@/components/dy-dialog'
+  import bigBox from '@/components/bigBox.vue'
 
   export default {
     name: '',
     components: {
       DatePicker,
-      dyDialog
+      dyDialog,
+      bigBox
     },
     data() {
       return {
@@ -103,6 +118,7 @@
         },
         isPre: true,  // 是否可以预定
         isShowDialog: false, // 是否显示弹框
+        isShowDialog1:false,//是否显示弹框二
         formatTime: "", // 传入弹框的日期
         btnLeftActive: false,
         currentDate: new Date(), // 当前选择的日期
@@ -130,9 +146,12 @@
     },
     methods: {
       getPrice(){
-        this.$axios.post('/zftds/hotel/house/selectHotelCalendar',{merchantid:'88888'}).then(res=>{
-          console.log(res);
-        })
+        // this.$axios.post('/zftds/hotel/house/selectHotelCalendar',{merchantid:'88888'}).then(res=>{
+        //   console.log(res);
+        // })
+        //  this.$axios.post('/zftds/hotel/house/selectHotelHouseS',{merchantid:this.$store.state.mchid}).then(res=>{
+        //   console.log(res);
+        // })
       },
       getClass(item) {
         if(item.isPre) { // 是否可以预定
@@ -204,7 +223,11 @@
           this.dialogOptions = this.houseData.arr[row].arr[col]
           this.dialogOptions.col = col;
           this.dialogOptions.row = row;
-          this.isShowDialog = true;
+          if(this.activeIndex == 1){
+              this.isShowDialog = true;
+          }else if(this.activeIndex == 0){
+              this.isShowDialog1 = true;
+          }
           // 单元格点击事件在这里写
           // 单元格点击事件在这里写
           // 单元格点击事件在这里写
@@ -219,7 +242,7 @@
         let isPre = obj.value;
         console.log(obj);
         this.houseData.arr[row].arr[col].isPre = isPre
-        this.houseDagta = {...this.houseData}
+        this.houseData = {...this.houseData}//this.houseDagta是什么鬼？
       },
       setLine () { //斜线设置
         let box = this.$refs.speCell;
@@ -267,7 +290,7 @@
 
         this.dateData.formatTime = `${startMonth}-${this.dateData.weekDate[0].num}至${endMonth}-${this.dateData.weekDate[6].num}`;
         this.$nextTick(() => {
-          this.setLine()
+          // this.setLine()
         })
       },
       getHouseType(){
@@ -276,6 +299,7 @@
             console.log(res)
             // 把大数组转成对象
             this.houseType = res.data
+            console.log(this.houseType)
             // let obj = {}
             // for(let key in arr){
             //   obj[key] = arr[key].houseinfo
@@ -287,13 +311,13 @@
       }
     },
     mounted() {
-      this.$nextTick(() => {
-        let vm = this;
-        this.setLine();
-        window.onresize = function () {
-          vm.setLine()
-        }
-      });
+      // this.$nextTick(() => {
+      //   let vm = this;
+      //   this.setLine();
+      //   window.onresize = function () {
+      //     vm.setLine()
+      //   }
+      // });
       this.getData()
     },
     beforeDestroy () {

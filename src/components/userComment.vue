@@ -5,24 +5,24 @@
                 <span class="title ">点评/回答</span>
             </div>
             <p class="subtitle fw fs14">最新点评</p>
-            <div  v-for="(l,index) in 3" class="text commentitem" :key='index' :model="commentData">
+            <div  v-for="(item,index) in commentData" class="text commentitem" :key='index'>
                 <div class="comment-title clearfix">
-                    <span class="flr fs12">{{commentData.commentTime}}</span>
-                    <h4>{{commentData.username}}</h4>
-                    <Star :score='commentData.score' />
-                    <p class="comment">{{commentData.comment}}</p>
-                    <div class="adminAsk" v-if="commentData.adminAsk">
+                    <span class="flr fs12">{{item.commentTime}}</span>
+                    <h4>{{item.username}}</h4>
+                    <Star :score='item.score' />
+                    <p class="comment">{{item.comment}}</p>
+                    <div class="adminAsk" v-if="!item.isShow&&item.adminAsk">
                         <span class="blue fw fs14">回复</span>
-                        <p class="fs14">{{commentData.adminAsk}}</p>
+                        <p class="fs14">{{item.adminAsk}}</p>
                     </div>
-                    <div class="box-Reply"  ref="huifubox"  v-else-if="isShow">
-                        <p>{{commentData.adminAsk}}</p>
-                        <textarea  :value='commentData.adminAsk' name="adminAsk" class="reply mb5"  cols="42" rows="5">
+                    <div class="box-Reply"  ref="huifubox"  v-if="item.isShow">
+                        <!-- <p>{{item.adminAsk}}</p> -->
+                        <textarea  v-model='item.adminAsk' name="adminAsk" class="reply mb5"  cols="42" rows="5">
                         </textarea>
                         <el-button @click="handleYes" type='primary'>提交</el-button>
                         <el-button @click="handleNo(index)">取消</el-button>
                     </div>
-                    <el-button  v-else class="flr" type='primary' @click="handleReply(index)">
+                    <el-button  v-if="!item.isShow&&!item.adminAsk" class="flr" type='primary' @click="handleReply(index)">
                         回复
                     </el-button>
                 </div>
@@ -44,32 +44,48 @@ let commentitems = document.getElementsByClassName('commentitem')
             return{
                 haveValue:true,
                 isShow:false,
-                commentData:{
-                    username:"用户0729",
-                    starnum:3,
-                    commentTime:'2018-01-19',
-                    comment:'店家超好非常满意的一次入住，感谢！',
-                    adminAsk:'',
-                    score:3.6
-                }
+                commentData:[
+                    {
+                        username:"用户0728",
+                        starnum:3,
+                        commentTime:'2018-01-19',
+                        comment:'店家超好非常满意的一次入住，感谢！',
+                        adminAsk:'good good study',
+                        score:3.6,
+                        isShow: false
+                    },
+                    {
+                        username:"用户0729",
+                        starnum:3,
+                        commentTime:'2018-01-19',
+                        comment:'店家超好非常满意的一次入住，感谢！',
+                        adminAsk:'',
+                        score:3.6,
+                        isShow: false
+                    },
+                    {
+                        username:"用户07230",
+                        starnum:3,
+                        commentTime:'2018-01-19',
+                        comment:'店家超好非常满意的一次入住，感谢！',
+                        adminAsk:'',
+                        score:3.6,
+                        isShow:false
+                    }
+                ]
             }
         },
         methods:{
             handleReply(index){
                 console.log(index)
-                this.isShow = true
-                this.$nextTick(() => {
-                    // console.log(this.$refs.huifubox[index])
-                    this.$refs.huifubox[index].style.display = 'block'
-                })
-                // this.isShow = true
+                this.commentData[index].isShow = true
             },
             handleYes(){
 
             },
             handleNo(index){
-                this.isShow = false
-                this.$refs.huifubox[index].style.display = 'none'
+                this.commentData[index].adminAsk = ''
+                this.commentData[index].isShow = false
             }
         },
         created(){
@@ -118,7 +134,7 @@ let commentitems = document.getElementsByClassName('commentitem')
                 height: 60px;
                 box-sizing: border-box;
             }
-            display: none;
+            // display: none;
         }
 .carditem{ margin-bottom: 10px;}
 .title{ padding-left: 6px;border-left:3px solid #75b8fc;}

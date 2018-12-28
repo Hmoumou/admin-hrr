@@ -3,7 +3,7 @@
     :visible.sync="currentValue"
     width="30%"
     center>
-    <div class="contents  mb15" v-if="options">
+    <div class="contents  " v-if="options">
       <p class="mb5 fw">
         <span>{{options.time}}</span>
         <span>{{options.houseType}}</span>
@@ -221,7 +221,7 @@
   }
 
   .contents {
-    height: 100px;
+    // height: 100px;
     margin-top: 20px;
     padding: 0 30px 0px 30px;
     font-weight: 550;
@@ -281,18 +281,17 @@
   }
 
   .el-dialog--center {
-    color: #2b2b2b;
-    margin-top: 30vh !important;
+  //   color: #2b2b2b;
+  //   margin-top: 30vh !important;
     background: url('../image/bigbox.png') no-repeat center;
     background-size: 100% 101.5%;
     background-position: 0 -5px;
     .el-dialog__body {
-      height: 90px;
-      padding: 40px 0 0 0;
+      height: 110px;
     }
-    .el-dialog__footer {
-      height: 90px;
-    }
+  //   .el-dialog__footer {
+  //     height: 90px;
+  //   }
     .el-icon-close {
       display: none;
     }

@@ -7,7 +7,8 @@ const store = new Vuex.Store({
     state:{
     //    userInfo:'',
     //    token:''
-          mchid:''
+          mchid:'',
+          houseInfo:{}
     },
     mutations:{
         "GET_USERINFO"(state,payload){
