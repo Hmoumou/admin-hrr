@@ -11,7 +11,7 @@
         <span class="title">{{activeIndex == 1?"房态日历":"价格日历"}}</span>
 
       </div>
-      <div class="main-wrap">
+      <div class="main-wrap" >
         <div class="house-title" >
           <div class="center-wrap" >
             <span class="btn-default btn-left" @click="handleClickNext(-15)" :class="{active: btnLeftActive}">
@@ -117,7 +117,7 @@
     <!--第二个弹框-->
     <el-dialog
       :visible.sync="isShowDialog1"
-      style="width: 50%"
+      width="30%"
       center>
       <div class="contents" v-if="isShowDialog1">
         <div>
@@ -159,7 +159,6 @@
     },
     data() {
       return {
-        test: false,
         row: "", // 房态日历点击第几行
         col: "", // 房态日历点击第几列
         row1: "", // 价格日历点击第几行
@@ -212,8 +211,11 @@
         }
       },
       pickerChange (date) {
-        let newDate = new Date(date)
-        this.toggleClass(newDate)
+        console.log(date);
+        let newDate = new Date(date);
+        this.currentDate = newDate;
+        this.getHouseType();
+        this.toggleClass(newDate.getTime())
         /*用户选择日期的逻辑在这里写*/
         /*用户选择日期的逻辑在这里写*/
         /*用户选择日期的逻辑在这里写*/
@@ -276,8 +278,14 @@
         }
       },
       getHouseType(){
+        const loading = this.$loading({
+          lock: true,
+          text: '正在读取数据',
+          background: 'rgba(0, 0, 0, 0.7)'
+        });
         this.getDate(); // 每次去请求新的数据的时候，去更换当前的时间对象。生成新的15天日期数据。保证下方date对象是最新的。
         this.$axios.post('/zftds/hotel/house/selectHotelHouseS',{merchantid:this.$store.state.mchid}).then(res=>{
+          loading.close()
           if(res.code == 1){
             console.log(res)
             // 把大数组转成对象
