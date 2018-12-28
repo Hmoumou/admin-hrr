@@ -83,6 +83,12 @@
       @changeIsPre="handleChangePre"
       :formatTime="formatTime"
       :options="dialogOptions"/>
+      <bigBox
+      v-if="activeIndex == 0&&isShowDialog1"
+      v-model="isShowDialog1"
+      @changeIsPre="handleChangePre"
+      :formatTime="formatTime"
+      :options="dialogOptions"></bigBox>
   </div>
 </template>
 
@@ -90,12 +96,14 @@
   import axios from 'axios'
   import {DatePicker} from 'iview'
   import dyDialog from '@/components/dy-dialog'
+  import bigBox from '@/components/bigBox.vue'
 
   export default {
     name: '',
     components: {
       DatePicker,
-      dyDialog
+      dyDialog,
+      bigBox
     },
     data() {
       return {
@@ -110,6 +118,7 @@
         },
         isPre: true,  // 是否可以预定
         isShowDialog: false, // 是否显示弹框
+        isShowDialog1:false,//是否显示弹框二
         formatTime: "", // 传入弹框的日期
         btnLeftActive: false,
         currentDate: new Date(), // 当前选择的日期
@@ -214,7 +223,11 @@
           this.dialogOptions = this.houseData.arr[row].arr[col]
           this.dialogOptions.col = col;
           this.dialogOptions.row = row;
-          this.isShowDialog = true;
+          if(this.activeIndex == 1){
+              this.isShowDialog = true;
+          }else if(this.activeIndex == 0){
+              this.isShowDialog1 = true;
+          }
           // 单元格点击事件在这里写
           // 单元格点击事件在这里写
           // 单元格点击事件在这里写

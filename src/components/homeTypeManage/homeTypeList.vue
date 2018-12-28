@@ -83,8 +83,11 @@
         <div class="swiper-container">
           <swiper :options="swiperOption1" ref="mySwiper1" >
             <!-- slides -->
-            <swiper-slide v-for="(item, index) in photoArr" :key="index">
-              <div class="swiper-img-wrap" style="background: #333;text-align: center;padding: 20px 0;">
+            <!-- <swiper-slide v-if="!photoArr" >
+               <img src="../../image/Noimg.png" alt="">
+            </swiper-slide> -->
+            <swiper-slide  v-for="(item, index) in photoArr" :key="index">
+              <div  class="swiper-img-wrap" style="background: #333;text-align: center;padding: 20px 0;">
                 <img :src="item" alt="">
               </div>
             </swiper-slide>
@@ -98,33 +101,6 @@
             </div>
           </div>
         </div>
-        <!--轮播图部分结束-->
-        <!--<div class="photoBrowse clearfix">-->
-          <!--&lt;!&ndash; 左箭头 &ndash;&gt;-->
-          <!--<img class="rightArrow" src="@/image/商户中心+箭头/rightArrow.png" @click="handleSlide(-1)">-->
-          <!--&lt;!&ndash; 中间的房型图 &ndash;&gt;-->
-          <!--<div class="houseTypePhoto clearfix">-->
-            <!--<div class="box">-->
-              <!--<swiper :options="swiperOption1" ref="mySwiper1" v-show="photoIndex == 0">-->
-                <!--<swiper-slide v-for="(item, index) in photoArr" :key="index"><img :src="item" alt="" :key="index"></swiper-slide>-->
-                <!--<div class="swiper-pagination"  slot="pagination"></div>-->
-              <!--</swiper>-->
-              <!--<swiper :options="swiperOption1" ref="mySwiper2" v-show="photoIndex == 1">-->
-                <!--<swiper-slide v-for="(item, index) in photoArr2" :key="index"><img :src="item" alt="" :key="index"></swiper-slide>-->
-                <!--<div class="swiper-pagination"  slot="pagination"></div>-->
-              <!--</swiper>-->
-            <!--</div>-->
-          <!--</div>-->
-          <!--&lt;!&ndash; 右箭头 &ndash;&gt;-->
-          <!--<img class="leftArrow" src="@/image/商户中心+箭头/leftArrow.png" @click="handleSlide(1)">-->
-        <!--</div>-->
-        <!--<div class="asideLeft">-->
-          <!--&lt;!&ndash; <button class="btn">房型相册</button>-->
-          <!--<button class="btn">图文详情</button>&ndash;&gt;-->
-          <!--<div class="btn" :class="{active: photoIndex == 0}" @click="photoIndexChange(0)">房型相册</div>-->
-          <!--<div class="btn" :class="{active: photoIndex == 1}" @click="photoIndexChange(1)">图文详情</div>-->
-        <!--</div>-->
-
         <div class="textDetail clearfix">
           <div class="item">
             <div class="itemDetail clearfix">
@@ -270,11 +246,11 @@ export default {
       },
       photoIndex: 0,
       photoArr:[
-        'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=2213670986,2923778817&fm=27&gp=0.jpg',
-        'http://placehold.it/423x300/0f0',
-        'http://placehold.it/423x300/6700ff',
-        'http://placehold.it/423x300/409eff',
-        'http://placehold.it/423x300/ff0'
+        // 'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=2213670986,2923778817&fm=27&gp=0.jpg',
+        // 'http://placehold.it/423x300/0f0',
+        // 'http://placehold.it/423x300/6700ff',
+        // 'http://placehold.it/423x300/409eff',
+        // 'http://placehold.it/423x300/ff0'
       ],
       data1:{
         merchantid:this.$store.state.mchid,
@@ -391,6 +367,8 @@ export default {
         if(res.code == 0||res.code == 1){
             this.$message(res.msg)
             this.getData()
+            this.index = this.activeIndex = 0
+          
         }
       })
       this.isdialog = false;
