@@ -34,10 +34,10 @@
         <table class="main-table" @click="handleClick">
           <tbody>
             <tr class="first-row">
-              <td class="cell-spe" ref="speCell">
+              <td class="cell-spe">
                 <div class="date-text">日期</div>
                 <div class="housetype-text">房型</div>
-                <i class="line" ref="line"></i>
+                <!--<i class="line"></i>-->
               </td>
               <td v-for="(item, index) in dateData.weekDate" :key='index' class="cell-item">
                 <div class="cell-top">
@@ -48,11 +48,11 @@
                 </div>
               </td>
             </tr>
-            <tr class="row" v-for="(item,idx) in houseData.arr" v-if="houseData" :key='idx'>
+            <tr class="row" v-for="(item,idx) in houseType"  :key='idx'>
               <td class="row-title" >
-                {{item.typeName}}
+                {{item.houseinfo}}
               </td>
-              <td class="item-num" v-for="(it,index) in item.arr" :key='index' :class="getClass(it)" :data-row="idx" :data-col="index">
+              <td class="item-num" v-for="(it,index) in 15" :key='index' :class="getClass(it)" :data-row="idx" :data-col="index">
                 <span class="item-num-inner" v-if="it.isPre" :data-row="idx" :data-col="index">
                     {{it.surplus==0?'满': it.surplus}}
                 </span>
@@ -267,7 +267,7 @@
 
         this.dateData.formatTime = `${startMonth}-${this.dateData.weekDate[0].num}至${endMonth}-${this.dateData.weekDate[6].num}`;
         this.$nextTick(() => {
-          this.setLine()
+          // this.setLine()
         })
       },
       getHouseType(){
@@ -287,13 +287,13 @@
       }
     },
     mounted() {
-      this.$nextTick(() => {
-        let vm = this;
-        this.setLine();
-        window.onresize = function () {
-          vm.setLine()
-        }
-      });
+      // this.$nextTick(() => {
+      //   let vm = this;
+      //   this.setLine();
+      //   window.onresize = function () {
+      //     vm.setLine()
+      //   }
+      // });
       this.getData()
     },
     beforeDestroy () {
