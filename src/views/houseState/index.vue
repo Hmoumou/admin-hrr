@@ -4,9 +4,9 @@
       <!-- 后加房价日历start -->
       <div slot="header" class="header clearfix">
         <div class="switchover flr">
-          <span :class="{avtiveBlue:activeIndex == 1}">房态日历</span>
+          <span class="switch-title" :class="{avtiveBlue:activeIndex == 1}" @click="activeIndex = 1">房态日历</span>
           <span> | </span>
-          <span :class="{avtiveBlue:activeIndex == 0}">价格日历</span>
+          <span class="switch-title" :class="{avtiveBlue:activeIndex == 0}" @click="activeIndex = 0">价格日历</span>
         </div>
         <span class="title">{{activeIndex == 1?"房态日历":"价格日历"}}</span>
 
