@@ -72,11 +72,15 @@
                 </div>
               </td>
               <td v-for="(ite,index) in item.arr"
-                 v-if="activeIndex == 0"
-                 @click="handleClickPrice(ite, index)"
-                 class="item-num">
-                <div class="item-price" v-if="activeIndex == 0">
+                  :key="index"
+                  v-if="activeIndex == 0"
+                  @click="handleClickPrice(ite, index)"
+                  class="item-num">
+                <div class="item-price" v-if="activeIndex == 0&&!ite.activityprice">
                   {{ite.price}}
+                </div>
+                <div class="item-price" v-if="activeIndex == 0&&ite.activityprice">
+                  {{ite.activityprice}}
                 </div>
               </td>
             </tr>
@@ -129,13 +133,13 @@
         <el-form label-width="80px" label-position="left">
           <el-form-item label="当日价格">
             <el-input
-              v-model="houseData2.houseType[row1].arr[col1].price"
+              v-model="houseData2.houseType[row1].arr[col1].activityprice"
               placeholder="请输入当天的价格" />
           </el-form-item>
         </el-form>
       </div>
       <div slot="footer" class="dialog-footer clearfix">
-        <div class="btns fs14 flr" @click="isShowDialog1 = false">确 定</div>
+        <div class="btns fs14 flr" @click="handleEditPrice()">确 定</div>
         <div class="leftGoBack fll clearfix">
           <div class="imgleft mr15 fll" @click="isShowDialog1 = false">
           </div>
@@ -159,6 +163,8 @@
     },
     data() {
       return {
+        youHaveIndex:'',//修改价格需要的row
+        youHaveIndex1:'',//修改价格需要的col
         row: "", // 房态日历点击第几行
         col: "", // 房态日历点击第几列
         row1: "", // 价格日历点击第几行
@@ -184,10 +190,32 @@
         houseData2: { // 用于测试功能的， 后端未给数据
           houseType: [] // 存放后端给的数据以及自己生成的数组
         },
-        week: ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六']
+        week: ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'],
+        EditPriceData:{
+          merchantid:this.$store.state.mchid,
+          price:'',
+          hotelid:'',
+          ytd:'',
+          activityprice:''
+        }
       }
     },
     methods: {
+      // 修改价格
+      // 
+      handleEditPrice(){
+        console.log(this.houseData2.houseType[this.youHaveIndex].arr[this.youHaveIndex1].activityprice)
+        this.EditPriceData.activityprice = this.houseData2.houseType[this.youHaveIndex].arr[this.youHaveIndex1].activityprice
+        console.log(this.EditPriceData);
+        this.$axios.post('/zftds/hotel/house/insertHotelCalendar',this.EditPriceData).then(res=>{
+          console.log(res)
+          if(res.code == 1){
+            this.$message.success('添加价格成功')
+          }else{
+            this.$message.error(res.msg)
+          }
+        })
+      },
       getPrice(){
         // this.$axios.post('/zftds/hotel/house/selectHotelCalendar',{merchantid:'88888'}).then(res=>{
         //   console.log(res);
@@ -249,6 +277,8 @@
         /*用户点击后十五天的逻辑在这里写*/
       },
       handleClick(item, index) { // 单元格点击事件===房态点击
+        // console.log("item",item);
+        // console.log("item",index);
         this.col = item.col;
         this.row = item.row;
         this.isShowDialog = true;
@@ -256,6 +286,15 @@
         //   // 单元格点击事件在这里写
       },
       handleClickPrice(item, index) {
+        console.log("item",item);
+        console.log("index",index);
+        this.youHaveIndex = item.row
+        this.youHaveIndex1 = item.col
+        console.log(this.youHaveIndex)
+        console.log(this.youHaveIndex1)
+        this.EditPriceData.price = item.price
+        this.EditPriceData.hotelid = item.id
+        this.EditPriceData.ytd = item.date.formatStr
         this.col1 = item.col;
         this.row1 = item.row;
         this.isShowDialog1 = true;
@@ -295,6 +334,7 @@
               let arr = [];
               for(let i=0; i < 15; i++) {
                 arr.push({
+                  activityprice:'',//活动价格
                   price: item.price, // 价格
                   roomsnum: item.roomsnum, // 房间数
                   id: item.id, // id
@@ -316,6 +356,11 @@
     },
     created(){
       this.getHouseType()
+    },
+    watch:{
+      formatTime(val){
+        console.log(val);
+      }
     }
   }
 </script>

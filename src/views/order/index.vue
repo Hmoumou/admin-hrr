@@ -84,9 +84,15 @@
                                 <td>{{searchData[dataIndex].source}}</td>
                             </tr>
                              <tr>
-                                <th>合计金额</th>
+                                <th>押金金额</th>
                                 <td class="blue">RMB {{searchData[dataIndex].totalMoney}}</td>
-                                 <th>优惠价格</th>
+                                <th>房价*天数</th>
+                                <td class="blue fw fs14">RMB {{searchData[dataIndex].discounts}}</td>
+                            </tr>
+                            <tr class="bg">
+                                <th>合计金额</th>
+                                <td class="blue fw fs14">RMB {{searchData[dataIndex].discounts}}</td>
+                                <th>优惠价格</th>
                                 <td class="blue fw fs14">RMB {{searchData[dataIndex].discounts}}</td>
                             </tr>
                         </table>
@@ -112,6 +118,11 @@
                                     </td>
                                 </tr>
                             </table>
+                            <div class="btn-roomsid" style="width:98px;margin:0 auto;">
+                                <el-button type="primary" style="width:98px"  @click="handleRoomId">
+                                    确定
+                                </el-button>
+                            </div>
                         </div>
                         <!-- 已入住订单 -->
                         <div class="insert clearfix" v-if="isInsert">
@@ -280,6 +291,7 @@ export default {
     };
   },
   methods: {
+    handleRoomId(){},//分配房间号
     handleLeaveYES(){},//确认离店，退押金
     handleGoon(){},//点击续住
     // 点击接受订单
