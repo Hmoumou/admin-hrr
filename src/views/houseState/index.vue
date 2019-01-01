@@ -58,7 +58,7 @@
                   @click="handleClick(it, index)"
                   :class="getClass(it)"
                   class="item-num"
-                  :key='index'>
+                  :key='index'> <!--房态日历单元格-->
                 <span class="item-num-inner" v-if="it.isPre" >
                     {{it.roomsnum==0?'满': it.roomsnum}}
                 </span>
@@ -75,12 +75,9 @@
                   :key="index"
                   v-if="activeIndex == 0"
                   @click="handleClickPrice(ite, index)"
-                  class="item-num">
-                <div class="item-price" v-if="activeIndex == 0&&!ite.activityprice">
-                  {{ite.price}}
-                </div>
-                <div class="item-price" v-if="activeIndex == 0&&ite.activityprice">
-                  {{ite.activityprice}}
+                  class="item-num"> <!--价格日历单元格-->
+                <div class="item-price">
+                  {{ite.activityprice || ite.price}}
                 </div>
               </td>
             </tr>
@@ -130,7 +127,7 @@
             <span>{{houseData2.houseType[row1].houseinfo}}</span>
           </p>
         </div>
-        <el-form label-width="80px" label-position="left">
+        <el-form label-width="80px" label-position="left" @submit.prevent>
           <el-form-item label="当日价格">
             <el-input
               v-model="houseData2.houseType[row1].arr[col1].activityprice"
@@ -154,6 +151,7 @@
   import axios from 'axios'
   import {DatePicker} from 'iview'
   import bigBox from '@/components/bigBox.vue'
+  import moment from 'moment'
 
   export default {
     name: '',
@@ -202,27 +200,41 @@
     },
     methods: {
       // 修改价格
-      // 
+      //
       handleEditPrice(){
-        console.log(this.houseData2.houseType[this.youHaveIndex].arr[this.youHaveIndex1].activityprice)
-        this.EditPriceData.activityprice = this.houseData2.houseType[this.youHaveIndex].arr[this.youHaveIndex1].activityprice
-        console.log(this.EditPriceData);
-        this.$axios.post('/zftds/hotel/house/insertHotelCalendar',this.EditPriceData).then(res=>{
-          console.log(res)
-          if(res.code == 1){
-            this.$message.success('添加价格成功')
-          }else{
-            this.$message.error(res.msg)
-          }
-        })
+        // console.log(this.houseData2.houseType[this.youHaveIndex].arr[this.youHaveIndex1].activityprice)
+        //如果修改前的活动价为空
+        if(this.EditPriceData.activityprice == ''){
+          this.EditPriceData.activityprice = this.houseData2.houseType[this.youHaveIndex].arr[this.youHaveIndex1].activityprice
+          // console.log(this.EditPriceData);
+          this.$axios.post('/zftds/hotel/house/insertHotelCalendar',this.EditPriceData).then(res=>{
+            console.log('添加活动价格',res)
+            if(res.code == 1){
+              this.$message.success('添加价格成功')
+            }else{
+              this.$message.error(res.msg)
+            }
+          })
+        }else{
+            this.EditPriceData.activityprice = this.houseData2.houseType[this.youHaveIndex].arr[this.youHaveIndex1].activityprice
+            this.$axios.post('/zftds/hotel/house/updateHotelCalendar',this.EditPriceData).then(res=>{
+              console.log('更新活动价格',res);
+            })
+        }
+
       },
       getPrice(){
-        // this.$axios.post('/zftds/hotel/house/selectHotelCalendar',{merchantid:'88888'}).then(res=>{
-        //   console.log(res);
-        // })
-        //  this.$axios.post('/zftds/hotel/house/selectHotelHouseS',{merchantid:this.$store.state.mchid}).then(res=>{
-        //   console.log(res);
-        // })
+        let url = '/zftds/hotel/house/selectHotelCalendar';
+        return new Promise((resolve, reject) => {
+          this.$axios.post(url ,
+            {merchantid:this.$store.state.mchid })
+            .then(res=>{
+              resolve(res.data)
+              // console.log('rereresrers',res);
+            }).catch(err => {
+              reject(err)
+          })
+        })
       },
       getClass(item) {
         if(item.isPre) { // 是否可以预定
@@ -276,22 +288,23 @@
         /*用户点击后十五天的逻辑在这里写*/
         /*用户点击后十五天的逻辑在这里写*/
       },
-      handleClick(item, index) { // 单元格点击事件===房态点击
-        // console.log("item",item);
-        // console.log("item",index);
-        this.col = item.col;
-        this.row = item.row;
-        this.isShowDialog = true;
-        //   // 单元格点击事件在这里写
-        //   // 单元格点击事件在这里写
-      },
+      handleClick(item, index) {
+          // 单元格点击事件===房态点击
+          // console.log("item",item);
+          // console.log("item",index);
+          this.col = item.col;
+          this.row = item.row;
+          this.isShowDialog = true;
+          //   // 单元格点击事件在这里写
+          //   // 单元格点击事件在这里写
+        },
       handleClickPrice(item, index) {
         console.log("item",item);
         console.log("index",index);
         this.youHaveIndex = item.row
         this.youHaveIndex1 = item.col
-        console.log(this.youHaveIndex)
-        console.log(this.youHaveIndex1)
+        // console.log(this.youHaveIndex)
+        // console.log(this.youHaveIndex1)
         this.EditPriceData.price = item.price
         this.EditPriceData.hotelid = item.id
         this.EditPriceData.ytd = item.date.formatStr
@@ -324,31 +337,76 @@
         });
         this.getDate(); // 每次去请求新的数据的时候，去更换当前的时间对象。生成新的15天日期数据。保证下方date对象是最新的。
         this.$axios.post('/zftds/hotel/house/selectHotelHouseS',{merchantid:this.$store.state.mchid}).then(res=>{
-          loading.close()
+          loading.close();
           if(res.code == 1){
-            console.log(res)
-            // 把大数组转成对象
             this.houseType = res.data;
             console.log(this.houseType);
-            this.houseData2.houseType = res.data.map((item, row) => {
-              let arr = [];
-              for(let i=0; i < 15; i++) {
-                arr.push({
-                  activityprice:'',//活动价格
-                  price: item.price, // 价格
-                  roomsnum: item.roomsnum, // 房间数
-                  id: item.id, // id
-                  isPre: true, // 是否可以预定变量
-                  date: this.dateData.weekDate[i],
-                  row, // 第几行的数据
-                  col: i,
-                  formatStr: this.dateData.weekDate[i]
-                })
-              }
-              return {
-                arr,
-                ...item
-              }
+            this.getPrice().then(priceArr => {
+              console.log(priceArr, "priceArr");
+              // 1. 先获取15天的有效数据
+              let filterArr = priceArr.filter(item => {
+                let itemDateStr = moment(item.addtime).format("YYYY-MM-DD"); // 生成 2018-12-02这样的时间字符串
+                let nowDateStr = moment(this.currentDate).format("YYYY-MM-DD"); // 注释同上
+                let itemParseUnix = Date.parse(itemDateStr); // 生成以日为标准的unix时间戳既不考虑时分秒毫秒
+                let nowParseUnix = Date.parse(nowDateStr);
+                let reduceDays = itemParseUnix - nowParseUnix; // unix相减做比较
+                let iDays = reduceDays / (24*3600*1000);
+                if(iDays>=0&&iDays<15) { // 如果在15天内，就保留，如果不在，就删除
+                  return 1 // 真值
+                } else {
+                  return 0 // 代替false来用，转换为false
+                }
+              });
+              // 2. 数组去重操作。保留最新的操作项。思路: mysql数据库id自增，可以考虑id作为最新修改的依据。去重
+              /*
+              情况1：有重复项
+              ①hotelid决定表格行
+              ②ytd相同(决定这一行的哪一列)
+              ③上述两个同样的情况下，即为操作的同一天的数据，这是对比id的大小即可得到最新的数据
+              情况2： 没有重复项
+              直接推入新数组
+              * */
+              let secondFilter = [];
+              filterArr.forEach((i, idx, filArr) => {
+                let resultItem = secondFilter.find(item => { // 查找二次过滤的数组里，同行同列的项目
+                  return i.hotelid == item.hotelid && i.ytd == item.ytd;
+                });
+                if(!resultItem) { // 如果没有找到，则没有重复项，直接推入
+                  secondFilter.push(i);
+                } else { // 找到有重复的项目，则取id最大的（最新的修改）
+                  if(i.id > resultItem.id) { // 后边的比前边推进去的要大，则替换
+                    let index = secondFilter.findIndex(item => item.id == resultItem.id); // 找到重复项的索引
+                    secondFilter.splice(index, 1, i); // 将最大的那项替换掉
+                  }
+                }
+              });
+              console.log(secondFilter);
+
+              this.houseData2.houseType = res.data.map((item, row) => {
+                let arr = [];
+                for(let i=0; i < 15; i++) {
+                  let activeItem = secondFilter.find(it => this.dateData.weekDate[i].formatStr == it.ytd && item.id == it.hotelid);
+                  // 每次生成项目的时候，去二次过滤的数组里查找，同行同列的项目。因为没有重复的，找到的就是有效值。
+                  let activityprice = activeItem && activeItem.activityprice? activeItem.activityprice: "";
+                  // 如果找到了，就返回，找不到给空的字符串让上方渲染的值可以通过或运算符运算
+                  arr.push({
+                    activityprice,//活动价格
+                    price: item.price, // 价格
+                    roomsnum: item.roomsnum, // 房间数
+                    id: item.id, // 房型分类id
+                    isPre: true, // 是否可以预定变量
+                    date: this.dateData.weekDate[i],
+                    row, // 第几行的数据
+                    col: i,
+                    formatStr: this.dateData.weekDate[i].formatStr
+                  })
+                }
+                return {
+                  arr,
+                  ...item
+                }
+              })
+
             })
           }
         })
@@ -356,6 +414,7 @@
     },
     created(){
       this.getHouseType()
+      // this.getPrice()
     },
     watch:{
       formatTime(val){

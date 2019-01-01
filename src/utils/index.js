@@ -15,7 +15,7 @@ const instance = axios.create({
         'Content-Type':"application/json;charset=UTF-8",
     }
 })
-// 其他接口问后端登陆后那个reason是多少7（权限） 
+// 其他接口问后端登陆后那个reason是多少7（权限）
 
 const xhr = {
     get(url,data,config){
@@ -26,13 +26,13 @@ const xhr = {
                 //     Message.warning('登录状态失效，正在跳转。。。');
                 //     router.push('/')
                 //  }
-                let res = JSON.parse(ress.data); 
-                resolve(res.data) 
+                let res = JSON.parse(ress.data);
+                resolve(res.data)
             }).catch(err=>{
                 reject(err)
             })
         })
-    }, 
+    },
     fetch(url,data,config,methods){
         return new Promise((resolve,reject)=>{
             instance[methods](url,data,config).then(ress=>{
@@ -49,7 +49,7 @@ const xhr = {
     post(url,data,config){
         return new Promise((resolve,reject)=>{
             instance.post(url,data,config).then(ress=>{
-                let res = JSON.parse(ress.data); 
+                let res = JSON.parse(ress.data);
                 resolve(res)
             }).catch(err=>{
                 reject(err)
@@ -57,4 +57,8 @@ const xhr = {
         })
     },
 }
-export const $axios = xhr
+export const $axios = xhr;
+
+export function fixedZero(num) { // 时间字符串补零，避免得到 2018-12-2 这种日期
+  return num<10 ? "0" + num: "" + num;
+}
