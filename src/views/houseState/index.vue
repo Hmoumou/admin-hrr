@@ -342,8 +342,7 @@
             this.houseType = res.data;
             console.log(this.houseType);
             this.getPrice().then(priceArr => {
-              console.log(priceArr, "priceArr");
-              // 1. 先获取15天的有效数据
+              // 1. 先截取15天的有效数据
               let filterArr = priceArr.filter(item => {
                 let itemDateStr = moment(item.addtime).format("YYYY-MM-DD"); // 生成 2018-12-02这样的时间字符串
                 let nowDateStr = moment(this.currentDate).format("YYYY-MM-DD"); // 注释同上
@@ -380,7 +379,6 @@
                   }
                 }
               });
-              console.log(secondFilter);
 
               this.houseData2.houseType = res.data.map((item, row) => {
                 let arr = [];
