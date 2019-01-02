@@ -33,15 +33,15 @@
                 <router-link  to='/layout/houseState'>房态管理</router-link>
               </template>
             </el-menu-item>
-             <el-submenu index="5" id="item">
+             <el-menu-item index="/layout/order" id="item" :class="{active:$route.name === 'order'}">
               <template slot="title"  >
                 <router-link  to='/layout/order' >订单管理</router-link>
               </template>
-              <el-menu-item-group>
-                <el-menu-item index="/layout/order" :class="{active1:$route.name === 'order'}"><span>订单查询</span></el-menu-item>
+              <!-- <el-menu-item-group>
+                <el-menu-item index="/layout/order" ><span>订单查询</span></el-menu-item>
                 <el-menu-item index="/layout/orderSelect" :class="{active1:$route.name === 'orderSelect'}"><span>未处理订单</span></el-menu-item>
-              </el-menu-item-group>
-            </el-submenu>
+              </el-menu-item-group> -->
+            </el-menu-item>
 
             <el-menu-item index="/layout/member" id="item" :class="{active:$route.name === 'member'}">
               <template slot="title">

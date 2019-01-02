@@ -4,23 +4,55 @@
       <el-card class="box-card carditem clearfix order-item">
         <div slot="header" class="header clearfix">
           <el-button style="float: right; padding: 3px 0" type="text">更多搜索选项
-            <i class="iconfont icon-arw-top-copy"></i>
+            <i class="iconfont icon-arw-top-copy" v-if="!moreSearch"></i>
+            <i class="iconfont icon-arrow-up" v-if="moreSearch"></i>
           </el-button>
-          <span class="title">订单筛选</span>
-          <!-- <div class="searchBox" :model="searchData">
-            <i class="iconfont icon-sousuo"></i>
-            <el-input v-model="searchData.text" placeholder="订单号/预订人/预订人手机号" class="input"></el-input>
-            <el-button type="primary" class="btn" @click="">搜索</el-button>
-          </div> -->
            <div class="seachBox  clearfix">
                 <div class="seek-box">
                     <input type="text" v-model="boxData.username" placeholder="订单号/预定人/预订人手机号">
                     <div class="seek" @click="handleSearch">搜索</div>
                 </div>
            </div>
+          <span  class="title  mt10 fll">订单筛选</span>
+          <!-- <div class="searchBox" :model="searchData">
+            <i class="iconfont icon-sousuo"></i>
+            <el-input v-model="searchData.text" placeholder="订单号/预订人/预订人手机号" class="input"></el-input>
+            <el-button type="primary" class="btn" @click="">搜索</el-button>
+          </div> -->
+        </div>
+        <div class="dialog" v-if='moreSearch'>
+           <el-form>
+                <el-form-item label="按房型选择">
+                    <el-select v-model="typeSearch" placeholder="请选择">
+                        <el-option
+                        v-for="item in options"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="按时间选择" class="clearfix">
+                    <el-button type="primary" class="flr">
+                        查询
+                    </el-button>
+                   <!-- <el-date-picker
+                    v-model="dateSearch"
+                    type="datetime"
+                    placeholder="选择日期时间">
+                    </el-date-picker> -->
+                    <el-date-picker
+                        v-model="dateSearch"
+                        type="date"
+                        placeholder="选择日期">
+                    </el-date-picker>
+                    
+                </el-form-item>
 
+           </el-form>
         </div>
       </el-card>
+ 
     </div>
     <div class="orderDetails">
         <el-menu
@@ -65,7 +97,7 @@
                             </tr>
                             <tr class="bg">
                                 <th>预订日期</th>
-                                <td class="blue">{{searchData[dataIndex].orderDate}} <span>共<span class="blue">1</span>晚</span></td>
+                                <td><p class='blue'>{{searchData[dataIndex].startTime}}-{{searchData[dataIndex].endTime}}</p> <span>(共<span class="blue">1</span>晚)</span></td>
                                 <th>最晚抵店时间</th>
                                 <td>{{searchData[dataIndex].endTime}}</td>
                             </tr>
@@ -128,7 +160,69 @@
                         <div class="insert clearfix" v-if="isInsert">
                             <el-button class="flr" type="primary" style="width:98px" @click="handleGoon">续 住</el-button>
                             <el-button class="fll" type="primary" style="width:98px" @click="dialogVisible = true">离 店</el-button>
-                            <el-dialog title="确认离店" :visible.sync="dialogVisible">
+                            <el-dialog title="离店办理" :visible.sync="dialogVisible">
+                                <div class="mian">
+                                    <div class="leave-Details">
+                                        <p class='fw'>订单详情</p>
+                                       <div class="dialog-table">  
+                                           <table>
+                                               <tr>
+                                                   <th>订单编号</th>
+                                                   <td>{{searchData[dataIndex].totalMoney}}</td>
+                                                   <th>房间号</th>
+                                                   <td>207</td>
+                                               </tr>
+                                               <tr>
+                                                   <th>订房人姓名</th>
+                                                   <td>周杰伦</td>
+                                                   <th>联系电话</th>
+                                                   <td>1110</td>
+                                               </tr>
+                                               <tr>
+                                                   <th>预订日期</th>
+                                                   <td>12/9-12/20(共4晚)</td>
+                                                   <th>实住日期</th>
+                                                   <td>12/9-12/20(共4晚)</td>
+                                               </tr>
+                                                <tr>
+                                                   <th>押金金额</th>
+                                                   <td>200</td>
+                                                   <th>其他金额</th>
+                                                   <td>
+                                                       <el-input placeholder="请输入消费金额"></el-input>
+                                                   </td>
+                                               </tr>
+                                                <tr>
+                                                   <th>预付总金额</th>
+                                                   <td>1999</td>
+                                                   <th>实际金额</th>
+                                                   <td>799.6</td>
+                                               </tr>
+                                        
+                                           </table>
+                                       </div>
+                                    </div>
+                                    <div class="backMoney-Details">
+                                        <p class='fw'>退款详情</p>
+                                        <div class="dialog-table">
+                                            <table>
+                                                 <tr>
+                                                   <th>押金</th>
+                                                   <td>200</td>
+                                                   <th>应退还房费</th>
+                                                   <td>1199.4</td>
+                                               </tr>
+                                                <tr>
+                                                   <th>其他消费</th>
+                                                   <td>15</td>
+                                                   <th>合计</th>
+                                                   <td>RMB 1384.4</td>
+                                               </tr>
+                                            </table>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
                                 <div slot="footer" class="dialog-footer">
                                     <el-button  @click="dialogVisible = false">取 消</el-button>
                                     <el-button type="primary" @click="handleLeaveYES">确 定</el-button>
@@ -185,6 +279,7 @@ export default {
   name: "order",
   data() {
     return {
+        moreSearch:true,//更多搜索选项
         dialogVisible:false,//离店弹框
         dialogFormVisible:false,//拒绝订单弹框
         isUntreated:false,//是否未处理
@@ -198,6 +293,22 @@ export default {
         boxData:{
             username:'梁朝伟'
         },
+        options:[
+            {
+                value:'1',
+                label:'豪华大床房1'
+            },
+             {
+                value:'2',
+                label:'豪华大床房3'
+            },
+             {
+                value:'3',
+                label:'豪华大床房4'
+            },
+        ],
+        dateSearch:'',//按时间搜索
+        typeSearch:'',//按房型搜索
         searchData: [
           {
             //   start
@@ -217,8 +328,8 @@ export default {
             overTime:'06-29 12:32',
             username:'周润发',
             totalMoney:'150 0000 0000',
-            startTime:'2018-07-04',
-            endTime:'2018-07-05',
+            startTime:'2018/07/04',
+            endTime:'2018/07/05',
             roomId:'101'
           },
           {
@@ -293,7 +404,9 @@ export default {
   methods: {
     handleRoomId(){},//分配房间号
     handleLeaveYES(){},//确认离店，退押金
-    handleGoon(){},//点击续住
+    handleGoon(){
+        this.$router.push('/layout/still/still')
+    },//点击续住
     // 点击接受订单
     handleUntreated(){
         console.log('okok')
@@ -394,20 +507,41 @@ export default {
     margin: 0 auto;
     width: 240px;
     margin-top: 40px;
+    .dialog-table{
+
+    }
 }
-.active{ border: 1px solid #9dccfa;}
+
 .parts{
+    border:1px solid #f1f1f1;
     margin-bottom: 15px;
-    background: #edf3ff;
     border-radius: 0px;
 }
+.active{ border: 1px solid #9dccfa; background: #edf3ff;}
 .order {
     box-sizing: border-box;
     // overflow-x: hidden;
     //顶部查询框样式
   .orderScreen{
-     position: relative;
-     border: 0.1px solid #fff;
+    min-height : 165px;
+    position: relative;
+    /deep/ .el-card__body{
+        background: #f9fafd;
+        border:1px solid #dbe7ff;
+    }
+    /deep/ .el-button{
+        width: 200px;
+        line-height: 1.5;
+        font-size: 14px;
+    }
+    // border: 0.1px solid #fff;
+    .dialog{
+        /deep/ .el-input__inner{
+            padding-left:25px; 
+            border:1px solid #b3ccff;
+            background: #fff;
+        }
+    }
     .carditem {
         position: absolute;
         top: -20px;
@@ -416,9 +550,8 @@ export default {
         }
     .seachBox{
         margin-top: 5px;
-        margin-left: 48%;
-        display: inline-block;
-        width: 316px;
+        float: right;
+        margin-right: 20px;
     }
     .seek-box {
         display: inline-block;
@@ -506,7 +639,8 @@ export default {
 
 .title { padding-left: 6px;border-left: 3px solid #75b8fc;}
 .header {font-weight: 700;}
-.order-item {/deep/ .el-card__body {display: none; }}
+// .order-item {/deep/ .el-card__body {display: none; }}
+.mt10{ margin-top: 10px;}
 
 </style>
 <style>

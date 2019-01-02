@@ -61,6 +61,15 @@ export default new Router({
             title:'房型新建'
           },
         },
+        // 新增续住办理
+        {
+          path: '/layout/still/still',
+          name: 'still',
+          component:()=>import('../views/still/still.vue'),
+          meta:{
+            title:'续住办理'
+          },
+        },
         //房型管理修改
         {
           path: '/layout/houseType/edit',

@@ -211,14 +211,18 @@
             console.log('添加活动价格',res)
             if(res.code == 1){
               this.$message.success('添加价格成功')
+              this.isShowDialog1 = false;
+              // this.
             }else{
               this.$message.error(res.msg)
+              this.isShowDialog1 = false;
             }
           })
         }else{
             this.EditPriceData.activityprice = this.houseData2.houseType[this.youHaveIndex].arr[this.youHaveIndex1].activityprice
             this.$axios.post('/zftds/hotel/house/updateHotelCalendar',this.EditPriceData).then(res=>{
               console.log('更新活动价格',res);
+              this.isShowDialog1 = false;
             })
         }
 

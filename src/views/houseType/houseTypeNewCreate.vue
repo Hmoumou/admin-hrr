@@ -11,6 +11,9 @@
         </div>
         <!-- 右表格 -->
         <el-form  class="rightForm" :model='formData' label-width="100px" label-position='left'>
+           <!-- <el-form-item label="押金" prop="cash">
+            <el-input class="detailInfo" v-model="formData.cash"  placeholder='请设置该房型押金金额'></el-input>
+          </el-form-item> -->
           <el-form-item label="无烟信息" prop="smoke">
             <el-input class="detailInfo" v-model="formData.smoke"  placeholder='该房型有无烟房，可无烟处理'></el-input>
           </el-form-item>
@@ -80,7 +83,6 @@
       </div>
     </el-card>
     <!--设施详情结束-->
-
     <div class="btn" v-if="this.$route.meta.title == '房型新建'" @click="createComplete">完成</div>
     <div class="btn" v-else @click="handleisEdit">完成</div>
     <el-button
@@ -133,6 +135,7 @@ export default {
         remark:"",
         roomsnum:"",
         smoke:"",
+        // cash:""
       },
       photoArr:[],
 
