@@ -416,6 +416,7 @@ export default {
     padding: 0;
   }
   .line {
+    margin-top: 8px;
     color: #dbd8d8;
   }
 }

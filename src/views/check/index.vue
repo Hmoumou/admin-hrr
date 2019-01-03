@@ -45,19 +45,19 @@
                     <el-input class="w300" v-model="formData.houseId"></el-input>
                   </el-form-item>
                   <el-form-item label="支付方式" prop="payType" class="payType">
-                    <label :class="{ active: checkPay == 1}">
+                    <label :class="{active: checkPay == 1}" @click="handlePayToZFB">
                       <input :value="1" type="radio" v-model="checkPay" class="radio-input" name="pay">
                       <div class="dui"></div>
                     </label>
-                    <label :class="{ active: checkPay == 2}">
+                    <label :class="{ active: checkPay == 2}" @click="handlePayToWX">
                       <input :value="2" type="radio" v-model="checkPay" class="radio-input" name="pay">
                       <div class="dui"></div>
                     </label>
-                    <label :class="{ active: checkPay == 3}">
+                    <label :class="{ active: checkPay == 3}" @click="handlePayToOnline">
                       <input :value="3" type="radio" v-model="checkPay" class="radio-input" name="pay">
                       <div class="dui"></div>
                     </label>
-                    <label :class="{ active: checkPay == 4}">
+                    <label :class="{ active: checkPay == 4}" @click="handlePayToMoney">
                       <input :value="4" type="radio" v-model="checkPay" class="radio-input" name="pay">
                       <div class="dui"></div>
                     </label>
@@ -163,6 +163,19 @@
           leaveTime: '',
           houseId: '',
           payType: '1',
+          // 需要上传的数据
+          merchantid:this.$store.state.mchid,//商户id
+          orderType:2,
+          hotelid:'',
+          orderSource:'',//订单来源
+          cashPledge:'',//押金 （需要根据选择的房型渲染）
+          starttime:'',//开始时间
+          endtime:'',//开始时间,
+          roomnumber:'',//分配的房间编号
+          payType:'',
+          count:'',//入住天数 需自己计算
+          payCountPrice:'',//订单支付总金额
+          roomPrice:'',//房间单价
         },
         moneyData: {
           price: 888,
@@ -178,7 +191,7 @@
           IDcard: '',
           phone: ''
         },
-        checkPay: 2,
+        checkPay: 1,
         arr: [
           {
             username: '',
@@ -276,12 +289,11 @@
         margin-right: 15px;
         border: 1px solid transparent;
         &:nth-of-type(1) {
-          background: url('../../image/办理入住/微信支付.png') no-repeat #f1f1f1 center;
+          background: url('../../image/办理入住/支付宝.png') no-repeat #f1f1f1 center;
           background-size: 75%;
-
         }
         &:nth-of-type(2) {
-          background: url('../../image/办理入住/支付宝.png') no-repeat #f1f1f1 center;
+          background: url('../../image/办理入住/微信支付.png') no-repeat #f1f1f1 center;
           background-size: 75%;
         }
         &:nth-of-type(3) {

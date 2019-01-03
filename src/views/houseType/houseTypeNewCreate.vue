@@ -29,6 +29,7 @@
         <el-form  class="leftForm" :model='formData' label-width="100px" label-position='left'>
           <el-form-item label="房间面积" prop="acreage">
             <el-input class="detailInfo" v-model="formData.acreage"  placeholder='请输入房间面积'></el-input>
+            平米
           </el-form-item>
           <el-form-item  label="房间房型" prop="houseinfo" >
              <el-input class="detailInfo"  v-model="formData.houseinfo"  placeholder='请输入房间房型'></el-input>
@@ -42,7 +43,7 @@
           </el-form-item>
           <!--新加床数-->
           <el-form-item label="床数" prop="bednum">
-            <el-input class="detailInfo" v-model="formData.bednum" placeholder='请输入床的数量'> </el-input>
+            <el-input class="detailInfo" @blur="bedVerify" v-model="formData.bednum" placeholder='请输入小于5或等于5的数字'> </el-input>
           </el-form-item>
           <!-- 添加 单价 -->
           <el-form-item label="价格" prop="price">
@@ -194,6 +195,13 @@ export default {
     getdetails(){
       // let facility = [],
 
+    },
+    bedVerify(){//床数验证，小于5
+      let reg = /^[1-5]$/
+      if(!reg.test(this.formData.bednum)){
+        this.$message.error('床数不能超过5哦~请重新输入~')
+        this.formData.bednum=''
+      }
     },
     // 得到相册
     getphoto(){

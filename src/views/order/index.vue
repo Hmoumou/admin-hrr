@@ -3,13 +3,13 @@
     <div class="orderScreen clearfix">
       <el-card class="box-card carditem clearfix order-item">
         <div slot="header" class="header clearfix">
-          <el-button style="float: right; padding: 3px 0" type="text">更多搜索选项
+          <el-button style="float: right; padding: 3px 0" type="text" @click="handleMore">更多搜索选项
             <i class="iconfont icon-arw-top-copy" v-if="!moreSearch"></i>
-            <i class="iconfont icon-arrow-up" v-if="moreSearch"></i>
+            <i class="iconfont icon-arrow-up fs14" v-if="moreSearch"></i>
           </el-button>
            <div class="seachBox  clearfix">
                 <div class="seek-box">
-                    <input type="text" v-model="boxData.username" placeholder="订单号/预定人/预订人手机号">
+                    <input type="text" v-model="boxData.searchdata" placeholder="订单号/预定人/预订人手机号">
                     <div class="seek" @click="handleSearch">搜索</div>
                 </div>
            </div>
@@ -74,7 +74,7 @@
                     <div slot="header" class="header"><span class="title">订单详情</span> </div>
 
                     <div class="table" >
-                        <table class="table1">
+                        <table class="table1 mb15">
                             <tr>
                                 <th>订单编号</th>
                                 <td class="blue">{{searchData[dataIndex].totalMoney}}</td>
@@ -82,7 +82,7 @@
                                 <td class="blue fw fs16">{{searchData[dataIndex].type}}</td>
                             </tr>
                         </table>
-                         <table class="table2">
+                        <table class="table2 mb15">
                             <tr class="bg">
                                 <th>预订人姓名</th>
                                 <td >{{searchData[dataIndex].username}}</td>
@@ -102,13 +102,13 @@
                                 <td>{{searchData[dataIndex].endTime}}</td>
                             </tr>
                         </table>
-                        <table class="desc">
+                        <table class="desc mb15">
                             <tr>
                                 <th>备注</th>
                                 <td>{{searchData[dataIndex].desc}}</td>
                             </tr>
                         </table>
-                         <table class="table3">
+                         <table class="table3 mb15">
                             <tr class="bg">
                                 <th>支付方式</th>
                                 <td >{{searchData[dataIndex].payType}}</td>
@@ -165,7 +165,7 @@
                                     <div class="leave-Details">
                                         <p class='fw'>订单详情</p>
                                        <div class="dialog-table">  
-                                           <table>
+                                           <table class="last-table">
                                                <tr>
                                                    <th>订单编号</th>
                                                    <td>{{searchData[dataIndex].totalMoney}}</td>
@@ -205,7 +205,7 @@
                                     <div class="backMoney-Details">
                                         <p class='fw'>退款详情</p>
                                         <div class="dialog-table">
-                                            <table>
+                                            <table class="last-table">
                                                  <tr>
                                                    <th>押金</th>
                                                    <td>200</td>
@@ -229,6 +229,15 @@
                                 </div>
                             </el-dialog>
                         </div>
+                        <!-- 已离店订单 -->
+                        <div class="isLeave" v-if="isLeave">
+                            <table class="table4">
+                                <tr>
+                                    <th>订单评价</th>
+                                    <td >{{searchData[dataIndex].evaluate}}</td>
+                                </tr>
+                            </table>
+                        </div>
                         <!-- 失效订单 -->
                         <div class="disabledOrder" v-if="isLose">
                             <table class="table4">
@@ -244,7 +253,7 @@
           <div class="orderDetail-left clearfix" >
               <div class="searchTitle clearfix">
                 <span class="span flr">共{{searchData.length}}条消息 </span>
-                <span class="span">查询 "{{boxData.username}}"</span>
+                <span class="span">查询 "{{boxData.searchdata}}"</span>
               </div>
             <el-scrollbar class="scollbar">
                 <div class="searchContent clearfix" v-for="(item, index) in searchData" :key="index">
@@ -291,8 +300,11 @@ export default {
         activeIndex:'1',
         dataIndex: 0,
         boxData:{
-            username:'梁朝伟'
+            // username:'梁朝伟',
+            searchdata:'',
         },
+        dateSearch:'',//按时间搜索
+        typeSearch:'',//按房型搜索
         options:[
             {
                 value:'1',
@@ -307,8 +319,7 @@ export default {
                 label:'豪华大床房4'
             },
         ],
-        dateSearch:'',//按时间搜索
-        typeSearch:'',//按房型搜索
+       
         searchData: [
           {
             //   start
@@ -330,7 +341,8 @@ export default {
             totalMoney:'150 0000 0000',
             startTime:'2018/07/04',
             endTime:'2018/07/05',
-            roomId:'101'
+            roomId:'101',
+            evaluate:'房间很舒适，好评~'//新加评价
           },
           {
               //   start
@@ -352,7 +364,8 @@ export default {
             totalMoney:'150 0000 0000',
             startTime:'2018-07-04',
             endTime:'2018-07-05',
-            roomId:'102'
+            roomId:'102',
+            evaluate:'房间很舒适，好评~'
           },
           {
               //   start
@@ -374,7 +387,8 @@ export default {
             totalMoney:'150 0000 0000',
             startTime:'2018-07-04',
             endTime:'2018-07-05',
-            roomId:'103'
+            roomId:'103',
+            evaluate:'房间很舒适，好评~'
           },
           {
               //   start
@@ -396,12 +410,16 @@ export default {
             totalMoney:'2018',
             startTime:'2018-07-04',
             endTime:'2018-07-05',
-            roomId:'104'
+            roomId:'104',
+            evaluate:'房间很舒适，好评~'
           }
         ]
     };
   },
   methods: {
+    handleMore(){
+        this.moreSearch = !this.moreSearch
+    },//点击更多-----搜索
     handleRoomId(){},//分配房间号
     handleLeaveYES(){},//确认离店，退押金
     handleGoon(){
@@ -422,22 +440,35 @@ export default {
         this.dialogFormVisible = false
         console.log('我拒绝')
     },
-    handleSearch() {},
+    handleSearch(e) {//点击搜索进行验证
+    
+        let reg1 = /^[\u4e00-\u9fa5]{1,}$/ //输入的为汉字
+        let reg2 = /^(13[0-9]|14[579]|15[0-3,5-9]|16[6]|17[0135678]|18[0-9]|19[89])\d{8}$/ //手机号验证
+        if(reg1.test(this.boxData.searchdata)){
+            console.log('可以按名字搜索了..');
+        }else if(reg2.test(this.boxData.searchdata)){
+            console.log('可以按手机号搜索了..');
+        }else{
+            console.log('全部去订单里吧..');
+        }
+
+
+        // 点击限制
+        // if(this.isClick){
+        //     this.isClick = false
+        //     console.log(e);
+        //     console.log('111111');
+        //     setTimeout(()=>{
+        //         this.isClick = true
+        //     },4000)
+        // }
+        },
+        
     handleSelect(key, keyPath) {
         console.log(key, keyPath);
         this.dataIndex = 0;
         this.activeIndex = key
         console.log('index',this.activeIndex);
-    },
-    handleSearch(e){
-      if(this.isClick){
-          this.isClick = false
-          console.log(e);
-          console.log('111111');
-          setTimeout(()=>{
-              this.isClick = true
-          },4000)
-      }
     },
     activeData(index) {
       this.dataIndex = index;
@@ -489,6 +520,22 @@ export default {
 </script>
 
 <style scoped lang='scss'>
+// 切换订单是的active
+/deep/ .el-menu--horizontal>.el-menu-item.is-active{
+    // border: none;
+    background: url('../../image/办理入住/矩形111.png')no-repeat;
+    background-size: 100%;
+    color: #fff;
+}
+/deep/ .el-menu--horizontal>.el-menu-item{
+    width: 150px;
+    height: 45px;
+    line-height: 45px;
+    border:1px solid #f0f5ff;
+    background: #f7faff;
+    padding: 0 40px;
+    // color: #518dfd;
+}
 // 新增样式
 .untreated{//未处理订单
     margin: 0 auto;
@@ -508,7 +555,16 @@ export default {
     width: 240px;
     margin-top: 40px;
     .dialog-table{
-
+        // border: 1px solid #d6e4ff;
+        margin: 10px;
+    }
+    .last-table{
+        border-collapse: collapse;
+        tr:nth-child(odd){
+            background: #f7faff;
+            margin-bottom: 0;
+        }
+        /deep/ .el-input__inner{ background: #fff; }
     }
 }
 
@@ -619,10 +675,14 @@ export default {
         }
         .table{
             table{
-                margin-bottom: 15px;
+                // margin-bottom: 15px;
+                border-collapse: collapse;
                 text-align: center;
-                border: 1px solid  #f7faff;
+                border: 1px solid  #d6e4ff;
                 width: 100%;
+                tr:nth-child(odd){
+                    th{ background: #f0f5ff; }
+                }
                 th{ height: 45px; width:22%; background: #f7faff; font-size: 14px; }
                 td{ height: 45px; width:33%;font-size: 12px }
             }
@@ -648,4 +708,5 @@ export default {
 .el-input__inner { padding: 0;background: #f9fbff;border: none;height: 36px;line-height: 36px;}
 .el-button{ border-radius: 20px;  padding: 6px 20px; font-size: 14px;}
 .el-button--text {font-size: 14px; margin-top: 9px;}
+.mb15{ margin-bottom: 15px;}
 </style>

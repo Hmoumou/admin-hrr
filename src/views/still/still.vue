@@ -387,6 +387,8 @@
     .backwraper{
       cursor: pointer;
         .backImg{
+        margin-right: 10px;
+        margin-top: 5px;
         display: inline-block;
         width: 40px;
         height: 40px;
