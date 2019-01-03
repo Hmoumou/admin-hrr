@@ -1,11 +1,10 @@
 <template>
   <div class="order">
     <div class="orderScreen clearfix">
-      <el-card class="box-card carditem clearfix order-item">
+      <el-card class="box-card carditem clearfix order-item" df>
         <div slot="header" class="header clearfix">
           <el-button style="float: right; padding: 3px 0" type="text" @click="handleMore">更多搜索选项
-            <i class="iconfont icon-arw-top-copy" v-if="!moreSearch"></i>
-            <i class="iconfont icon-arrow-up fs14" v-if="moreSearch"></i>
+            <i class="iconfont icon-arw-top-copy" :class="{'active-rotate': moreSearch}" ></i>
           </el-button>
            <div class="seachBox  clearfix">
                 <div class="seek-box">
@@ -19,40 +18,44 @@
             <el-input v-model="searchData.text" placeholder="订单号/预订人/预订人手机号" class="input"></el-input>
             <el-button type="primary" class="btn" @click="">搜索</el-button>
           </div> -->
-        </div>
-        <div class="dialog" v-if='moreSearch'>
-           <el-form>
-                <el-form-item label="按房型选择">
-                    <el-select v-model="typeSearch" placeholder="请选择">
-                        <el-option
-                        v-for="item in options"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value">
-                        </el-option>
-                    </el-select>
-                </el-form-item>
-                <el-form-item label="按时间选择" class="clearfix">
-                    <el-button type="primary" class="flr">
-                        查询
-                    </el-button>
-                   <!-- <el-date-picker
-                    v-model="dateSearch"
-                    type="datetime"
-                    placeholder="选择日期时间">
-                    </el-date-picker> -->
-                    <el-date-picker
-                        v-model="dateSearch"
-                        type="date"
-                        placeholder="选择日期">
-                    </el-date-picker>
-                    
-                </el-form-item>
 
-           </el-form>
         </div>
+
+        <transitionBox v-model="moreSearch">
+          <div class="dialog">
+            <el-form>
+              <el-form-item label="按房型选择">
+                <el-select v-model="typeSearch" placeholder="请选择">
+                  <el-option
+                    v-for="item in options"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                  </el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item label="按时间选择" class="clearfix">
+                <el-button type="primary" class="flr">
+                  查询
+                </el-button>
+                <!-- <el-date-picker
+                 v-model="dateSearch"
+                 type="datetime"
+                 placeholder="选择日期时间">
+                 </el-date-picker> -->
+                <el-date-picker
+                  v-model="dateSearch"
+                  type="date"
+                  placeholder="选择日期">
+                </el-date-picker>
+
+              </el-form-item>
+
+            </el-form>
+          </div>
+        </transitionBox>
       </el-card>
- 
+
     </div>
     <div class="orderDetails">
         <el-menu
@@ -164,7 +167,7 @@
                                 <div class="mian">
                                     <div class="leave-Details">
                                         <p class='fw'>订单详情</p>
-                                       <div class="dialog-table">  
+                                       <div class="dialog-table">
                                            <table class="last-table">
                                                <tr>
                                                    <th>订单编号</th>
@@ -198,7 +201,7 @@
                                                    <th>实际金额</th>
                                                    <td>799.6</td>
                                                </tr>
-                                        
+
                                            </table>
                                        </div>
                                     </div>
@@ -219,7 +222,7 @@
                                                    <td>RMB 1384.4</td>
                                                </tr>
                                             </table>
-                                            
+
                                         </div>
                                     </div>
                                 </div>
@@ -284,8 +287,12 @@
 </template>
 
 <script>
+  import transitionBox from '@/components/transitionBox'
 export default {
   name: "order",
+  components: {
+    transitionBox
+  },
   data() {
     return {
         moreSearch:true,//更多搜索选项
@@ -319,7 +326,7 @@ export default {
                 label:'豪华大床房4'
             },
         ],
-       
+
         searchData: [
           {
             //   start
@@ -328,7 +335,7 @@ export default {
             source:'网络订单',
             loseCause:'商家拒绝，拒绝原因“禁止携带宠物。”',
             type:'失效订单',
-            houseType:'豪华大床房',         
+            houseType:'豪华大床房',
             price:'299',
             desc:'请打扫人员提前打扫房间，我有洁癖。',
             payType:'支付宝',
@@ -351,7 +358,7 @@ export default {
             source:'网络订单',
             loseCause:'商家拒绝，拒绝原因“禁止携带宠物。”',
             type:'失效订单',
-            houseType:'豪华大床房',         
+            houseType:'豪华大床房',
             price:'399',
             desc:'请打扫人员提前打扫房间，我有洁癖。',
             payType:'支付宝',
@@ -374,7 +381,7 @@ export default {
             source:'网络订单',
             loseCause:'商家拒绝，拒绝原因“禁止携带宠物。”',
             type:'失效订单',
-            houseType:'豪华大床房',         
+            houseType:'豪华大床房',
             price:'100',
             desc:'请打扫人员提前打扫房间，我有洁癖。',
             payType:'支付宝',
@@ -397,7 +404,7 @@ export default {
             source:'网络订单',
             loseCause:'商家拒绝，拒绝原因“禁止携带宠物。”',
             type:'已入住',
-            houseType:'豪华大床房',         
+            houseType:'豪华大床房',
             price:'100',
             desc:'请打扫人员提前打扫房间，我有洁癖。',
             payType:'支付宝',
@@ -441,7 +448,7 @@ export default {
         console.log('我拒绝')
     },
     handleSearch(e) {//点击搜索进行验证
-    
+
         let reg1 = /^[\u4e00-\u9fa5]{1,}$/ //输入的为汉字
         let reg2 = /^(13[0-9]|14[579]|15[0-3,5-9]|16[6]|17[0135678]|18[0-9]|19[89])\d{8}$/ //手机号验证
         if(reg1.test(this.boxData.searchdata)){
@@ -463,7 +470,7 @@ export default {
         //     },4000)
         // }
         },
-        
+
     handleSelect(key, keyPath) {
         console.log(key, keyPath);
         this.dataIndex = 0;
@@ -520,6 +527,17 @@ export default {
 </script>
 
 <style scoped lang='scss'>
+  .icon-arw-top-copy {
+    transition: transform ease .1s;
+    width: 16px;
+    height: 16px;
+    line-height: 1;
+    display: inline-block;
+  }
+  .active-rotate {
+    transform: rotateZ(-90deg);
+  }
+
 // 切换订单是的active
 /deep/ .el-menu--horizontal>.el-menu-item.is-active{
     // border: none;
@@ -579,11 +597,23 @@ export default {
     // overflow-x: hidden;
     //顶部查询框样式
   .orderScreen{
-    min-height : 165px;
-    position: relative;
+    /deep/ .dy-transition-box {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: #f9fafd;
+      border:1px solid #dbe7ff;
+      z-index: 998;
+    }
+
+    /deep/ .el-card {
+      overflow: visible;
+    }
+
     /deep/ .el-card__body{
-        background: #f9fafd;
-        border:1px solid #dbe7ff;
+      position: relative;
+      padding: 0;
     }
     /deep/ .el-button{
         width: 200px;
@@ -593,17 +623,16 @@ export default {
     // border: 0.1px solid #fff;
     .dialog{
         /deep/ .el-input__inner{
-            padding-left:25px; 
+            padding-left:25px;
             border:1px solid #b3ccff;
             background: #fff;
         }
     }
     .carditem {
-        position: absolute;
-        top: -20px;
-        left: -20px;
-        right: -20px;
-        }
+      /*margin: ;*/
+      $rMargin: -11px;
+      margin: $rMargin $rMargin 0 $rMargin;
+    }
     .seachBox{
         margin-top: 5px;
         float: right;
@@ -652,7 +681,8 @@ export default {
 }
 //下面订单详情样式
 .orderDetails{
-     margin-top: 60px;
+  margin-top: 10px;
+
      .orderDetail-left{
          padding-right: 12px;
          width:35%;
@@ -672,6 +702,7 @@ export default {
          width: 60%;
         /deep/ .el-card__header,.el-card{
             border: none;
+            overflow: auto;
         }
         .table{
             table{
