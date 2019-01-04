@@ -7,40 +7,47 @@
           <el-col :span="16">
             <div class="grid-content bg-purple">
               <div class="left ">
-                <el-form :model='formData' label-width="140px" label-position='left'>
-                  <el-form-item label="房型选择" prop="houseType">
-                    <el-select class="w300" v-model="formData.houseType" placeholder="请选择房型">
-                      <el-option label="豪华大床房" value="0"></el-option>
-                      <el-option label="双标签" value="1"></el-option>
-                      <el-option label="豪华海景大床房" value="2"></el-option>
-                      <el-option label="豪华家庭房" value="3"></el-option>
-                      <el-option label="天字一号房" value="4"></el-option>
+                <el-form  label-width="140px" label-position='left'>
+                  <el-form-item label="房型选择" prop="houseType" >
+                    <el-select class="w300" 
+                    v-model="formData.houseType"
+                    @change="handleGetCash()"   
+                    placeholder="请选择房型">
+                      <el-option 
+                      v-for="(item,index) in AData"
+                      :key="index"
+                      :label="item.houseinfo"
+                      :value="item.id"
+                      ></el-option>
                     </el-select>
                   </el-form-item>
                   <!--改编版-->
                   <el-form-item label="入住时间" prop="checkTime">
-                    <el-date-picker
-                      v-model="formData.checkTime"
+                    <!-- <el-date-picker
+                      v-model="formData.starttime"
                       type="datetime"
                       placeholder="选择日期时间">
+                    </el-date-picker> -->
+                    <el-date-picker
+                      v-model="formData.starttime"
+                      type="date"
+                      placeholder="选择日期">
                     </el-date-picker>
                   </el-form-item>
                   <el-form-item label="离店时间" prop="leaveTime">
-                    <el-date-picker
-                      v-model="formData.leaveTime"
+                    <!-- <el-date-picker
+                      v-model="formData.endtime"
                       type="datetime"
-                      placeholder="选择日期时间">
+                      placeholder="选择日期时间"
+                      >
+                    </el-date-picker> -->
+                    <el-date-picker
+                      v-model="formData.endtime"
+                      type="date"
+                      placeholder="选择日期"
+                      @change="handleTime">
                     </el-date-picker>
                   </el-form-item>
-                  <!--<el-form-item label="入住日期-离店日期" >-->
-                  <!--<el-date-picker-->
-                  <!--v-model="formData.checkTime"-->
-                  <!--type="daterange"-->
-                  <!--range-separator="至"-->
-                  <!--start-placeholder="开始日期"-->
-                  <!--end-placeholder="结束日期">-->
-                  <!--</el-date-picker>-->
-                  <!--</el-form-item>-->
                   <el-form-item label="房间编号" prop="houseId">
                     <el-input class="w300" v-model="formData.houseId"></el-input>
                   </el-form-item>
@@ -69,11 +76,11 @@
           <el-col :span="8">
             <div class="grid-content bg-purple">
               <div class="right  clearfix">
-                <div class="right-data " :model="moneyData">
-                  <div class="item">房价<span class="span data">RMB {{moneyData.price}} /晚</span></div>
-                  <div class="item">时间<span class="span data">{{moneyData.long}}/晚</span></div>
-                  <div class="item">押金 <span class="span data">RMB {{moneyData.earnest}}</span></div>
-                  <div class="lastItem">总金额<span class="span lastData">RMB {{moneyData.total}}/晚</span></div>
+                <div class="right-data ">
+                  <div class="item">房价<span class="span data">RMB {{formData.price}}</span></div>
+                  <div class="item">时间<span class="span data">{{formData.long}}/晚</span></div>
+                  <div class="item">押金 <span class="span data">RMB {{formData.cash}}</span></div>
+                  <div class="lastItem">总金额<span class="span lastData">RMB {{formData.total}}</span></div>
                   <div class="btnss fs14" @click="handleCheck">入住</div>
                   <el-dialog
                     :visible.sync="centerDialogVisible"
@@ -154,15 +161,21 @@
       return {
         centerDialogVisible: false,
         isSuccess: false,
+        getcashIndex:'',
         Yes: false,
         isOk: true,
         // 入住订单绑定的数据
         formData: {
+          price: "0",
+          long: "0",
+          cash: "0",
+          total: "0",
+
           houseType: '',
           check: '',
-          leaveTime: '',
+          leaveTime: '',      
           houseId: '',
-          payType: '1',
+          // payType: '1',
           // 需要上传的数据
           merchantid:this.$store.state.mchid,//商户id
           orderType:2,
@@ -172,17 +185,13 @@
           starttime:'',//开始时间
           endtime:'',//开始时间,
           roomnumber:'',//分配的房间编号
-          payType:'',
+          payType:'1',
           count:'',//入住天数 需自己计算
           payCountPrice:'',//订单支付总金额
           roomPrice:'',//房间单价
+          roomamount:1//房间数量
         },
-        moneyData: {
-          price: 888,
-          long: 5,
-          earnest: 88,
-          total: 4528
-        },
+
         // 入住人数据
         userData: {
           username: '王小明',
@@ -202,10 +211,48 @@
             idIsOk: false,
             phoneIsOk: false,
           }
+        ],
+        AData:[
+
         ]
       }
     },
     methods: {
+      // 根据房型id的变化得到相对应的押金
+      handleGetCash(index){
+        console.log("触发了change事件...",this.formData.houseType)
+        this.AData.map(item=>{       
+          if(item.id == this.formData.houseType){
+            this.formData.cash = item.cash
+          }
+        })
+      },
+      // 选择结束时间之后进行的逻辑  需要请求接口拿到时间段内的房价
+      handleTime(){
+        var UNIX1 = Number(this.formData.starttime)
+        var UNIX2 = Number(this.formData.endtime)
+        // console.log(UNIX1,UNIX2)
+        if(UNIX2>UNIX1){
+          var d = new Date(this.formData.starttime)
+          var d1 = new Date(this.formData.endtime)
+          this.formData.starttime = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
+          this.formData.endtime = d1.getFullYear() + '-' + (d1.getMonth() + 1) + '-' + d1.getDate();
+          // console.log('this.formData',this.formData.starttime,this.formData.endtime)
+          var data = {
+            merchantid:this.$store.state.mchid,
+            hotelid:this.formData.houseType,
+            starttime:this.formData.starttime,
+            endtime:this.formData.endtime
+          }
+            this.$axios.post('/zftds/hotel/house/selectHotelCalendar',data).then(res=>{
+              console.log(res)
+            })
+        }else{
+          this.$message.warning('入住时间不能为空且必须小于离店时间')
+          this.formData.starttime = ''
+          this.formData.endtime = ''
+        }
+      },
       // 身份证号验证
       idVerify(index) {
         var reg = /(^\d{17}(\d|X|x)$)/
@@ -267,12 +314,17 @@
       },
       handleClose() {
         this.centerDialogVisible = false
+      },
+      // 得到房型信息与房价信息等
+      getHotelData(){
+        this.$axios.post('/zftds/hotel/house/selectHotelHouseS',{merchantid:this.$store.state.mchid}).then(res=>{
+          // res.data.map(item=>{ // console.log(item.id,item.houseinfo,item.price,item.cash)})
+          this.AData = [...res.data]
+        })
       }
-
-
     },
     created() {
-      console.log(this.$store.state.mchid);
+      this.getHotelData()
     }
   }
 </script>

@@ -142,7 +142,7 @@
           <!-- describe  -->
           <div class="item">
             <div class="itemDetail clearfix">
-              <span class="itemTitle ">描述</span>
+              <span class="itemTitle ">使用须知</span>
               <span class="detailText ">{{homeData[activeIndex].remark}}</span>
             </div>
           </div>
@@ -324,7 +324,8 @@ export default {
     },
     handleClickThumbs(index) {
       console.log(index, index);
-      this.$refs.mySwiper1.swiper.slideTo(index + 1)
+      // this.$refs.mySwiper1.swiper.slideTo(index + 1)
+      this.$refs.mySwiper1.swiper.slideTo(index)
       this.slideIndex = index;
     },
     showCreateView() {

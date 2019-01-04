@@ -23,6 +23,7 @@
     </div>
 
     <!--上传图片用-->
+    <!-- action="http://zftds.zhifupaytech.com/zftds/uploadFileS" -->
     <!--   action="http://192.168.3.9/zftds/uploadFileS" -->
     <el-upload
       v-if="allArr<5"
@@ -46,7 +47,7 @@
     <el-upload
      class="dy-upload-wrap"
       v-show="false"
-     action="http://zftds.zhifupaytech.com/zftds/uploadFileS"
+      action="http://zftds.zhifupaytech.com/zftds/uploadFileS"
       :show-file-list="false"
       :data="data"
       :on-success="handleChangeSuccess">

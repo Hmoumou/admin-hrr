@@ -11,9 +11,9 @@
         </div>
         <!-- 右表格 -->
         <el-form  class="rightForm" :model='formData' label-width="100px" label-position='left'>
-           <!-- <el-form-item label="押金" prop="cash">
+          <el-form-item label="押金" prop="cash">
             <el-input class="detailInfo" v-model="formData.cash"  placeholder='请设置该房型押金金额'></el-input>
-          </el-form-item> -->
+          </el-form-item>
           <el-form-item label="无烟信息" prop="smoke">
             <el-input class="detailInfo" v-model="formData.smoke"  placeholder='该房型有无烟房，可无烟处理'></el-input>
           </el-form-item>
@@ -21,7 +21,7 @@
             <el-input class="detailInfo" v-model="formData.person"   placeholder='请输入人数'></el-input>
             人
           </el-form-item>
-          <el-form-item label="描述" prop="remark">
+          <el-form-item label="使用须知" prop="remark">
             <el-input class="describeInfo" v-model="formData.remark"  type="textarea" :rows="5"  placeholder='大床1.8米'></el-input>
           </el-form-item>
         </el-form>
@@ -136,7 +136,7 @@ export default {
         remark:"",
         roomsnum:"",
         smoke:"",
-        // cash:""
+        cash:""
       },
       photoArr:[],
 

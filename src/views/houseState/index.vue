@@ -53,7 +53,8 @@
                 {{item.houseinfo}}
                 <!--接口真实数据-->
               </td>
-              <td v-if="activeIndex == 1"
+              <td 
+                  v-if="activeIndex == 1"
                   v-for="(it,index) in item.arr"
                   @click="handleClick(it, index)"
                   :class="getClass(it)"
@@ -194,7 +195,8 @@
           price:'',
           hotelid:'',
           ytd:'',
-          activityprice:''
+          activityprice:'',
+          id:'1'
         }
       }
     },
@@ -206,19 +208,20 @@
         //如果修改前的活动价为空
         if(this.EditPriceData.activityprice == ''){
           this.EditPriceData.activityprice = this.houseData2.houseType[this.youHaveIndex].arr[this.youHaveIndex1].activityprice
-          // console.log(this.EditPriceData);
+          console.log(this.EditPriceData);
           this.$axios.post('/zftds/hotel/house/insertHotelCalendar',this.EditPriceData).then(res=>{
             console.log('添加活动价格',res)
             if(res.code == 1){
               this.$message.success('添加价格成功')
               this.isShowDialog1 = false;
+              this.getPrice()
               // this.
             }else{
               this.$message.error(res.msg)
               this.isShowDialog1 = false;
             }
           })
-        }else{
+        }else if(this.EditPriceData.activityprice&&this.EditPriceData.activityprice != ""){
             this.EditPriceData.activityprice = this.houseData2.houseType[this.youHaveIndex].arr[this.youHaveIndex1].activityprice
             this.$axios.post('/zftds/hotel/house/updateHotelCalendar',this.EditPriceData).then(res=>{
               console.log('更新活动价格',res);
@@ -230,7 +233,7 @@
       getPrice(){
         let url = '/zftds/hotel/house/selectHotelCalendar';
         return new Promise((resolve, reject) => {
-          this.$axios.post(url ,
+          this.$axios.post(url,
             {merchantid:this.$store.state.mchid })
             .then(res=>{
               resolve(res.data)
@@ -348,6 +351,7 @@
             this.getPrice().then(priceArr => {
               // 1. 先截取15天的有效数据
               let filterArr = priceArr.filter(item => {
+                // console.log('你要的item',item.id);
                 let itemDateStr = moment(item.addtime).format("YYYY-MM-DD"); // 生成 2018-12-02这样的时间字符串
                 let nowDateStr = moment(this.currentDate).format("YYYY-MM-DD"); // 注释同上
                 let itemParseUnix = Date.parse(itemDateStr); // 生成以日为标准的unix时间戳既不考虑时分秒毫秒
@@ -371,6 +375,7 @@
               * */
               let secondFilter = [];
               filterArr.forEach((i, idx, filArr) => {
+                console.log('i',i)
                 let resultItem = secondFilter.find(item => { // 查找二次过滤的数组里，同行同列的项目
                   return i.hotelid == item.hotelid && i.ytd == item.ytd;
                 });
