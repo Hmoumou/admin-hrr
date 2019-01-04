@@ -48,24 +48,24 @@
                       @change="handleTime">
                     </el-date-picker>
                   </el-form-item>
-                  <el-form-item label="房间编号" prop="houseId">
-                    <el-input class="w300" v-model="formData.houseId"></el-input>
+                  <el-form-item label="房间编号" prop="roomnumber">
+                    <el-input class="w300" v-model="formData.roomnumber"></el-input>
                   </el-form-item>
                   <el-form-item label="支付方式" prop="payType" class="payType">
-                    <label :class="{active: checkPay == 1}" @click="handlePayToZFB">
-                      <input :value="1" type="radio" v-model="checkPay" class="radio-input" name="pay">
+                    <label :class="{active: formData.payType == 1}" @click="handlePayToZFB">
+                      <input :value="1" type="radio" v-model="formData.payType" class="radio-input" name="pay">
                       <div class="dui"></div>
                     </label>
-                    <label :class="{ active: checkPay == 2}" @click="handlePayToWX">
-                      <input :value="2" type="radio" v-model="checkPay" class="radio-input" name="pay">
+                    <label :class="{ active: formData.payType == 2}" @click="handlePayToWX">
+                      <input :value="2" type="radio" v-model="formData.payType" class="radio-input" name="pay">
                       <div class="dui"></div>
                     </label>
-                    <label :class="{ active: checkPay == 3}" @click="handlePayToOnline">
-                      <input :value="3" type="radio" v-model="checkPay" class="radio-input" name="pay">
+                    <label :class="{ active: formData.payType == 3}" @click="handlePayToOnline">
+                      <input :value="3" type="radio" v-model="formData.payType" class="radio-input" name="pay">
                       <div class="dui"></div>
                     </label>
-                    <label :class="{ active: checkPay == 4}" @click="handlePayToMoney">
-                      <input :value="4" type="radio" v-model="checkPay" class="radio-input" name="pay">
+                    <label :class="{ active: formData.payType == 4}" @click="handlePayToMoney">
+                      <input :value="4" type="radio" v-model="formData.payType" class="radio-input" name="pay">
                       <div class="dui"></div>
                     </label>
                   </el-form-item>
@@ -77,10 +77,10 @@
             <div class="grid-content bg-purple">
               <div class="right  clearfix">
                 <div class="right-data ">
-                  <div class="item">房价<span class="span data">RMB {{formData.price}}</span></div>
-                  <div class="item">时间<span class="span data">{{formData.long}}/晚</span></div>
+                  <div class="item">房价<span class="span data">RMB {{formData.countPrice}}</span></div>
+                  <div class="item">时间<span class="span data">{{formData.count}}/晚</span></div>
                   <div class="item">押金 <span class="span data">RMB {{formData.cash}}</span></div>
-                  <div class="lastItem">总金额<span class="span lastData">RMB {{formData.total}}</span></div>
+                  <div class="lastItem">总金额<span class="span lastData">RMB {{formData.payCountPrice}}</span></div>
                   <div class="btnss fs14" @click="handleCheck">入住</div>
                   <el-dialog
                     :visible.sync="centerDialogVisible"
@@ -166,10 +166,7 @@
         isOk: true,
         // 入住订单绑定的数据
         formData: {
-          price: "0",
-          long: "0",
           cash: "0",
-          total: "0",
 
           houseType: '',
           check: '',
@@ -184,10 +181,11 @@
           cashPledge:'',//押金 （需要根据选择的房型渲染）
           starttime:'',//开始时间
           endtime:'',//开始时间,
-          roomnumber:'',//分配的房间编号
+          roomnumber:'',//房间编号
           payType:'1',
-          count:'',//入住天数 需自己计算
-          payCountPrice:'',//订单支付总金额
+          count:'0',//入住天数 需自己计算
+          countPrice:'0',//房间总价
+          payCountPrice:'0',//订单支付总金额
           roomPrice:'',//房间单价
           roomamount:1//房间数量
         },
@@ -223,7 +221,10 @@
         console.log("触发了change事件...",this.formData.houseType)
         this.AData.map(item=>{       
           if(item.id == this.formData.houseType){
+            // console.log(item)
             this.formData.cash = item.cash
+            this.formData.roomPrice = item.price
+            console.log(this.formData.countPrice)
           }
         })
       },
@@ -237,6 +238,13 @@
           var d1 = new Date(this.formData.endtime)
           this.formData.starttime = d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
           this.formData.endtime = d1.getFullYear() + '-' + (d1.getMonth() + 1) + '-' + d1.getDate();
+          // 拼接天数 总天数
+          var days = d1.getTime()-d.getTime()
+          var dayy = parseInt(days/(1000*60*60*24))
+          // console.log('计算好的日期',dayy)
+          this.formData.count = dayy
+          this.formData.countPrice = this.formData.roomPrice*dayy
+          this.formData.payCountPrice = Number(this.formData.countPrice) + Number(this.formData.cash)
           // console.log('this.formData',this.formData.starttime,this.formData.endtime)
           var data = {
             merchantid:this.$store.state.mchid,
@@ -244,9 +252,9 @@
             starttime:this.formData.starttime,
             endtime:this.formData.endtime
           }
-            this.$axios.post('/zftds/hotel/house/selectHotelCalendar',data).then(res=>{
-              console.log(res)
-            })
+            // this.$axios.post('/zftds/hotel/house/selectHotelCalendar',data).then(res=>{
+            //   console.log(res)
+            // })
         }else{
           this.$message.warning('入住时间不能为空且必须小于离店时间')
           this.formData.starttime = ''
@@ -318,7 +326,9 @@
       // 得到房型信息与房价信息等
       getHotelData(){
         this.$axios.post('/zftds/hotel/house/selectHotelHouseS',{merchantid:this.$store.state.mchid}).then(res=>{
-          // res.data.map(item=>{ // console.log(item.id,item.houseinfo,item.price,item.cash)})
+          res.data.map(item=>{
+             console.log(item.id,item.houseinfo,item.price,item.cash)
+             })
           this.AData = [...res.data]
         })
       }
