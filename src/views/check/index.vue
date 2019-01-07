@@ -113,7 +113,7 @@
           <div class="grid-content bg-purple">
             <el-card class="btm-left box-card carditem clearfix">
               <div slot="header" class="header"><span class="title">入住人0{{index + 1}}</span></div>
-              <el-form :model='userData' label-width="100px" label-position='left'>
+              <el-form  label-width="100px" label-position='left'>
                 <el-form-item label="姓名" prop="username">
                   <el-input placeholder='请输入姓名' v-model="item.username"></el-input>
                 </el-form-item>
@@ -243,8 +243,8 @@
           var dayy = parseInt(days/(1000*60*60*24))
           // console.log('计算好的日期',dayy)
           this.formData.count = dayy
-          this.formData.countPrice = this.formData.roomPrice*dayy
-          this.formData.payCountPrice = Number(this.formData.countPrice) + Number(this.formData.cash)
+          // this.formData.countPrice = this.formData.roomPrice*dayy
+          // this.formData.payCountPrice = Number(this.formData.countPrice) + Number(this.formData.cash)
           // console.log('this.formData',this.formData.starttime,this.formData.endtime)
           var data = {
             merchantid:this.$store.state.mchid,
@@ -252,9 +252,9 @@
             starttime:this.formData.starttime,
             endtime:this.formData.endtime
           }
-            // this.$axios.post('/zftds/hotel/house/selectHotelCalendar',data).then(res=>{
-            //   console.log(res)
-            // })
+            this.$axios.post('/zftds/hotel/house/selectHotelCalendar',data).then(res=>{
+              console.log(res)
+            })
         }else{
           this.$message.warning('入住时间不能为空且必须小于离店时间')
           this.formData.starttime = ''

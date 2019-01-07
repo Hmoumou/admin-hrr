@@ -171,6 +171,15 @@ export default new Router({
             title:'酒店相册'
           },
         },
+        //胡然然酒店相册2.0
+        {
+          path: '/layout/hotelPhotoS',
+          name: 'hotelPhotoS',
+          component:()=>import('../views/sellerCenter/hr-hotelPhotos.vue'),
+          meta:{
+            title:'酒店相册'
+          },
+        },
 
 
 

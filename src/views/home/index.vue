@@ -69,7 +69,6 @@ import userComment from '@/components/userComment.vue'
             this.$store.commit('GET_USERINFO', mchid)
             // console.log(this.$store.state.mchid);
         }
-
     }
 </script>
 

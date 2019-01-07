@@ -61,7 +61,7 @@
                 <el-menu-item index="/layout/sellerCenter" :class="{active1:$route.name === 'sellerCenter'}" ><span>基本信息</span></el-menu-item>
                 <el-menu-item index="/layout/phoneWay" :class="{active1:$route.name === 'phoneWay'}"><span>联系方式</span></el-menu-item>
                 <el-menu-item index="/layout/policy" :class="{active1:$route.name === 'policy'}"><span>酒店政策</span></el-menu-item>
-                <el-menu-item index="/layout/photos" :class="{active1:$route.name === 'photos'}"><span>酒店相册</span></el-menu-item>
+                <el-menu-item index="/layout/hotelPhotoS" :class="{active1:$route.name === 'hotelPhotoS'}"><span>酒店相册</span></el-menu-item>
               </el-menu-item-group>
             </el-submenu>
              <el-menu-item index="/layout/auditCenter" id="item" :class="{active:$route.name === 'auditCenter'}">

@@ -25,17 +25,17 @@
       </div>
     </el-card>
     <el-card class="box-card carditem clearfix mesList">
-    <div slot="header" class="header">
-      <span class="title" style="font-size: 16px;padding-left: 12px;">其他</span>
-      <el-button style="float: right; padding: 3px 0;margin-top: 0px;" type="text" @click="photoToAddT">添加照片</el-button>
-    </div>
-    <div v-for="(o,index) in photoDetailT" :key="index" class="photoBox">
-      <div class="topPic">
-        <img :src="o.detail" alt="">
+      <div slot="header" class="header">
+        <span class="title" style="font-size: 16px;padding-left: 12px;">其他</span>
+        <el-button style="float: right; padding: 3px 0;margin-top: 0px;" type="text" @click="photoToAddT">添加照片</el-button>
       </div>
-      <div class="downText">{{o.title}}</div>
-    </div>
-  </el-card>
+      <div v-for="(o,index) in photoDetailT" :key="index" class="photoBox">
+        <div class="topPic">
+          <img :src="o.detail" alt="">
+        </div>
+        <div class="downText">{{o.title}}</div>
+      </div>
+    </el-card>
 
     <div class="addBox" v-if="showAdd">
       <div class="addbg">
@@ -81,32 +81,13 @@ import upload from '@/components/imgupload/hotel-photo.vue'
       },
         photoDetailF: [
           {title: "酒店大堂", detail: "/static/img/0001.2890d64.jpg"},
-          {title: "酒店大堂", detail: "/static/img/0001.2890d64.jpg"},
-          {title: "酒店大堂", detail: "/static/img/0001.2890d64.jpg"},
-          {title: "酒店大堂", detail: "/static/img/0001.2890d64.jpg"},
-          {title: "酒店大堂", detail: "/static/img/0001.2890d64.jpg"},
-          {title: "酒店大堂", detail: "/static/img/0001.2890d64.jpg"},
-          {title: "酒店大堂", detail: "/static/img/0001.2890d64.jpg"},
-          {title: "酒店大堂", detail: "/static/img/0001.2890d64.jpg"},
-          {title: "酒店大堂", detail: "/static/img/0001.2890d64.jpg"},
-          {title: "酒店大堂", detail: "/static/img/0001.2890d64.jpg"},
         ],
         photoDetailS: [
           {title: "酒店大堂", detail: "/static/img/0001.2890d64.jpg"},
           {title: "酒店大堂", detail: "/static/img/0001.2890d64.jpg"},
-          {title: "酒店大堂", detail: "/static/img/0001.2890d64.jpg"},
-          {title: "酒店大堂", detail: "/static/img/0001.2890d64.jpg"},
-          {title: "酒店大堂", detail: "/static/img/0001.2890d64.jpg"},
-          {title: "酒店大堂", detail: "/static/img/0001.2890d64.jpg"},
-          {title: "酒店大堂", detail: "/static/img/0001.2890d64.jpg"},
-          {title: "酒店大堂", detail: "/static/img/0001.2890d64.jpg"},
-          {title: "酒店大堂", detail: "/static/img/0001.2890d64.jpg"},
-          {title: "酒店大堂", detail: "/static/img/0001.2890d64.jpg"},
+          
         ],
         photoDetailT: [
-          {title: "酒店大堂", detail: "/static/img/0001.2890d64.jpg"},
-          {title: "酒店大堂", detail: "/static/img/0001.2890d64.jpg"},
-          {title: "酒店大堂", detail: "/static/img/0001.2890d64.jpg"},
           {title: "酒店大堂", detail: "/static/img/0001.2890d64.jpg"},
           {title: "酒店大堂", detail: "/static/img/0001.2890d64.jpg"},
         ],
@@ -266,7 +247,6 @@ import upload from '@/components/imgupload/hotel-photo.vue'
 
   .el-input{
     width: 400px;
-
   }
 
 

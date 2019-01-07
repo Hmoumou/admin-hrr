@@ -70,7 +70,9 @@
         <!-- <el-date-picker v-model="selectData.inDate" type="date" class="mr10" placeholder="入住日期"></el-date-picker>
         <el-date-picker v-model="selectData.goDate" type="date" class="mr10" placeholder="离店日期"></el-date-picker> -->
       </div>
-      <div class="userItem" v-for="(item,index) in userData" :key="index" :model="userData">
+
+      <!-- 当点击好评时显示 -->
+      <div class="userItem" v-if="appraise == 0" v-for="(item,index) in userData" :key="index" :model="userData">
         <el-row>
           <el-col :span="4">
             <div class="grid-content bg-purple">
@@ -107,16 +109,23 @@
                             <p class="c2 fs14 mb10 flr">{{item.commonTime}}</p>
                             <div class="flr fs14">
                               <span class="c3  fw cs" @click="handleEdit(index)">编辑</span>
-                              <span class="c2 ">  |  </span>
-                              <span class="c4 fw cs" @click="handleDelete(index)">删除</span>
+                              <!-- <span class="c2 ">  |  </span>
+                              <span class="c4 fw cs" @click="handleDelete(index)">删除</span> -->
                             </div>
                           </div>
                         </el-col>
                       </el-row>
                     </div>
-                    <el-button  v-if="!item.adminAsk&&!item.isShow" class="flr" type='primary' @click="handleReply(index)">
+                    <!-- 新加删除 -->
+                    <div class="delete-ask"  v-if="!item.adminAsk&&!item.isShow" >
+                    <el-button class="flr" type='danger' @click="DeleteEvaluation(index)">
+                      删除
+                    </el-button>
+                    <el-button  style="margin-right:10px;"  class="flr" type='primary' @click="handleReply(index)">
                       回复
                     </el-button>
+                    </div>
+                    
                     <div class="box-Reply clearfix"    v-if="item.isShow" data-index="index">
                         <textarea v-model='item.adminAsk' name="adminAsk" class="reply"  cols="42" rows="5">
                         </textarea>
@@ -135,6 +144,9 @@
           </el-col>
         </el-row>
        </div>
+      <div class="caping"  v-if="appraise == 1">
+        暂无差评哦~,我们会更加努力哒！
+      </div>
     </el-card>
   </div>
 </template>
@@ -223,6 +235,23 @@ export default {
     Star
   },
   methods: {
+    DeleteEvaluation(index){//点击删除一条评论
+      this.$confirm('此操作将永久删除该评论, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });          
+        });
+    },
     handleSelect() {
       console.log("点击按时间查询");
     },
@@ -399,7 +428,7 @@ export default {
     }
   }
   /deep/ .el-input--prefix .el-input__inner {background: #fff;}
-  /deep/ .el-button{ border-radius: 20px; border: 1px solid #409eff; width: 100px;
+  /deep/ .el-button{ border-radius: 20px;  width: 100px;
                        height: 32px; line-height: 8px;}
   .userItem {
     padding: 10px 0px;
@@ -433,7 +462,16 @@ export default {
             p{ color:#999; }
         }
         .box-Reply{  }
-        .reply{ display: block;width: 100%;border: none; background: #fff;}
+        .reply{ display: block;width: 100%;border: none; background: #fff;margin-bottom: 15px;}
+}
+// 差评盒子
+.caping{
+  border-radius: 10px;
+  margin-top: 20px;
+  padding: 30px;
+  background: #b3ccff;
+  color: #fff;
+  font-size: 16px;
 }
 .title { padding-left: 6px; border-left: 3px solid #75b8fc;}
 .header { font-weight: 700;}
@@ -446,6 +484,7 @@ export default {
 .c3 { color: #6b9cfd;}
 .c4 { color: #fd7e92;}
 .cs { cursor: pointer;}
+
 </style>
 <style>
 .el-main {

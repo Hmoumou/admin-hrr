@@ -34,6 +34,7 @@
       :show-file-list="false"
       :data="data"
       :limit="currentMax"
+      :before-upload="beforeAvatarUpload"
       :multiple="true"
       :on-exceed="handleLimit"
       :on-success="handleSuccess">
@@ -119,6 +120,13 @@
      
     },
     methods: {
+      beforeAvatarUpload(file){//图片上传大小限制为2MB
+        const isLt2M = file.size / 1024 / 1024 < 2;
+        if (!isLt2M) {
+          this.$message.error('上传图片大小不能超过 2MB!');
+        }
+        return  isLt2M;
+      },
       getToken() { // 获得上传token
         axios.get('http://upload.yaojunrong.com/getToken').then(res => {
           this.data.token = res.data.data
@@ -222,23 +230,18 @@
     float: left;
     width: $wrap-width;
     height: $wrap-height;
-
     &:hover .dy-upload-img--bottom{
         transform: translateY(0);
-
     }
-
     &:first-child {
       margin-left: 0;
       margin-bottom: 20px;
     }
-
     img {
       display: block;
       width: 100%;
       height: 100%;
     }
-
     .dy-upload-img--bottom {
       padding: 6px 0;
       position: absolute;
@@ -262,7 +265,7 @@
         color: #fff;
         cursor: pointer;
         user-select: none;
-
+        
         &:nth-child(3) { // 选中第三个自己
           border-right: none;
         }

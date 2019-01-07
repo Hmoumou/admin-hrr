@@ -65,7 +65,7 @@
           <span class="rightTitle">*最多上传5张</span>
           <span class="title">房型相册</span>
         </div>
-        <span class="secondTitle">*图片尺寸：1920*900</span>
+        <span class="secondTitle">*图片上限2MB</span>
         <div class="imageDiv ">
           <upload  v-model='photoArr'></upload>
         </div>

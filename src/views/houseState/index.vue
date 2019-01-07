@@ -11,9 +11,9 @@
         <span class="title">{{activeIndex == 1?"房态日历":"价格日历"}}</span>
 
       </div>
-      <div class="main-wrap" >
-        <div class="house-title" >
-          <div class="center-wrap" >
+      <div class="main-wrap">
+        <div class="house-title">
+          <div class="center-wrap">
             <span class="btn-default btn-left" @click="handleClickNext(-15)" :class="{active: btnLeftActive}">
               <i class="el-icon-arrow-left icon-btn"></i>
               前15天
@@ -28,7 +28,7 @@
               v-model="currentDate"
               :options="pickerOptions"
               @on-change="pickerChange"
-              placeholder="请选择想查看的日期" />
+              placeholder="请选择想查看的日期"/>
           </div>
         </div>
         <table class="main-table">
@@ -54,8 +54,8 @@
                 <!--接口真实数据-->
               </td>
               <td 
-                  v-if="activeIndex == 1"
                   v-for="(it,index) in item.arr"
+                  v-if="activeIndex == 1"
                   @click="handleClick(it, index)"
                   :class="getClass(it)"
                   class="item-num"
