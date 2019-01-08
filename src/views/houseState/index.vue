@@ -53,7 +53,7 @@
                 {{item.houseinfo}}
                 <!--接口真实数据-->
               </td>
-              <td 
+              <td
                   v-for="(it,index) in item.arr"
                   v-if="activeIndex == 1"
                   @click="handleClick(it, index)"
@@ -131,7 +131,12 @@
         <el-form label-width="80px" label-position="left" @submit.prevent>
           <el-form-item label="当日价格">
             <el-input
+              v-if="houseData2.houseType[row1].arr[col1].activityprice"
               v-model="houseData2.houseType[row1].arr[col1].activityprice"
+              placeholder="请输入当天的价格" />
+            <el-input
+              v-if="!houseData2.houseType[row1].arr[col1].activityprice"
+              v-model="houseData2.houseType[row1].arr[col1].price"
               placeholder="请输入当天的价格" />
           </el-form-item>
         </el-form>
@@ -188,6 +193,7 @@
         houseData2: { // 用于测试功能的， 后端未给数据
           houseType: [] // 存放后端给的数据以及自己生成的数组
         },
+        houseType: [], // 保留房型价格原始数据
         week: ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'],
         EditPriceData:{
           merchantid:this.$store.state.mchid,
@@ -205,10 +211,21 @@
       handleEditPrice(){
         // console.log(this.houseData2.houseType[this.youHaveIndex].arr[this.youHaveIndex1].activityprice)
         //如果修改前的活动价为空
-        if(this.EditPriceData.activityprice == ''){
-          this.EditPriceData.activityprice = this.houseData2.houseType[this.youHaveIndex].arr[this.youHaveIndex1].activityprice
-          console.log(this.EditPriceData);
-          this.$axios.post('/zftds/hotel/house/insertHotelCalendar',this.EditPriceData).then(res=>{
+        let activityprice = this.houseData2.houseType[this.row1].arr[this.col1].activityprice;
+        if(!activityprice){
+          let currentValue = this.houseData2.houseType[this.row1].arr[this.col1].price
+          // this.EditPriceData.activityprice = this.houseData2.houseType[this.youHaveIndex].arr[this.youHaveIndex1].activityprice
+          // console.log(this.EditPriceData);
+          let params = {
+            merchantid: this.$store.state.mchid,
+            price: this.houseType[this.row1].price, // 从原始的数据中取出价格
+            hotelid: this.houseData2.houseType[this.row1].arr[this.col1].id,
+            ytd: this.houseData2.houseType[this.row1].arr[this.col1].date.formatStr,
+            activityprice: currentValue,
+            roomType: this.houseData2.houseType[this.row1].arr[this.col1].isPre? "1": "0",
+            roomNumber: this.houseData2.houseType[this.row1].arr[this.col1].roomsnum
+          }
+          this.$axios.post('/zftds/hotel/house/insertHotelCalendar',params).then(res=>{
             console.log('添加活动价格',res)
             if(res.code == 1){
               this.$message.success('添加价格成功')
@@ -220,9 +237,19 @@
               this.isShowDialog1 = false;
             }
           })
-        }else if(this.EditPriceData.activityprice&&this.EditPriceData.activityprice != ""){
-            this.EditPriceData.activityprice = this.houseData2.houseType[this.youHaveIndex].arr[this.youHaveIndex1].activityprice
-            this.$axios.post('/zftds/hotel/house/updateHotelCalendar',this.EditPriceData).then(res=>{
+        }else if(activityprice&&activityprice != ""){
+          console.log("更新");
+          // this.EditPriceData.activityprice = this.houseData2.houseType[this.youHaveIndex].arr[this.youHaveIndex1].activityprice
+          let params = {
+            id: this.$store.state.mchid,
+            price: this.houseType[this.row1].price, // 从原始的数据中取出价格
+            hotelid: this.houseData2.houseType[this.row1].arr[this.col1].id,
+            ytd: this.houseData2.houseType[this.row1].arr[this.col1].date.formatStr,
+            activityprice: activityprice,
+            roomType: this.houseData2.houseType[this.row1].arr[this.col1].isPre? "1": "0",
+            roomNumber: this.houseData2.houseType[this.row1].arr[this.col1].roomsnum
+          }
+            this.$axios.post('/zftds/hotel/house/updateHotelCalendar',params).then(res=>{
               console.log('更新活动价格',res);
               this.isShowDialog1 = false;
             })

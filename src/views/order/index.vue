@@ -105,7 +105,7 @@
                                 <td>{{searchData[dataIndex].endTime}}</td>
                             </tr>
                         </table>
-                       
+
                          <table class=" mb15">
                             <tr class="bg">
                                 <th>支付方式</th>
@@ -135,17 +135,17 @@
                         <!-- 新加入住人 -->
                         <table class=" mb15 addtable" >
                             <tr>
-                                <th>入住人姓名</th> 
+                                <th>入住人姓名</th>
                                 <td>{{searchData[dataIndex].username}}</td>
-                                <th>身份证号</th> 
+                                <th>身份证号</th>
                                 <td>{{searchData[dataIndex].userid}}</td>
                             </tr>
                             <tr v-if="iSadd" v-for="(item,ind) in addpeople" :key="ind" >
-                                <th>入住人姓名</th> 
+                                <th>入住人姓名</th>
                                 <td>
                                     <el-input placeholder="请输入入住人姓名" v-model="item.username"></el-input>
                                 </td>
-                                <th>身份证号</th> 
+                                <th>身份证号</th>
                                 <td>
                                     <el-input  placeholder="入住人身份证号" v-model="item.userid"></el-input>
                                 </td>
@@ -469,8 +469,8 @@
             this.addpeople.push({
                         username:'',
                         userid:''
-                    }) 
-            this.iSadd = true        
+                    })
+            this.iSadd = true
            }else{
                if( this.addpeople[this.addpeople.length - 1].username&&
                 this.addpeople[this.addpeople.length - 1].userid){
@@ -611,7 +611,7 @@
             }
         }
         // f7faff
-         
+
     }
 // 切换订单是的active
 /deep/ .el-menu--horizontal>.el-menu-item.is-active{
