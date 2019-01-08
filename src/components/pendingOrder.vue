@@ -3,7 +3,7 @@
          <el-card class="box-card padingOrder carditem">
                     <div slot="header" class="header clearfix">
                         <span class="title">待处理订单</span>
-                        <el-button style="float: right; padding: 3px 0" type="text">查看全部<i class="iconfont icon-arw-top-copy"></i></el-button>
+                        <el-button style="float: right; padding: 3px 0" type="text" @click="handleMuch">查看全部<i class="iconfont icon-arw-top-copy"></i></el-button>
                     </div>
                     <el-row :gutter="20">
                         <el-col :span="24">
@@ -36,7 +36,12 @@
 
 <script>
     export default {
-        name:'pendingOreder'
+        name:'pendingOreder',
+         methods:{
+            handleMuch(){
+                this.$router.push('/layout/order')
+            },
+        }
     }
 </script>
 

@@ -18,8 +18,7 @@
       <el-card class="box-card  carditem">
         <div
           slot="header"
-          class="header clearfix"
-        >
+          class="header clearfix">
           <span class="rightTitle flr fw500">*最多上传5张</span>
           <span class="title">酒店内景</span>
         </div>
@@ -32,16 +31,18 @@
       <el-card class="box-card  carditem">
         <div
           slot="header"
-          class="header clearfix"
-        >
+          class="header clearfix">
           <span class="rightTitle flr fw500">*最多上传5张</span>
           <span class="title">其他</span>
         </div>
         <span class="secondTitle blue">*图片上限2MB</span>
-        <div class="imageDiv ">
-          <upload v-model='photoArr'></upload>
+        <div class="imageDiv">
+          <upload v-model='photoArr2'></upload>
         </div>
       </el-card>
+      <el-button type="primary" @click="handleUpload">
+        点击上传
+      </el-button>
     </div>
 </template>
 
@@ -54,15 +55,39 @@ import upload from '@/components/imgupload/dy-upload.vue'
                 photoArr:[],
                 photoArr1:[],
                 photoArr2:[],
-                photoArr3:[],
-
+                arr1:{
+                  img1:'',
+                  img2:'',
+                  img3:'',
+                  img4:'',
+                  img5:'',
+                },
+                arr2:{
+                  img1:'',
+                  img2:'',
+                  img3:'',
+                  img4:'',
+                  img5:'',
+                },
+                arr3:{
+                  img1:'',
+                  img2:'',
+                  img3:'',
+                  img4:'',
+                  img5:'',
+                },
             }
         },
         components:{
             upload,
         },
         methods:{
-
+          handleUpload(){
+            console.log(this.photoArr,this.photoArr1,this.photoArr2)
+            this.photoArr.map(item=>{
+              console.log(item)
+            })
+          }
         },
 
     }

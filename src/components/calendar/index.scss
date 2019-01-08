@@ -81,29 +81,40 @@
     text-align: center;
     padding: 12px 0;
   }
-
-  /*斜线大单元格*/
-
-  .cell-spe {
-    width: 20%;
-    position: relative;
+  .full { // 房间已满
+    background: #fa6580!important;
+    // border: 1px solid #caddfe;
+    color: #fff;
     font-size: 14px;
-    color: #95a7fe;
-    background-color: #eff5ff;
-
-    .date-text {
-      position: absolute;
-      top: 10px;
-      right: 5px;
-    }
-
-    .housetype-text {
-      position: absolute;
-      bottom: 10px;
-      left: 5px;
-    }
   }
 
+  .disabled { // 不可预订
+    background: #a8a6ff!important;
+    color: #fff;
+    font-size: 14px;
+  }
+ /*斜线大单元格*/
+ .cell-spe {
+  width: 20%;
+  max-width: 74px;
+  min-width: 58px;
+  position: relative;
+  font-size: 14px;
+  color: #95a7fe;
+  //background-color: #eff5ff;
+  background: #eff5ff url('./setLine.png') no-repeat;-webkit-background-size: 100% 100%;background-size: 100% 100%;
+  overflow: hidden;
+  .date-text {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+  }
+  .housetype-text {
+    position: absolute;
+    bottom: 5px;
+    left: 5px;
+  }
+}
 
 
   .row-title {

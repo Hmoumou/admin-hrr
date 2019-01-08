@@ -10,8 +10,8 @@
                 <el-form  label-width="140px" label-position='left'>
                   <el-form-item label="房型选择" prop="houseType" >
                     <el-select class="w300" 
-                    v-model="formData.houseType"
-                    @change="handleGetCash()"   
+                    v-model="formData.hotelid"
+                    @change="handleGetCash"   
                     placeholder="请选择房型">
                       <el-option 
                       v-for="(item,index) in AData"
@@ -21,13 +21,11 @@
                       ></el-option>
                     </el-select>
                   </el-form-item>
+                  <el-form-item label="预订房间数量" prop="roomamount">
+                    <el-input class="w300" v-model="formData.roomamount" @blur="computeCount"></el-input>
+                  </el-form-item>
                   <!--改编版-->
                   <el-form-item label="入住时间" prop="checkTime">
-                    <!-- <el-date-picker
-                      v-model="formData.starttime"
-                      type="datetime"
-                      placeholder="选择日期时间">
-                    </el-date-picker> -->
                     <el-date-picker
                       v-model="formData.starttime"
                       type="date"
@@ -35,12 +33,6 @@
                     </el-date-picker>
                   </el-form-item>
                   <el-form-item label="离店时间" prop="leaveTime">
-                    <!-- <el-date-picker
-                      v-model="formData.endtime"
-                      type="datetime"
-                      placeholder="选择日期时间"
-                      >
-                    </el-date-picker> -->
                     <el-date-picker
                       v-model="formData.endtime"
                       type="date"
@@ -79,7 +71,7 @@
                 <div class="right-data ">
                   <div class="item">房价<span class="span data">RMB {{formData.countPrice}}</span></div>
                   <div class="item">时间<span class="span data">{{formData.count}}/晚</span></div>
-                  <div class="item">押金 <span class="span data">RMB {{formData.cash}}</span></div>
+                  <div class="item">押金 <span class="span data">RMB {{formData.cashPledge}}</span></div>
                   <div class="lastItem">总金额<span class="span lastData">RMB {{formData.payCountPrice}}</span></div>
                   <div class="btnss fs14" @click="handleCheck">入住</div>
                   <el-dialog
@@ -87,12 +79,13 @@
                     width="30%"
                     center>
                     <div class="content" v-if="isSuccess">
-                      <p class="fw">{{userData.username}}</p>
-                      <p>已成功入住{{userData.houseType}} <span class="blue">{{userData.houseId}}</span> 室</p>
+                      <!-- <p class="fw">{{userData.username}}</p> -->
+                      <p class="blue fs16 mb15 fw">入住成功</p>
+                      <p>已成功入住{{formData.houseType}} <span class="blue">{{formData.roomnumber}}</span> 室</p>
                     </div>
                     <div class="content" v-else>
                       <p class="blue fs16 mb15 fw">入住失败</p>
-                      <p>{{userData.houseType}} <span class="blue">{{userData.houseId}}</span> 室,已被网上预订</p>
+                      <p>{{formData.houseType}}<span class="blue">{{formData.roomnumber}}</span> 室,已被网上预订</p>
                     </div>
                     <div slot="footer" class="dialog-footer">
                       <div class="btn1" @click="centerDialogVisible = false">确 定</div>
@@ -103,22 +96,20 @@
             </div>
           </el-col>
         </el-row>
-
-
       </el-card>
     </div>
     <div class="btm">
       <el-row :gutter="20">
-        <el-col :span="12" v-for="(item, index) in arr" style="margin-bottom: 15px" :key="index">
+        <el-col :span="12" v-for="(item, index) in formData.hop" style="margin-bottom: 15px" :key="index">
           <div class="grid-content bg-purple">
             <el-card class="btm-left box-card carditem clearfix">
               <div slot="header" class="header"><span class="title">入住人0{{index + 1}}</span></div>
               <el-form  label-width="100px" label-position='left'>
-                <el-form-item label="姓名" prop="username">
-                  <el-input placeholder='请输入姓名' v-model="item.username"></el-input>
+                <el-form-item label="姓名" prop="name">
+                  <el-input placeholder='请输入姓名' v-model="item.name"></el-input>
                 </el-form-item>
-                <el-form-item label="身份证号" prop="IDcard">
-                  <el-input placeholder='请输入身份证号' @blur="idVerify(index)" v-model="item.idCard"></el-input>
+                <el-form-item label="身份证号" prop="card">
+                  <el-input placeholder='请输入身份证号' @blur="idVerify(index)" v-model="item.card"></el-input>
                 </el-form-item>
                 <el-form-item label="联系电话" prop="phone">
                   <el-input placeholder='请输入联系电话' @blur="phoneVerify(index)" v-model="item.phone"></el-input>
@@ -139,7 +130,7 @@
         </el-col>
       </el-row>
     </div>
-    <div class="box" v-if="Yes">
+    <!-- <div class="box" v-if="Yes">
       <div class="box-inner">
         <div class="face">
           <span>{{username}}</span>
@@ -147,10 +138,9 @@
           <div class="btn" @click="handleOk">确定</div>
         </div>
         <div class="back">
-
         </div>
       </div>
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -159,15 +149,13 @@
     name: 'Check',
     data() {
       return {
-        centerDialogVisible: false,
-        isSuccess: false,
+        centerDialogVisible: false, //弹框是否显示
+        isSuccess: false,//是否成功入住
         getcashIndex:'',
-        Yes: false,
+        Yes: false, //是否入住成功
         isOk: true,
         // 入住订单绑定的数据
         formData: {
-          cash: "0",
-
           houseType: '',
           check: '',
           leaveTime: '',      
@@ -177,17 +165,30 @@
           merchantid:this.$store.state.mchid,//商户id
           orderType:2,
           hotelid:'',
+          houseType:'豪华大床房',
           orderSource:'',//订单来源
-          cashPledge:'',//押金 （需要根据选择的房型渲染）
+          cashPledge:'0',//押金 （需要根据选择的房型渲染）
           starttime:'',//开始时间
           endtime:'',//开始时间,
-          roomnumber:'',//房间编号
+          roomnumber:'109,120',//房间编号
           payType:'1',
           count:'0',//入住天数 需自己计算
           countPrice:'0',//房间总价
           payCountPrice:'0',//订单支付总金额
           roomPrice:'',//房间单价
-          roomamount:1//房间数量
+          roomamount:1,//房间数量
+          roomamount:'',//预订房间数量
+          hop: [
+              {
+                idIsOk: false,
+                phoneIsOk: false,
+                //需要数据
+                merchantid:this.$store.state.mchid,
+                name:'',
+                card:'',
+                phone: '',
+              }
+            ],
         },
 
         // 入住人数据
@@ -199,30 +200,20 @@
           phone: ''
         },
         checkPay: 1,
-        arr: [
-          {
-            username: '',
-            houseId: '',
-            houseType: '',
-            idCard: '',
-            phone: '',
-            idIsOk: false,
-            phoneIsOk: false,
-          }
-        ],
-        AData:[
-
-        ]
+        AData:[ ]
       }
     },
     methods: {
+      computeCount(){//input失焦的时候计算总价
+        this.formData.cashPledge = this.formData.cashPledge*this.formData.roomamount
+      },
       // 根据房型id的变化得到相对应的押金
-      handleGetCash(index){
-        console.log("触发了change事件...",this.formData.houseType)
+      handleGetCash(){
+        console.log("触发了change事件...",this.formData.hotelid)
         this.AData.map(item=>{       
-          if(item.id == this.formData.houseType){
+          if(item.id == this.formData.hotelid){
             // console.log(item)
-            this.formData.cash = item.cash
+            this.formData.cashPledge = item.cash
             this.formData.roomPrice = item.price
             console.log(this.formData.countPrice)
           }
@@ -241,20 +232,35 @@
           // 拼接天数 总天数
           var days = d1.getTime()-d.getTime()
           var dayy = parseInt(days/(1000*60*60*24))
-          // console.log('计算好的日期',dayy)
           this.formData.count = dayy
-          // this.formData.countPrice = this.formData.roomPrice*dayy
-          // this.formData.payCountPrice = Number(this.formData.countPrice) + Number(this.formData.cash)
-          // console.log('this.formData',this.formData.starttime,this.formData.endtime)
-          var data = {
+           var data = {
             merchantid:this.$store.state.mchid,
-            hotelid:this.formData.houseType,
+            hotelid:this.formData.hotelid,
             starttime:this.formData.starttime,
             endtime:this.formData.endtime
           }
             this.$axios.post('/zftds/hotel/house/selectHotelCalendar',data).then(res=>{
-              console.log(res)
-            })
+              // console.log('21212',res)
+              if(res.code == 0){
+                this.formData.countPrice = this.formData.roomPrice*dayy*this.formData.roomamount
+                this.formData.payCountPrice = Number(this.formData.countPrice) + Number(this.formData.cashPledge)
+              }else{
+                console.log(res);
+                let arr = []
+                res.data.map(item=>{
+                  arr.push(item.activityprice)
+                })
+                console.log(arr);
+                var sum = 0
+                for(let i=0; i<arr.length;i++){
+                  sum += Number(arr[i])
+                }
+                //有活动价的时候计算的房间总价
+                this.formData.countPrice = (this.formData.roomPrice*(Number(dayy)-Number(arr.length))+sum)*this.formData.roomamount
+                this.formData.payCountPrice = Number(this.formData.countPrice) + Number(this.formData.cashPledge)
+              }
+            })  
+          // console.log('this.formData',this.formData.starttime,this.formData.endtime)      
         }else{
           this.$message.warning('入住时间不能为空且必须小于离店时间')
           this.formData.starttime = ''
@@ -264,19 +270,19 @@
       // 身份证号验证
       idVerify(index) {
         var reg = /(^\d{17}(\d|X|x)$)/
-        if (!reg.test(this.arr[index].idCard)) {
+        if (!reg.test(this.formData.hop[index].card)) {
           this.$message.error('身份证格式填写错误')
         } else {
-          this.arr[index].idIsOk = true
+          this.formData.hop[index].idIsOk = true
         }
       },
       // 手机号验证
       phoneVerify(index) {
         var regs = /^1[3-9]\d{9}$/
-        if (!regs.test(this.arr[index].phone)) {
+        if (!regs.test(this.formData.hop[index].phone)) {
           this.$message.error('手机号格式填写错误')
         } else {
-          this.arr[index].phoneIsOk = true
+          this.formData.hop[index].phoneIsOk = true
         }
       },
       // 支付方式
@@ -295,17 +301,17 @@
       // 点击添加一个新的入住人
       handleAdduser() {
         // 如果数据不为空且身份证号手机号验证通过
-        if (this.arr[this.arr.length - 1].username &&
-          this.arr[this.arr.length - 1].idCard &&
-          this.arr[this.arr.length - 1].phone &&
-          this.arr[this.arr.length - 1].idIsOk &&
-          this.arr[this.arr.length - 1].phoneIsOk) {
+        if (this.formData.hop[this.formData.hop.length - 1].name &&
+          this.formData.hop[this.formData.hop.length - 1].card &&
+          this.formData.hop[this.formData.hop.length - 1].phone &&
+          this.formData.hop[this.formData.hop.length - 1].idIsOk &&
+          this.formData.hop[this.formData.hop.length - 1].phoneIsOk) {
           //   添加一个新的空白入住人盒子
-          this.arr.push({
-            username: '',
-            houseId: this.arr[this.arr.length - 1].houseId,
-            houseType: this.arr[this.arr.length - 1].houseType,
-            idCard: '',
+          this.formData.hop.push({
+            name: '',
+            // houseId: this.formData.hop[this.formData.hop.length - 1].houseId,
+            // houseType: this.formData.hop[this.formData.hop.length - 1].houseType,
+            card: '',
             phone: '',
             idIsOk: false,
             phoneIsOk: false
@@ -316,6 +322,17 @@
       },
       handleCheck() {
         this.centerDialogVisible = true
+        // this.isSuccess = true
+        // this.$axios.post('/zftds/hotel/order/insertHotelOrder',this.formData).then(res=>{
+        //   console.log(res)
+        //   if(res.code == 1){
+        //     this.centerDialogVisible = true
+        //     this.isSuccess = true
+        //   }else{
+        //     this.centerDialogVisible = true
+        //     this.isSuccess = false
+        //   }
+        // })
       },
       handleOk() {
         this.isOk = false;
@@ -409,17 +426,13 @@
       // border-left: 1px virtual #f1f1f1;
       border-left: 1px solid #f1f1f1;
       .right-data {
-        .span {
-          float: right;
-        }
+        .span { float: right;}
         .item {
           font-size: 14px;
           font-weight: 700;
           margin-bottom: 15px;
         }
-        .data {
-          color: #409eff;
-        }
+        .data { color: #409eff; }
         .lastItem {
           font-size: 14px;
           font-weight: 700;
@@ -430,7 +443,6 @@
           color: #409eff;
           font-weight: 900;
         }
-
       }
     }
     .btnss {
@@ -462,14 +474,10 @@
       background-size: 100% 100%;
       text-align: center;
     }
-
   }
-
   .btm {
     margin-top: 10px;
-    .btm-left {
-      padding: 10px;
-    }
+    .btm-left { padding: 10px; }
     .btm-right {
       border: 1px dashed #518dfd;
       box-sizing: border-box;
@@ -494,49 +502,33 @@
       }
     }
   }
-
   .mb15 {
     margin-bottom: 15px;
   }
-
   .title {
     padding-left: 6px;
     border-left: 3px solid #75b8fc;
   }
-
   .header {
     font-weight: 700;
   }
-
   .content {
     margin-top: 20px;
     text-align: center;
     line-height: 2;
     color: #333;
   }
-
-  /deep/ .el-form-item__label {
-    font-weight: 700
-  }
+  /deep/ .el-form-item__label {  font-weight: 700}
+  /deep/ .el-input__inner { padding-left: 30px;}
 </style>
 <style lang='scss'>
-  .el-date-editor .el-range-separator {
-    width: 10%;
-  }
-
+  .el-date-editor .el-range-separator {  width: 10%;}
   .el-main {
     text-align: left !important;
     line-height: 1;
   }
-
-  .el-select__caret {
-    color: #409eff;
-  }
-
-  .el-input__inner {
-    padding-left: 20px;
-  }
-
+  .el-select__caret {color: #409eff;}
+ 
   .el-dialog--center {
     color: #2b2b2b;
     margin-top: 30vh !important;
@@ -545,15 +537,11 @@
     background-size: 100% 101.5%;
     background-position: 0 -5px;
     .el-dialog__body {
-      height: 60px;
+      // height: 60px;
       padding: 20px 0 10px 0;
     }
-    .el-dialog__footer {
-      height: 100px;
-    }
-    .el-icon-close {
-      display: none;
-    }
+    .el-dialog__footer { height: 100px;}
+    .el-icon-close { display: none;}
   }
 
 </style>

@@ -2,9 +2,8 @@
   <div class="lodgerkanban">
     <el-card class="box-card auditLeave carditem">
       <div slot="header" class="header clearfix">
-        <span class="title">住客看板</span>
-        <el-button style="float: right; padding: 3px 0;width:40px" type="text">查看全部<i class="iconfont icon-arw-top-copy"></i>
-        </el-button>
+          <span class="title">住客看板</span>
+          <el-button style="float: right; padding: 3px 0" type="text" @click="handleMuch">查看全部<i class="iconfont icon-arw-top-copy"></i></el-button>
       </div>
       <div class="progress clearfix">
         <div class="inline arriveHotelTime">
@@ -61,6 +60,11 @@
                 arriveTime:'09-30'
             }
         }
+    },
+    methods:{
+      handleMuch(){
+        this.$router.push('/layout/order')
+      }
     }
   }
 </script>
@@ -83,10 +87,13 @@
       line-height: 1.5;
     }
     .auditLeave-btm {
-      width: 105%;
-      span, strong {
-        display: block;
+      width: 100%;
+      /deep/ .el-button{
+        width:48%;
       }
+      // span, strong {
+      //   display: block;
+      // }
     }
     .time {
       display: inline-block;
@@ -97,19 +104,9 @@
       font-size: 12px;
     }
   }
-
-  .carditem {
-    margin-bottom: 10px;
-  }
-
-  .title {
-    padding-left: 6px;
-    border-left: 3px solid #75b8fc;
-  }
-
-  .header {
-    font-weight: 700;
-  }
+  .carditem { margin-bottom: 10px;}
+  .title { padding-left: 6px; border-left: 3px solid #75b8fc;}
+  .header { font-weight: 700;}
 
   .progress {
     margin-bottom: 10px;

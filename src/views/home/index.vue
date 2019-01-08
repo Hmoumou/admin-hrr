@@ -22,7 +22,7 @@
                         <!-- 房态日历 -->
                         <el-card class="box-card carditem">
                             <div slot="header" class="header"><span class="title">房态日历</span> </div>
-                                    <p class="subtitle">* 数字为预订房数量</p>
+                            <p class="subtitle">* 数字为预订房数量</p>
                             <calendar/>
                         </el-card>
                         <!-- 评价/回复 -->
@@ -37,7 +37,7 @@
 </template>
 
 <script>
-import calendar from '@/components/calendar/index.vue'
+import calendar from '@/components/calendar/calendar.vue'
 import todaySummary from '@/components/todaySummary.vue'
 import pendingOrder from '@/components/pendingOrder.vue'
 import lodgerKB from '@/components/lodgerKB.vue'

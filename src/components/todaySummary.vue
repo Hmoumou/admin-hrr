@@ -3,7 +3,7 @@
         <el-card class="box-card today carditem">
             <div slot="header" class="header clearfix">
                 <span class="title">今日汇总</span>
-                <el-button style="float: right; padding: 3px 0" type="text">查看全部<i class="iconfont icon-arw-top-copy"></i></el-button>
+                <el-button style="float: right; padding: 3px 0" type="text" @click="handleMuch">查看全部<i class="iconfont icon-arw-top-copy"></i></el-button>
             </div>
             <div v-for="(item,index) in today" :key="index" class="text todayitem">
                 {{item.type}}
@@ -33,6 +33,11 @@
                     num:22
                 }]
             }
+        },
+        methods:{
+            handleMuch(){
+                this.$router.push('/layout/order')
+            },
         }
 
     }

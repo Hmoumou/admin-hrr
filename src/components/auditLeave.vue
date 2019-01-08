@@ -3,7 +3,7 @@
          <el-card class="box-card auditLeave carditem">
             <div slot="header" class="header clearfix">
                 <span class="title">审核离店</span>
-                <el-button style="float: right; padding: 3px 0" type="text">查看全部<i class="iconfont icon-arw-top-copy"></i></el-button>
+                <el-button style="float: right; padding: 3px 0" type="text" @click="handleMuch">查看全部<i class="iconfont icon-arw-top-copy"></i></el-button>
             </div>
             <div v-for="o in 3" :key="o" class="text orderitem">      
                 <div class="auditLeave-top ">
@@ -32,8 +32,10 @@
             }
         },
         methods:{
-           
-        },
+            handleMuch(){
+                this.$router.push('/layout/order')
+            }
+        }
     }
 </script>
 

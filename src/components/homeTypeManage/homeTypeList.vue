@@ -17,24 +17,22 @@
             <div class="grid-content bg-purple">
               <!-- start -->
               <div
-               class="homeItem"
+               class="homeItem clearfix"
                 v-for="(item,index) in homeData"
                 id="item"
                 :key="index"
                 :class="{ItemActive : activeIndex == index}"
-                @click="handleClick(index)"
-              >
-                <div class="edit flr">
-                  <el-button type="text" class="editBtn" @click="handleChange(index)">修改</el-button>
-                  <span class="blue fll fs14 line">|</span>
-                  <el-button type="text" class="editBtn" @click="handleDelete(item)">删除</el-button>
+                @click="handleClick(index)">
+                <div class="edit flr clearfix">
+                  <el-button type="text" class="editBtn fll" @click="handleChange(index)">修改</el-button>
+                  <span class="fs14 line">|</span>
+                  <el-button type="text" class="editBtn fll" @click="handleDelete(item)">删除</el-button>
                 </div>
 
                 <img
                   src="@/image/0001.jpg"
                   style="width: 100px; height:100px;
-                    float: left; margin-right: 15px;"
-                >
+                    float: left; margin-right: 15px;">
                 <div class="homeInfo clearfix">
                   <strong class="fs14">{{item.houseinfo}}</strong>
                   <div class="infoTitleDiv">
@@ -78,14 +76,10 @@
             {{homeData[activeIndex].houseinfo}}
           </span>
         </div>
-
         <!--轮播图部分开始-->
         <div class="swiper-container">
           <swiper :options="swiperOption1" ref="mySwiper1" >
             <!-- slides -->
-            <!-- <swiper-slide v-if="!photoArr" >
-               <img src="../../image/Noimg.png" alt="">
-            </swiper-slide> -->
             <swiper-slide  v-for="(item, index) in photoArr" :key="index">
               <div  class="swiper-img-wrap" style="background: #333;text-align: center;padding: 20px 0;">
                 <img :src="item" alt="">
@@ -148,7 +142,6 @@
           </div>
         </div>
       </el-card>
-
       <!--设施详情开始-->
       <el-card class="facility-details">
         <div slot="header">
@@ -163,7 +156,6 @@
     </div>
   </div>
 </template>
-
 <script>
   import {swiper, swiperSlide} from 'vue-awesome-swiper'
   import 'swiper/dist/css/swiper.css'
@@ -247,10 +239,6 @@ export default {
       photoIndex: 0,
       photoArr:[
         // 'https://ss1.bdstatic.com/70cFvXSh_Q1YnxGkpoWK1HF6hhy/it/u=2213670986,2923778817&fm=27&gp=0.jpg',
-        // 'http://placehold.it/423x300/0f0',
-        // 'http://placehold.it/423x300/6700ff',
-        // 'http://placehold.it/423x300/409eff',
-        // 'http://placehold.it/423x300/ff0'
       ],
       data1:{
         merchantid:this.$store.state.mchid,
@@ -282,8 +270,7 @@ export default {
           bednum:'1',
           facility: ["1","2","3","4","5","6","7"],
         }
-      ],
-     
+      ], 
     };
   },
   methods: {
@@ -352,7 +339,6 @@ export default {
           }
         }
       }
-
       this.activeIndex = index;
       this.photoArr = photoArr
     },
@@ -392,10 +378,7 @@ export default {
   }
 };
 </script>
-
 <style scoped lang='scss'>
-.homeItemList {
-}
 .homeItem {
   width: 32%;
   border: 1px solid #f1f1f1;
@@ -412,16 +395,18 @@ export default {
   border: 1px solid #409eff;
 }
 .edit {
+  height: 16px;
   .editBtn {
+    line-height: 16px;
     float: left;
     padding: 0;
   }
   .line {
-    margin-top: 8px;
+    float: left;
+    // margin-top: 8px;
     color: #dbd8d8;
   }
 }
-
 .homeInfo {
   .infoTitleDiv {
     margin-top: 10px;
@@ -433,9 +418,7 @@ export default {
     font-size: 12px;
     color: #5d5d5d;
   }
-  .infoDataDiv {
-    margin-top: 10px;
-  }
+  .infoDataDiv {margin-top: 10px;}
   .infoData {
     margin-bottom: 7px;
     font-size: 12px;
@@ -445,55 +428,29 @@ export default {
     margin-bottom: 10px;
     line-height: 1.5;
   }
-
-  .name {
-    font-weight: 700;
-  }
+  .name {font-weight: 700;}
   .time {
     display: inline-block;
     font-size: 12px;
     color: #409eff;
   }
-  .summoney {
-    font-size: 12px;
-  }
+  .summoney { font-size: 12px;}
 }
-
-.carditem {
-  margin-bottom: 10px;
-}
-.title {
-  padding-left: 6px;
-  border-left: 3px solid #75b8fc;
-}
-.header {
-  font-weight: 700;
-}
+.carditem { margin-bottom: 10px;}
 .pageBtn {
   margin-top: 15px;
   display: flex;
   justify-content: center;
 }
-
-
-
-
 // details------------------
-
-
-.houseTypeDetail {
-  padding: 10px;
-}
-.header {
-  font-weight: 700;
-}
+.houseTypeDetail { padding: 10px;}
+.header { font-weight: 700;}
 .title {
   padding-left: 6px;
   border-left: 3px solid #75b8fc;
 }
 .asideLeft {
   width: 15%;
-
   .btn{
     border: 1px solid #e1ecff;
     background: #f9fbfe;
@@ -509,7 +466,6 @@ export default {
   }
   .active{
     border: 1px solid #f1f1f1;
-    // background: #f1f1f1;
     background: url('../../image/房型/矩形.png')no-repeat;
     background-size: 100% 100%;
     line-height: 60px;
@@ -519,15 +475,12 @@ export default {
     text-align: center;
   }
 }
-
-
 /*轮播图样式*/
 .swiper-container {
   /deep/ .swiper-button-prev, .swiper-button-next {
     -webkit-background-size: 10px 20px;
     background-size: 10px 20px;
   }
-
   .swiper-img-wrap {
     background: #333;
     text-align: center;
@@ -539,17 +492,14 @@ export default {
     }
   }
 }
-
 .thumbs {
   background: #ebebeb;
   padding: 15px 100px 30px;
-
   .thumbs-item-wrap {
     width: 20%;
     height: 104px;
     box-sizing: border-box;
     padding: 0 5px;
-
     img {
       display: block;
       width: 100%;
@@ -557,14 +507,10 @@ export default {
       border: 4px solid transparent;
     }
   }
-
   .active {
-    img {
-      border-color: #ff0;
-    }
+    img { border-color: rgb(250, 250, 141);}
   }
 }
-
 .textDetail {
   margin-top: 20px;
   float: left;
@@ -596,9 +542,7 @@ export default {
       }
     }
   }
-  .noborder {
-    border-right: 0px;
-  }
+  .noborder { border-right: 0px;}
 }
 .describe {
   background-color: #f1f5fd;
@@ -611,5 +555,8 @@ export default {
     margin-bottom: 15px;
     font-weight: 600;
   }
+}
+/deep/ .el-button--text{
+  margin: 0;
 }
 </style>
