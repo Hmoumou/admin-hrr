@@ -204,9 +204,5 @@
 <style>
   .el-main { text-align: left; line-height: 1;}
   .el-button{ padding: 6px 20px; font-size: 14px;}
-  .el-textarea__inner{width: 60%;}
-
-
-
-
+  .el-textarea__inner{width: 60%;background-color: #f9fbff;}
 </style>

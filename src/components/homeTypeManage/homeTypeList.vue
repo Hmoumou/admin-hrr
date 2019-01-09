@@ -343,7 +343,7 @@ export default {
       this.photoArr = photoArr
     },
     handleDelete(item) { // 点击删除
-    console.log(item.id);
+      console.log(item.id);
       this.isdialog = true;
       this.index = item.id;
     },

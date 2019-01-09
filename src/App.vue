@@ -68,6 +68,7 @@ li{list-style: none;}
 .ce8{ color: #e8e8e8; }
 .cb5{ color: #b5b5b5; }
 .mb5{margin-bottom: 5px;}
+.ml5{margin-left: 5px;}
 </style>
 <style>
 input.el-input__inner{background-color: #eff5ff;}

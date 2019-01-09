@@ -15,7 +15,7 @@
                         <span>退出</span>
                     </div>
                     <el-dropdown-menu slot="dropdown">
-                        <el-dropdown-item command='logout'>退出登录111</el-dropdown-item>
+                        <el-dropdown-item command='logout' >退出登录</el-dropdown-item>
                     </el-dropdown-menu>
                 </el-dropdown>
                 <el-dropdown>
@@ -64,9 +64,14 @@ let items = Array.from(document.getElementsByClassName('item'))
           },
           handleCommand(logout){
               console.log('1111111');
-              window.open('https://baidu.com')
+            //   window.open('http://zftds.zhifupaytech.com/html/Login-register/Login/Login.html')
+            window.location.href = "http://www.baidu.com"
+            //   window.location.href('http://zftds.zhifupaytech.com/html/Login-register/Login/Login.html')
               console.log('22222');
-          }
+          },
+        //   handleLogout(){
+        //       window.location.href('http://zftds.zhifupaytech.com/html/Login-register/Login/Login.html')
+        //   }
         }
     }
 </script>

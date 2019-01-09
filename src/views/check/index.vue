@@ -81,11 +81,11 @@
                     <div class="content" v-if="isSuccess">
                       <!-- <p class="fw">{{userData.username}}</p> -->
                       <p class="blue fs16 mb15 fw">入住成功</p>
-                      <p>已成功入住{{formData.houseType}} <span class="blue">{{formData.roomnumber}}</span> 室</p>
+                      <p>已成功入住{{userData.houseType}} <span class="blue">{{formData.roomnumber}}</span> 室</p>
                     </div>
                     <div class="content" v-else>
                       <p class="blue fs16 mb15 fw">入住失败</p>
-                      <p>{{formData.houseType}}<span class="blue">{{formData.roomnumber}}</span> 室,已被网上预订</p>
+                      <p>{{userData.houseType}}<span class="blue">{{formData.roomnumber}}</span> 室,已被网上预订</p>
                     </div>
                     <div slot="footer" class="dialog-footer">
                       <div class="btn1" @click="centerDialogVisible = false">确 定</div>
@@ -109,10 +109,12 @@
                   <el-input placeholder='请输入姓名' v-model="item.name"></el-input>
                 </el-form-item>
                 <el-form-item label="身份证号" prop="card">
-                  <el-input placeholder='请输入身份证号' @blur="idVerify(index)" v-model="item.card"></el-input>
+                  <!-- @blur="idVerify(index)"  -->
+                  <el-input placeholder='请输入身份证号' v-model="item.card"></el-input>
                 </el-form-item>
-                <el-form-item label="联系电话" prop="phone">
-                  <el-input placeholder='请输入联系电话' @blur="phoneVerify(index)" v-model="item.phone"></el-input>
+                <el-form-item label="联系电话" prop="mobile">
+                  <!-- @blur="phoneVerify(index)" -->
+                  <el-input placeholder='请输入联系电话'  v-model="item.mobile"></el-input>
                 </el-form-item>
               </el-form>
             </el-card>
@@ -156,37 +158,48 @@
         isOk: true,
         // 入住订单绑定的数据
         formData: {
-          houseType: '',
-          check: '',
-          leaveTime: '',      
-          houseId: '',
-          // payType: '1',
+
+          
           // 需要上传的数据
           merchantid:this.$store.state.mchid,//商户id
-          orderType:2,
+          orderType:"2",//订单状态
           hotelid:'',
-          houseType:'豪华大床房',
-          orderSource:'',//订单来源
+          orderSource:'酒店订单',//订单来源
           cashPledge:'0',//押金 （需要根据选择的房型渲染）
           starttime:'',//开始时间
           endtime:'',//开始时间,
-          roomnumber:'109,120',//房间编号
+          roomnumber:'',//房间编号
           payType:'1',
           count:'0',//入住天数 需自己计算
           countPrice:'0',//房间总价
           payCountPrice:'0',//订单支付总金额
           roomPrice:'',//房间单价
-          roomamount:1,//房间数量
           roomamount:'',//预订房间数量
+          orderNumber:'', //订单编号
+          name:'', //预订人姓名
+          moble:'',//联系方式
+          roomPrice :'' , // 房间价格
+          count :'' ,  // 入驻天数
+          lateTime :'' , // 最晚到店时间        
+          remark :'' ,  // 备注             
+          preferentialPrice :'' , //优惠价格
+          roomRefund  :'' ,  // 应退房费合计金额
+          otherRefund :'' ,  //其他退款金额
+          totalRefund :'' ,  //总计应退款金额
+          sign :'' , //设备收款验签码        
+          starttime :'' , // 开始时间      
+          endtime :'' , // 结束时间      
+          refusal :'' , //拒绝描述    
+          renewType :'0' , // 续租状态0直接入住1续租
           hop: [
               {
-                idIsOk: false,
-                phoneIsOk: false,
-                //需要数据
                 merchantid:this.$store.state.mchid,
+                // idIsOk: false,
+                // phoneIsOk: false,
+                //需要数据
                 name:'',
                 card:'',
-                phone: '',
+                mobile: '',
               }
             ],
         },
@@ -200,22 +213,21 @@
           phone: ''
         },
         checkPay: 1,
-        AData:[ ]
+        AData:[]
       }
     },
     methods: {
       computeCount(){//input失焦的时候计算总价
-        this.formData.cashPledge = this.formData.cashPledge*this.formData.roomamount
+        this.formData.cashPledge = String(this.formData.cashPledge*this.formData.roomamount)
       },
       // 根据房型id的变化得到相对应的押金
       handleGetCash(){
-        console.log("触发了change事件...",this.formData.hotelid)
+        // console.log("触发了change事件...",this.formData.hotelid)
         this.AData.map(item=>{       
           if(item.id == this.formData.hotelid){
-            // console.log(item)
             this.formData.cashPledge = item.cash
             this.formData.roomPrice = item.price
-            console.log(this.formData.countPrice)
+            // console.log(this.formData.countPrice)
           }
         })
       },
@@ -223,7 +235,6 @@
       handleTime(){
         var UNIX1 = Number(this.formData.starttime)
         var UNIX2 = Number(this.formData.endtime)
-        // console.log(UNIX1,UNIX2)
         if(UNIX2>UNIX1){
           var d = new Date(this.formData.starttime)
           var d1 = new Date(this.formData.endtime)
@@ -232,7 +243,7 @@
           // 拼接天数 总天数
           var days = d1.getTime()-d.getTime()
           var dayy = parseInt(days/(1000*60*60*24))
-          this.formData.count = dayy
+          this.formData.count = String(dayy)
            var data = {
             merchantid:this.$store.state.mchid,
             hotelid:this.formData.hotelid,
@@ -240,27 +251,25 @@
             endtime:this.formData.endtime
           }
             this.$axios.post('/zftds/hotel/house/selectHotelCalendar',data).then(res=>{
-              // console.log('21212',res)
               if(res.code == 0){
-                this.formData.countPrice = this.formData.roomPrice*dayy*this.formData.roomamount
-                this.formData.payCountPrice = Number(this.formData.countPrice) + Number(this.formData.cashPledge)
+                this.formData.countPrice = String(this.formData.roomPrice*dayy*this.formData.roomamount)
+                this.formData.payCountPrice = String(Number(this.formData.countPrice) + Number(this.formData.cashPledge))
               }else{
-                console.log(res);
+                // console.log(res);
                 let arr = []
                 res.data.map(item=>{
                   arr.push(item.activityprice)
                 })
-                console.log(arr);
+                // console.log(arr);
                 var sum = 0
                 for(let i=0; i<arr.length;i++){
                   sum += Number(arr[i])
                 }
                 //有活动价的时候计算的房间总价
-                this.formData.countPrice = (this.formData.roomPrice*(Number(dayy)-Number(arr.length))+sum)*this.formData.roomamount
-                this.formData.payCountPrice = Number(this.formData.countPrice) + Number(this.formData.cashPledge)
+                this.formData.countPrice = String((this.formData.roomPrice*(Number(dayy)-Number(arr.length))+sum)*this.formData.roomamount)
+                this.formData.payCountPrice = String(Number(this.formData.countPrice) + Number(this.formData.cashPledge))
               }
-            })  
-          // console.log('this.formData',this.formData.starttime,this.formData.endtime)      
+            })        
         }else{
           this.$message.warning('入住时间不能为空且必须小于离店时间')
           this.formData.starttime = ''
@@ -268,71 +277,70 @@
         }
       },
       // 身份证号验证
-      idVerify(index) {
-        var reg = /(^\d{17}(\d|X|x)$)/
-        if (!reg.test(this.formData.hop[index].card)) {
-          this.$message.error('身份证格式填写错误')
-        } else {
-          this.formData.hop[index].idIsOk = true
-        }
-      },
+      // idVerify(index) {
+      //   var reg = /(^\d{17}(\d|X|x)$)/
+      //   if (!reg.test(this.formData.hop[index].card)) {
+      //     this.$message.error('身份证格式填写错误')
+      //   } else {
+      //     this.formData.hop[index].idIsOk = true
+      //   }
+      // },
       // 手机号验证
-      phoneVerify(index) {
-        var regs = /^1[3-9]\d{9}$/
-        if (!regs.test(this.formData.hop[index].phone)) {
-          this.$message.error('手机号格式填写错误')
-        } else {
-          this.formData.hop[index].phoneIsOk = true
-        }
-      },
+      // phoneVerify(index) {
+      //   var regs = /^1[3-9]\d{9}$/
+      //   if (!regs.test(this.formData.hop[index].mobile)) {
+      //     this.$message.error('手机号格式填写错误')
+      //   } else {
+      //     this.formData.hop[index].phoneIsOk = true
+      //   }
+      // },
       // 支付方式
       handlePayToWX() {
-        console.log('微信');
+        // console.log('微信');
       },
       handlePayToZFB() {
-        console.log('支付宝');
+        // console.log('支付宝');
       },
       handlePayToOnline() {
-        console.log('在线');
+        // console.log('在线');
       },
       handlePayToMoney() {
-        console.log('现金支付');
+        // console.log('现金支付');
       },
       // 点击添加一个新的入住人
       handleAdduser() {
         // 如果数据不为空且身份证号手机号验证通过
         if (this.formData.hop[this.formData.hop.length - 1].name &&
           this.formData.hop[this.formData.hop.length - 1].card &&
-          this.formData.hop[this.formData.hop.length - 1].phone &&
-          this.formData.hop[this.formData.hop.length - 1].idIsOk &&
-          this.formData.hop[this.formData.hop.length - 1].phoneIsOk) {
+          this.formData.hop[this.formData.hop.length - 1].mobile 
+          // this.formData.hop[this.formData.hop.length - 1].idIsOk &&
+          // this.formData.hop[this.formData.hop.length - 1].phoneIsOk
+          ) {
           //   添加一个新的空白入住人盒子
           this.formData.hop.push({
             name: '',
             // houseId: this.formData.hop[this.formData.hop.length - 1].houseId,
             // houseType: this.formData.hop[this.formData.hop.length - 1].houseType,
             card: '',
-            phone: '',
-            idIsOk: false,
-            phoneIsOk: false
+            mobile: '',
+            // idIsOk: false,
+            // phoneIsOk: false
           })
         } else {
           this.$message.warning('请先完善上一入住人信息哦~')
         }
       },
       handleCheck() {
-        this.centerDialogVisible = true
-        // this.isSuccess = true
-        // this.$axios.post('/zftds/hotel/order/insertHotelOrder',this.formData).then(res=>{
-        //   console.log(res)
-        //   if(res.code == 1){
-        //     this.centerDialogVisible = true
-        //     this.isSuccess = true
-        //   }else{
-        //     this.centerDialogVisible = true
-        //     this.isSuccess = false
-        //   }
-        // })
+        this.$axios.post('/zftds/hotel/order/insertHotelOrder',this.formData).then(res=>{
+          // console.log(res)
+          if(res.code == 1){
+            this.centerDialogVisible = true
+            this.isSuccess = true
+          }else{
+            this.centerDialogVisible = true
+            this.isSuccess = false
+          }
+        })
       },
       handleOk() {
         this.isOk = false;
@@ -343,9 +351,9 @@
       // 得到房型信息与房价信息等
       getHotelData(){
         this.$axios.post('/zftds/hotel/house/selectHotelHouseS',{merchantid:this.$store.state.mchid}).then(res=>{
-          res.data.map(item=>{
-             console.log(item.id,item.houseinfo,item.price,item.cash)
-             })
+          // res.data.map(item=>{
+          //   //  console.log(item.id,item.houseinfo,item.price,item.cash)
+          //    })
           this.AData = [...res.data]
         })
       }

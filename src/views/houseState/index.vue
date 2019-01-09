@@ -254,16 +254,15 @@
               this.isShowDialog1 = false;
             })
         }
-
       },
       getPrice(){
         let url = '/zftds/hotel/house/selectHotelCalendar';
         return new Promise((resolve, reject) => {
           this.$axios.post(url,
-            {merchantid:this.$store.state.mchid })
+            {merchantid:this.$store.state.mchid})
             .then(res=>{
               resolve(res.data)
-              // console.log('rereresrers',res);
+              console.log('rereresrers',res);
             }).catch(err => {
               reject(err)
           })
@@ -289,8 +288,6 @@
         this.currentDate = newDate;
         this.getHouseType();
         this.toggleClass(newDate.getTime())
-        /*用户选择日期的逻辑在这里写*/
-        /*用户选择日期的逻辑在这里写*/
         /*用户选择日期的逻辑在这里写*/
         /*用户选择日期的逻辑在这里写*/
       },
@@ -447,7 +444,7 @@
     },
     created(){
       this.getHouseType()
-      // this.getPrice()
+      this.getPrice()
     },
     watch:{
       formatTime(val){
