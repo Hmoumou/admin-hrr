@@ -16,7 +16,7 @@
       <div class="second" v-if="iSsecond">
         <el-card class="box-card mesList">
            <div class="mesBoxs">
-              <div class="leftText">酒店名称</div>
+              <div class="leftText">酒店中文名称</div>
               <div class="rightText">{{formData.hotelName}}</div>
            </div>
            <div class="mesBoxs">

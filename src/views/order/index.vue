@@ -60,8 +60,14 @@
         <el-menu-item index="5">已离店订单</el-menu-item>
         <el-menu-item index="6">失效订单</el-menu-item>
       </el-menu>
-
-      <el-card class="clearfix">
+      <!-- 当没有订单的时候显示的背景图 -->
+      <div class="isbg" v-if="isBG">
+        <div class="wrap">
+          <img src="../../image/暂无订单/组 33.png" alt="">
+          <p>暂无订单</p>
+        </div>
+      </div> 
+      <el-card v-if="!isBG" class="clearfix">
         <div class="orderDetail-right flr">
           <el-card class="box-card carditem">
             <div slot="header" class="header">
@@ -85,6 +91,8 @@
               <table class="mb15">
                 <tr class="bg">
                   <th>预订人姓名</th>
+                  <!-- <td v-if="searchData[dataIndex]&&searchData[dataIndex].hop[0]" >
+                    {{searchData[dataIndex]&&searchData[dataIndex].hop[0].name}}</td> -->
                   <td>{{searchData[dataIndex]&&searchData[dataIndex].name}}</td>
                   <th>预订房型</th>
                   <td class="blue fw fs16">{{searchData[dataIndex]&&searchData[dataIndex].houseinfo}}</td>
@@ -113,7 +121,9 @@
               <table class="mb15">
                 <tr class="bg">
                   <th>支付方式</th>
-                  <td>{{searchData[dataIndex]&&searchData[dataIndex].payType}}</td>
+                  <td>{{searchData[dataIndex]&&searchData[dataIndex].payType==1?"支付宝":
+                        searchData[dataIndex]&&searchData[dataIndex].payType==2?"微信支付":
+                        searchData[dataIndex]&&searchData[dataIndex].payType==3?"在线支付":"现金支付"}}</td>
                   <th>订单来源</th>
                   <td>{{searchData[dataIndex]&&searchData[dataIndex].orderSource}}</td>
                 </tr>
@@ -138,13 +148,14 @@
               </table>
               <!-- 新加入住人 -->
               <table class="mb15 addtable">
-                <tr v-for="(item,ind) in searchData[dataIndex]&&searchData[dataIndex].hop" :key="ind">
+                <!--  -->
+                <tr v-for="(it,ind) in searchData[dataIndex]&&searchData[dataIndex].hop" :key="ind">
                   <th>入住人姓名</th>
                   <!-- <td>{{searchData[dataIndex].username}}</td> -->
-                  <td>item.name</td>
+                  <td v-text="it.name"></td>
                   <th>身份证号</th>
                   <!-- <td>{{searchData[dataIndex].userid}}</td> -->
-                  <td>item.card</td>
+                  <td v-text="it.card"></td>
                 </tr>
                 <tr v-if="iSadd" v-for="(item,ind) in addpeople" :key="ind">
                   <th>入住人姓名</th>
@@ -162,7 +173,7 @@
                 <el-button class="flr" type="primary" @click="dialogFormVisible = true">拒绝订单</el-button>
                 <el-button class="fll" type="primary" @click="handleUntreated">接受订单</el-button>
                 <el-dialog title="拒绝原因" :visible.sync="dialogFormVisible">
-                  <el-input v-model="searchData[dataIndex].loseCause"></el-input>
+                  <el-input v-model="searchData[dataIndex].refusal"></el-input>
                   <div slot="footer" class="dialog-footer">
                     <el-button @click="dialogFormVisible = false">取 消</el-button>
                     <el-button type="primary" @click="handleRefase">确 定</el-button>
@@ -340,7 +351,9 @@
                    {{item.houseinfo}}
                    </strong>
                 </div>
-                <div class="user mb5 fs14">{{item.name}}</div>
+                <div class="user mb5 fs14" v-if="item.hop[0]">
+                  {{item.hop[0].name}}</div>
+                <div class="user mb5 fs14" v-else>{{item.name}}</div>
                 <div class="totalMoney part fs14">{{item.payCountPrice}}</div>
                 <div class="startTime clearfix fs14">
                   <div class="flr fw fs14">共
@@ -367,6 +380,7 @@ export default {
   },
   data() {
     return {
+      isBG :true,//当前列表是否有订单  如果没有展示背景图
       iSseach:false,//是否为查询到的订单
       iSadd: false,
       moreSearch: true, //更多搜索选项
@@ -413,7 +427,7 @@ export default {
   methods: {
     // 添加入住人
     addPeople() {
-    //   console.log(this.addpeople.length);
+      //   console.log(this.addpeople.length);
       if (this.addpeople.length == 0) {
         this.addpeople.push({
           username: "",
@@ -437,25 +451,49 @@ export default {
     handleMore() {
       this.moreSearch = !this.moreSearch;
     }, //点击更多-----搜索
-    handleRoomId() {}, //分配房间号
+    handleRoomId() { //分配房间号 已接单订单
+      if(this.searchData[dataIndex].roomnumber!=""){
+        this.$axios.post("/zftds/hotel/order/updateHotelOrder",{
+          id:this.searchData[this.dataIndex].id,
+          orderType:2,
+          roomnumber:this.searchData[dataIndex].roomnumbers,
+        })
+      }
+    },
     handleLeaveYES() {}, //确认离店，退押金
     handleGoon() {
       this.$router.push("/layout/still/still");
     }, //点击续住
     // 点击接受订单
-    handleUntreated() {
-      console.log("okok");
-      // this.$axios.post('').then(res=>{
-      //     console.log(res)
-      // })
+    handleUntreated() {//点击接受订单
+      // console.log(this.searchData[this.dataIndex].orderType)
+      this.$axios.post('/zftds/hotel/order/updateHotelOrder',{
+        id:this.searchData[this.dataIndex].id,
+        orderType:1
+      }).then(res=>{
+          if(res.code == 1){
+            this.$message.success('接受订单成功')
+          }
+      })
     },
     // 点击拒绝订单
     handleRefase() {
-      // this.$axios.post("").then(res=>{
-      //     comsole.log(res)
-      // })
-      this.dialogFormVisible = false;
-      console.log("我拒绝");
+      // console.log(this.searchData[this.dataIndex].refusal!="");
+      if(this.searchData[this.dataIndex].refusal!=""){
+        this.$axios.post("/zftds/hotel/order/updateHotelOrder",{
+                id:this.searchData[this.dataIndex].id,
+                orderType:4,
+                refusal:this.searchData[this.dataIndex].refusal
+              }).then(res=>{
+                  // console.log(res)
+                  if(res.code == 1){
+                    this.$message.success("已拒绝该订单")
+                    this.dialogFormVisible = false;
+                  }
+              })
+      }else{
+        this.$message.warning('请填写拒绝原因')
+      }
     },
     handleSearch(e) {
       //点击搜索进行验证
@@ -478,22 +516,80 @@ export default {
       //     },4000)
       // }
     },
+    getOrderByType(){
+      // console.log(this.activeIndex)
+      var number = Number(this.activeIndex)-2
+      this.$axios.post("/zftds/hotel/order/selectHotelOrder",{
+        merchantid: this.$store.state.mchid,
+        orderType:number
+      }).then(res=>{
+        // console.log(res)
+        if(res.code == 1){
+            let datas2 = [...res.data];
+            // this.searchData = datas2.filter(item=>item.orderType!=5)
+            this.searchData = []
+            if(this.searchData[0]=""){
+              this.isBG = true
+            }
+            // console.log(this.searchData.length == 0)
+        }else if(res.code == 0){
+          this.isBG = true
+        }
+      })
+    },
     getOrder() {
-      this.$axios.post("/zftds/hotel/order/selectHotelOrder", {
+      this.$axios.post("/zftds/hotel/order/selectHotelOrder",{
           merchantid: this.$store.state.mchid
+          // orderType:this.activeIndex-1
         }).then(res => {
           console.log(res);
           if(res.code == 1){
-              this.searchData = [...res.data];
+              let datas1 = [...res.data];
+              this.searchData = datas1.filter(item=>item.orderType!=5)
           }else{
               this.$message.warning("暂无订单信息，建议先添加订单哦~")
               setTimeout(()=>{
                   this.$router.push('/layout/check')
               },500)
           }
-
-        //   console.log(this.searchData);
         });
+    },
+    getFirstOrder(){
+      var num = this.dataIndex
+      console.log(num);
+      setTimeout(()=>{
+        if(this.searchData[num]&&this.searchData[num].orderType==0){
+          (this.isInsert = false), //是否已入住
+          (this.isLose = false), //是否已失效
+          (this.isAccepted = false), //是否已接单
+          (this.isLeave = false), //是否已离店
+          (this.isUntreated = true)
+      } else if(this.searchData[num]&&this.searchData[num].orderType==1) {
+         (this.isUntreated = false), //是否未处理
+          (this.isInsert = false), //是否已入住
+          (this.isLose = false), //是否已失效
+          (this.isLeave = false), //是否已离店
+          (this.isAccepted = true)
+      } else if(this.searchData[num]&&this.searchData[num].orderType==2){
+        (this.isUntreated = false), //是否未处理
+          (this.isAccepted = false), //是否已接单
+          (this.isLose = false), //是否已失效
+          (this.isLeave = false), //是否已离店
+          (this.isInsert = true)
+      } else if(this.searchData[num]&&this.searchData[num].orderType==3){
+        (this.isUntreated = false), //是否未处理
+          (this.isAccepted = false), //是否已接单
+          (this.isInsert = false), //是否已入住
+          (this.isLose = false),
+        (this.isLeave = true)
+      } else if(this.searchData[num]&&this.searchData[num].orderType==4){
+        (this.isUntreated = false), //是否未处理
+          (this.isAccepted = false), //是否已接单
+          (this.isInsert = false), //是否已入住
+          (this.isLeave = false), //是否已离店
+          (this.isLose = true)
+      }
+      },1000)
     },
     handleSelect(key, keyPath) {
       console.log(key, keyPath);
@@ -503,51 +599,94 @@ export default {
     },
     activeData(index) {
       this.dataIndex = index;
+      // console.log(this.searchData[index].orderType)
+      if(this.searchData[index].orderType == 0){
+          (this.isInsert = false), //是否已入住
+          (this.isLose = false), //是否已失效
+          (this.isAccepted = false), //是否已接单
+          (this.isLeave = false), //是否已离店
+          (this.isUntreated = true)
+      } else if(this.searchData[index].orderType == 1) {
+         (this.isUntreated = false), //是否未处理
+          (this.isInsert = false), //是否已入住
+          (this.isLose = false), //是否已失效
+          (this.isLeave = false), //是否已离店
+          (this.isAccepted = true)
+      } else if(this.searchData[index].orderType == 2){
+        (this.isUntreated = false), //是否未处理
+          (this.isAccepted = false), //是否已接单
+          (this.isLose = false), //是否已失效
+          (this.isLeave = false), //是否已离店
+          (this.isInsert = true)
+      } else if(this.searchData[index].orderType == 3){
+        (this.isUntreated = false), //是否未处理
+          (this.isAccepted = false), //是否已接单
+          (this.isInsert = false), //是否已入住
+          (this.isLose = false),
+        (this.isLeave = true)
+      } else if(this.searchData[index].orderType == 4){
+        (this.isUntreated = false), //是否未处理
+          (this.isAccepted = false), //是否已接单
+          (this.isInsert = false), //是否已入住
+          (this.isLeave = false), //是否已离店
+          (this.isLose = true)
+      }
     }
   },
   created() {
     // this.getHouseType()
     this.getOrder();
+    this.getFirstOrder()
   },
   watch: {
     activeIndex(val) {
       if (val == 1) {
-        (this.isUntreated = false), //是否未处理
+          (this.isUntreated = false), //是否未处理
           (this.isAccepted = false), //是否已接单
           (this.isInsert = false), //是否已入住
           (this.isLeave = false), //是否已离店
-          (this.isLose = false);
+          (this.isLose = false),
+          this.getOrder()
+          // this.getFirstOrder()
       } else if (val == 2) {
-        (this.isInsert = false), //是否已入住
+          (this.isInsert = false), //是否已入住
           (this.isLose = false), //是否已失效
           (this.isAccepted = false), //是否已接单
           (this.isLeave = false), //是否已离店
-          (this.isUntreated = true);
+          (this.isUntreated = true)
+           this.getOrderByType()
       } else if (val == 3) {
         (this.isUntreated = false), //是否未处理
           (this.isInsert = false), //是否已入住
           (this.isLose = false), //是否已失效
           (this.isLeave = false), //是否已离店
-          (this.isAccepted = true);
+          (this.isAccepted = true),
+           this.getOrderByType()
+
       } else if (val == 4) {
         (this.isUntreated = false), //是否未处理
           (this.isAccepted = false), //是否已接单
           (this.isLose = false), //是否已失效
           (this.isLeave = false), //是否已离店
-          (this.isInsert = true);
+          (this.isInsert = true),
+           this.getOrderByType()
+
       } else if (val == 5) {
         (this.isUntreated = false), //是否未处理
           (this.isAccepted = false), //是否已接单
           (this.isInsert = false), //是否已入住
-          (this.isLose = false);
-        this.isLeave = true;
+          (this.isLose = false),
+        (this.isLeave = true),
+         this.getOrderByType()
       } else if (val == 6) {
         (this.isUntreated = false), //是否未处理
           (this.isAccepted = false), //是否已接单
           (this.isInsert = false), //是否已入住
           (this.isLeave = false), //是否已离店
-          (this.isLose = true);
-        console.log(this.isLose);
+          (this.isLose = true),
+        // console.log(this.isLose)
+           this.getOrderByType()
+
       }
     }
   }
@@ -555,6 +694,29 @@ export default {
 </script>
 
 <style scoped lang='scss'>
+    .isbg{//加的暂无订单大背景图
+        border: 1px solid #fff;
+        width: 100%;
+        background: #fff;
+        .wrap{
+          background: #fff;
+          width: 332px;
+          height: 240px;
+          margin-left: 50%;
+          margin-top:20%;
+          margin-bottom: 6%;
+          transform: translate(-50%,-50%);
+        }
+        img{
+          width: 100%;
+        }
+        p{
+          text-align: center;
+          color:#b7cfff;
+          font-size: 16px;
+          font-weight: 600;
+        }
+    }
   .order {
     /deep/ .el-card {
       border-bottom: none;
@@ -612,7 +774,7 @@ export default {
   //未处理订单
   margin: 0 auto;
   width: 240px;
-  margin-top: 40px;
+  margin-top: 30px;
 }
 /deep/ input.el-input__inner {
   padding-left: 20px;

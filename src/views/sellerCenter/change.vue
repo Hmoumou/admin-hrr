@@ -164,7 +164,7 @@
      width: 100%;
      margin-bottom: 10px;
       .leftText{
-        font-weight: 500;
+        font-weight: 600;
         font-size: 14px;
         width:120px;
         float: left;
@@ -197,7 +197,7 @@
     width: 100%;
   }
   
-  /deep/ .el-input__inner { background: #f9fbff;border: none; padding-left: 15px;}
+  /deep/ .el-input__inner { background: #f9fbff;border: none; padding-left: 30px;}
   .el-button--text { margin-top: 9px;}
 
 </style>

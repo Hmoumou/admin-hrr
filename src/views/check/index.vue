@@ -158,8 +158,6 @@
         isOk: true,
         // 入住订单绑定的数据
         formData: {
-
-          
           // 需要上传的数据
           merchantid:this.$store.state.mchid,//商户id
           orderType:"2",//订单状态
@@ -336,6 +334,47 @@
           if(res.code == 1){
             this.centerDialogVisible = true
             this.isSuccess = true
+            this.formData = {
+                 // 需要上传的数据
+              merchantid:this.$store.state.mchid,//商户id
+              orderType:"2",//订单状态
+              hotelid:'',
+              orderSource:'酒店订单',//订单来源
+              cashPledge:'0',//押金 （需要根据选择的房型渲染）
+              starttime:'',//开始时间
+              endtime:'',//开始时间,
+              roomnumber:'',//房间编号
+              payType:'1',
+              count:'0',//入住天数 需自己计算
+              countPrice:'0',//房间总价
+              payCountPrice:'0',//订单支付总金额
+              roomPrice:'',//房间单价
+              roomamount:'',//预订房间数量
+              orderNumber:'', //订单编号
+              name:'', //预订人姓名
+              moble:'',//联系方式
+              roomPrice :'' , // 房间价格
+              count :'' ,  // 入驻天数
+              lateTime :'' , // 最晚到店时间        
+              remark :'' ,  // 备注             
+              preferentialPrice :'' , //优惠价格
+              roomRefund  :'' ,  // 应退房费合计金额
+              otherRefund :'' ,  //其他退款金额
+              totalRefund :'' ,  //总计应退款金额
+              sign :'' , //设备收款验签码        
+              starttime :'' , // 开始时间      
+              endtime :'' , // 结束时间      
+              refusal :'' , //拒绝描述    
+              renewType :'0' , // 续租状态0直接入住1续租
+              hop: [
+                  {
+                    merchantid:this.$store.state.mchid,
+                    name:'',
+                    card:'',
+                    mobile: '',
+                  }
+                ],
+            }
           }else{
             this.centerDialogVisible = true
             this.isSuccess = false
