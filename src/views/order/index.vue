@@ -380,7 +380,7 @@ export default {
   },
   data() {
     return {
-      isBG :true,//当前列表是否有订单  如果没有展示背景图
+      isBG :false,//当前列表是否有订单  如果没有展示背景图
       iSseach:false,//是否为查询到的订单
       iSadd: false,
       moreSearch: true, //更多搜索选项
@@ -417,7 +417,6 @@ export default {
         }
       ],
       houseType:[//里面存放获取带的房型信息
-
       ],
       searchData: [
           //里面存放请求回来的订单
@@ -457,6 +456,8 @@ export default {
           id:this.searchData[this.dataIndex].id,
           orderType:2,
           roomnumber:this.searchData[dataIndex].roomnumbers,
+        }).then(res=>{
+          console.log(res)
         })
       }
     },
@@ -489,6 +490,8 @@ export default {
                   if(res.code == 1){
                     this.$message.success("已拒绝该订单")
                     this.dialogFormVisible = false;
+                    this.getOrder()
+                    this.getOrderByType()
                   }
               })
       }else{
@@ -523,15 +526,9 @@ export default {
         merchantid: this.$store.state.mchid,
         orderType:number
       }).then(res=>{
-        // console.log(res)
         if(res.code == 1){
             let datas2 = [...res.data];
-            // this.searchData = datas2.filter(item=>item.orderType!=5)
-            this.searchData = []
-            if(this.searchData[0]=""){
-              this.isBG = true
-            }
-            // console.log(this.searchData.length == 0)
+            this.searchData = datas2.filter(item=>item.orderType!=5)
         }else if(res.code == 0){
           this.isBG = true
         }
@@ -542,15 +539,11 @@ export default {
           merchantid: this.$store.state.mchid
           // orderType:this.activeIndex-1
         }).then(res => {
-          console.log(res);
           if(res.code == 1){
               let datas1 = [...res.data];
               this.searchData = datas1.filter(item=>item.orderType!=5)
-          }else{
-              this.$message.warning("暂无订单信息，建议先添加订单哦~")
-              setTimeout(()=>{
-                  this.$router.push('/layout/check')
-              },500)
+          }else if(res.code == 0){
+            this.isBG = true
           }
         });
     },
@@ -641,6 +634,7 @@ export default {
   watch: {
     activeIndex(val) {
       if (val == 1) {
+        (this.isBG = false),
           (this.isUntreated = false), //是否未处理
           (this.isAccepted = false), //是否已接单
           (this.isInsert = false), //是否已入住
@@ -649,6 +643,7 @@ export default {
           this.getOrder()
           // this.getFirstOrder()
       } else if (val == 2) {
+        (this.isBG = false),
           (this.isInsert = false), //是否已入住
           (this.isLose = false), //是否已失效
           (this.isAccepted = false), //是否已接单
@@ -656,6 +651,7 @@ export default {
           (this.isUntreated = true)
            this.getOrderByType()
       } else if (val == 3) {
+        (this.isBG = false),
         (this.isUntreated = false), //是否未处理
           (this.isInsert = false), //是否已入住
           (this.isLose = false), //是否已失效
@@ -664,6 +660,7 @@ export default {
            this.getOrderByType()
 
       } else if (val == 4) {
+        (this.isBG = false),
         (this.isUntreated = false), //是否未处理
           (this.isAccepted = false), //是否已接单
           (this.isLose = false), //是否已失效
@@ -672,6 +669,7 @@ export default {
            this.getOrderByType()
 
       } else if (val == 5) {
+        (this.isBG = false),
         (this.isUntreated = false), //是否未处理
           (this.isAccepted = false), //是否已接单
           (this.isInsert = false), //是否已入住
@@ -679,6 +677,7 @@ export default {
         (this.isLeave = true),
          this.getOrderByType()
       } else if (val == 6) {
+        (this.isBG = false),
         (this.isUntreated = false), //是否未处理
           (this.isAccepted = false), //是否已接单
           (this.isInsert = false), //是否已入住
