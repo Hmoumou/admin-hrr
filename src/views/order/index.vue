@@ -20,8 +20,7 @@
             <el-button type="primary" class="btn" @click="">搜索</el-button>
           </div>-->
         </div>
-
-        <transitionBox v-model="moreSearch">
+        <div class="dialog-wrap" :class="{activeShow: moreSearch}">
           <div class="dialog">
             <el-form>
               <el-form-item label="按房型选择">
@@ -45,7 +44,7 @@
               </el-form-item>
             </el-form>
           </div>
-        </transitionBox>
+        </div>
       </el-card>
     </div>
     <div class="orderDetails">
@@ -73,9 +72,9 @@
               <table class="mb15">
                 <tr>
                   <th>订单编号</th>
-                  <td class="blue">{{searchData[dataIndex].orderNumber}}</td>
+                  <td class="blue">{{searchData[dataIndex]&&searchData[dataIndex].orderNumber}}</td>
                   <th>订单状态</th>
-                  <td class="blue fw fs16">
+                  <td class="blue fw fs16" v-if="searchData[dataIndex]">
                       {{searchData[dataIndex].orderType==0?
                       "未处理":searchData[dataIndex].orderType==1?
                       "已接单":searchData[dataIndex].orderType==2?
@@ -86,60 +85,60 @@
               <table class="mb15">
                 <tr class="bg">
                   <th>预订人姓名</th>
-                  <td>{{searchData[dataIndex].name}}</td>
+                  <td>{{searchData[dataIndex]&&searchData[dataIndex].name}}</td>
                   <th>预订房型</th>
-                  <td class="blue fw fs16">{{searchData[dataIndex].houseinfo}}</td>
+                  <td class="blue fw fs16">{{searchData[dataIndex]&&searchData[dataIndex].houseinfo}}</td>
                 </tr>
                 <tr>
                   <th>预订人电话</th>
-                  <td>{{searchData[dataIndex].moble}}</td>
+                  <td>{{searchData[dataIndex]&&searchData[dataIndex].moble}}</td>
                   <th>房间价格</th>
-                  <td>{{searchData[dataIndex].roomPrice}}</td>
+                  <td>{{searchData[dataIndex]&&searchData[dataIndex].roomPrice}}</td>
                 </tr>
                 <tr class="bg">
                   <th>预订日期</th>
                   <td>
                     <p
                       class="blue"
-                    >{{searchData[dataIndex].starttime}}-{{searchData[dataIndex].endtime}}</p>
+                    >{{searchData[dataIndex]&&searchData[dataIndex].starttime}}-{{searchData[dataIndex]&&searchData[dataIndex].endtime}}</p>
                     <span>(共
-                      <span class="blue">{{searchData[dataIndex].count}}</span>晚)
+                      <span class="blue">{{searchData[dataIndex]&&searchData[dataIndex].count}}</span>晚)
                     </span>
                   </td>
                   <th>最晚抵店时间</th>
-                  <td>{{searchData[dataIndex].lateTime}}</td>
+                  <td>{{searchData[dataIndex]&&searchData[dataIndex].lateTime}}</td>
                 </tr>
               </table>
 
               <table class="mb15">
                 <tr class="bg">
                   <th>支付方式</th>
-                  <td>{{searchData[dataIndex].payType}}</td>
+                  <td>{{searchData[dataIndex]&&searchData[dataIndex].payType}}</td>
                   <th>订单来源</th>
-                  <td>{{searchData[dataIndex].orderSource}}</td>
+                  <td>{{searchData[dataIndex]&&searchData[dataIndex].orderSource}}</td>
                 </tr>
                 <tr>
                   <th>押金金额</th>
-                  <td class="blue">RMB {{searchData[dataIndex].cashPledge}}</td>
+                  <td class="blue">RMB {{searchData[dataIndex]&&searchData[dataIndex].cashPledge}}</td>
                   <th>总计房间价格</th>
-                  <td class="blue fw fs14">RMB {{searchData[dataIndex].countPrice}}</td>
+                  <td class="blue fw fs14">RMB {{searchData[dataIndex]&&searchData[dataIndex].countPrice}}</td>
                 </tr>
                 <tr class="bg">
                   <th>合计金额</th>
-                  <td class="blue fw fs14">RMB {{searchData[dataIndex].payCountPrice}}</td>
+                  <td class="blue fw fs14">RMB {{searchData[dataIndex]&&searchData[dataIndex].payCountPrice}}</td>
                   <th>优惠价格</th>
-                  <td class="blue fw fs14">RMB {{searchData[dataIndex].preferentialPrice}}</td>
+                  <td class="blue fw fs14">RMB {{searchData[dataIndex]&&searchData[dataIndex].preferentialPrice}}</td>
                 </tr>
               </table>
               <table class="desc mb15">
                 <tr>
                   <th>备注</th>
-                  <td>{{searchData[dataIndex].remark}}</td>
+                  <td>{{searchData[dataIndex]&&searchData[dataIndex].remark}}</td>
                 </tr>
               </table>
               <!-- 新加入住人 -->
               <table class="mb15 addtable">
-                <tr v-for="(item,ind) in searchData[dataIndex].hop" :key="ind">
+                <tr v-for="(item,ind) in searchData[dataIndex]&&searchData[dataIndex].hop" :key="ind">
                   <th>入住人姓名</th>
                   <!-- <td>{{searchData[dataIndex].username}}</td> -->
                   <td>item.name</td>
@@ -323,12 +322,15 @@
                 <div class="type clearfix part">
                     <!-- 最晚到点时间 -->
                   <!-- <span class="flr overTime">{{item.lateTime}}</span> -->
-                  <el-button type="primary" class="none"> {{item.orderType==0?
+                  <el-button type="primary" class="none" v-if="item">
+                    {{
+                    item.orderType==0?
                       "未处理":item.orderType==1?
                       "已接单":item.orderType==2?
                       "已入住":item.orderType==3?
-                      "已离店":"失效"}}</el-button>
-                  <span class="blue ml5" >{{item.orderNumber}}</span>
+                      "已离店":"失效"}}
+                  </el-button>
+                  <span class="blue ml5" >{{item&&item.orderNumber}}</span>
                 </div>
                 <div class="roomType part">
                   <span class="flr fs14">共
@@ -489,7 +491,7 @@ export default {
                   this.$router.push('/layout/check')
               },500)
           }
-          
+
         //   console.log(this.searchData);
         });
     },
@@ -553,6 +555,12 @@ export default {
 </script>
 
 <style scoped lang='scss'>
+  .order {
+    /deep/ .el-card {
+      border-bottom: none;
+    }
+  }
+
 .icon-arw-top-copy {
   transition: transform ease 0.1s;
   width: 16px;
@@ -666,8 +674,9 @@ export default {
     }
 
     /deep/ .el-card__body {
-      position: relative;
       padding: 0;
+      transition: height ease .3s;
+      position: relative;
     }
     /deep/ .el-button {
       width: 200px;
@@ -675,7 +684,19 @@ export default {
       font-size: 14px;
     }
     // border: 0.1px solid #fff;
+    .dialog-wrap {
+      height: 150px;
+      transition: height ease .3s;
+      overflow: hidden;
+
+      &.activeShow {
+        height: 0;
+      }
+    }
     .dialog {
+      box-sizing: border-box;
+      padding: 10px;
+
       /deep/ .el-input__inner {
         padding-left: 25px;
         border: 1px solid #b3ccff;
@@ -684,7 +705,7 @@ export default {
     }
     .carditem {
       /*margin: ;*/
-      $rMargin: -11px;
+      $rMargin: -13px;
       margin: $rMargin $rMargin 0 $rMargin;
     }
     .seachBox {

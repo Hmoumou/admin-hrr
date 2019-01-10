@@ -375,7 +375,8 @@
               // 1. 先截取15天的有效数据
               let filterArr = priceArr.filter(item => {
                 // console.log('你要的item',item.id);
-                let itemDateStr = moment(item.addtime).format("YYYY-MM-DD"); // 生成 2018-12-02这样的时间字符串
+                console.log("item", item.ytd)
+                let itemDateStr = moment(item.ytd).format("YYYY-MM-DD"); // 生成 2018-12-02这样的时间字符串
                 let nowDateStr = moment(this.currentDate).format("YYYY-MM-DD"); // 注释同上
                 let itemParseUnix = Date.parse(itemDateStr); // 生成以日为标准的unix时间戳既不考虑时分秒毫秒
                 let nowParseUnix = Date.parse(nowDateStr);
@@ -398,7 +399,7 @@
               * */
               let secondFilter = [];
               filterArr.forEach((i, idx, filArr) => {
-                console.log('i',i)
+                // console.log('i',i)
                 let resultItem = secondFilter.find(item => { // 查找二次过滤的数组里，同行同列的项目
                   return i.hotelid == item.hotelid && i.ytd == item.ytd;
                 });
@@ -411,13 +412,14 @@
                   }
                 }
               });
-
+              console.log(secondFilter, "second");
               this.houseData2.houseType = res.data.map((item, row) => {
                 let arr = [];
                 for(let i=0; i < 15; i++) {
                   let activeItem = secondFilter.find(it => this.dateData.weekDate[i].formatStr == it.ytd && item.id == it.hotelid);
                   // 每次生成项目的时候，去二次过滤的数组里查找，同行同列的项目。因为没有重复的，找到的就是有效值。
                   let activityprice = activeItem && activeItem.activityprice? activeItem.activityprice: "";
+                  console.log(activeItem, "active");
                   // 如果找到了，就返回，找不到给空的字符串让上方渲染的值可以通过或运算符运算
                   arr.push({
                     activityprice,//活动价格
@@ -444,7 +446,7 @@
     },
     created(){
       this.getHouseType()
-      this.getPrice()
+      // this.getPrice()
     },
     watch:{
       formatTime(val){
