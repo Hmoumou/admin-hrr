@@ -100,15 +100,17 @@
                 <tr>
                   <th>预订人电话</th>
                   <td>{{searchData[dataIndex]&&searchData[dataIndex].moble}}</td>
-                  <th>房间价格</th>
-                  <td>{{searchData[dataIndex]&&searchData[dataIndex].roomPrice}}</td>
+                  <th v-if="searchData[dataIndex]&&searchData[dataIndex].roomnumber==''">房间价格</th>
+                  <td v-if="searchData[dataIndex]&&searchData[dataIndex].roomnumber==''">{{searchData[dataIndex]&&searchData[dataIndex].roomPrice}}/晚</td>
+                  <th v-if="searchData[dataIndex]&&searchData[dataIndex].roomnumber">房间号</th>
+                  <td v-if="searchData[dataIndex]&&searchData[dataIndex].roomnumber">{{searchData[dataIndex]&&searchData[dataIndex].roomPrice}} </td>
                 </tr>
                 <tr class="bg">
                   <th>预订日期</th>
                   <td>
                     <p
                       class="blue"
-                    >{{searchData[dataIndex]&&searchData[dataIndex].starttime}}-{{searchData[dataIndex]&&searchData[dataIndex].endtime}}</p>
+                    >{{searchData[dataIndex]&&searchData[dataIndex].starttime}}/{{searchData[dataIndex]&&searchData[dataIndex].endtime}}</p>
                     <span>(共
                       <span class="blue">{{searchData[dataIndex]&&searchData[dataIndex].count}}</span>晚)
                     </span>
@@ -134,10 +136,10 @@
                   <td class="blue fw fs14">RMB {{searchData[dataIndex]&&searchData[dataIndex].countPrice}}</td>
                 </tr>
                 <tr class="bg">
-                  <th>合计金额</th>
-                  <td class="blue fw fs14">RMB {{searchData[dataIndex]&&searchData[dataIndex].payCountPrice}}</td>
                   <th>优惠价格</th>
                   <td class="blue fw fs14">RMB {{searchData[dataIndex]&&searchData[dataIndex].preferentialPrice}}</td>
+                  <th>合计金额</th>
+                  <td class="blue fw fs14">RMB {{searchData[dataIndex]&&searchData[dataIndex].payCountPrice}}</td>
                 </tr>
               </table>
               <table class="desc mb15">
@@ -160,11 +162,11 @@
                 <tr v-if="iSadd" v-for="(item,ind) in addpeople" :key="ind">
                   <th>入住人姓名</th>
                   <td>
-                    <el-input placeholder="请输入入住人姓名" v-model="item.username"></el-input>
+                    <el-input placeholder="请输入入住人姓名" v-model="item.name"></el-input>
                   </td>
                   <th>身份证号</th>
                   <td>
-                    <el-input placeholder="入住人身份证号" v-model="item.userid"></el-input>
+                    <el-input placeholder="入住人身份证号" v-model="item.card"></el-input>
                   </td>
                 </tr>
               </table>
@@ -232,33 +234,26 @@
                           </tr>
                           <tr>
                             <th>预订日期</th>
-                            <td>{{searchData[dataIndex].starttime}}-{{searchData[dataIndex].endtime}}
+                            <td>{{searchData[dataIndex].starttime}}/{{searchData[dataIndex].endtime}}
                                 (共{{searchData[dataIndex].count}}晚)</td>
                             <th>实住日期</th>
-                            <!-- 需计算实住日期 -->
-                            <!-- 需计算实住日期 -->
-                            <!-- 需计算实住日期 -->
-                            <!-- 需计算实住日期 -->
-                            <td>{{searchData[dataIndex].starttime}}-{{searchData[dataIndex].endtime}}
-                                (共{{searchData[dataIndex].count}}晚)</td>
+                            <td>{{searchData[dataIndex].starttime}}/{{dateToday}}
+                                (共{{practicalNight}}晚)</td>
                           </tr>
                           <tr>
                             <th>押金金额</th>
                             <td>{{searchData[dataIndex].cashPledge}}</td>
-                            <th>其他金额</th>
+                            <th>其它金额</th>
                             <td>
-                              <el-input placeholder="请输入消费金额"></el-input>
+                              <el-input placeholder="请输入消费金额" v-model="moreMoney"></el-input>
                             </td>
                           </tr>
                           <tr>
-                            <th>{{searchData[dataIndex].payCountPrice}}</th>
-                            <td></td>
-                            <!-- 需计算实际金额 -->
-                            <!-- 需计算实际金额 -->
-                            <!-- 需计算实际金额 -->
+                            <th>预付总金额</th>
+                            <td>{{searchData[dataIndex].payCountPrice}}</td>
                             <!-- 需计算实际金额 -->
                             <th>实际金额</th>
-                            <td>799.6</td>
+                            <td>{{payMoney1}}</td>
                           </tr>
                         </table>
                       </div>
@@ -271,20 +266,17 @@
                             <th>押金</th>
                             <td>{{searchData[dataIndex].cashPledge}}</td>
                             <!-- 自己计算出的应退还的房费 -->
-                            <!-- 自己计算出的应退还的房费 -->
-                            <!-- 自己计算出的应退还的房费 -->
-                            <!-- 自己计算出的应退还的房费 -->
                             <th>应退还房费</th>
-                            <td>1199.4</td>
+                            <td>{{returnMoney}}</td>
                           </tr>
                           <tr>
                             <!--这边也是  -->
                             <!--这边也是  -->
                             <!--这边也是  -->
                             <th>其他消费</th>
-                            <td>15</td>
-                            <th>合计</th>
-                            <td>RMB 1384.4</td>
+                            <td>{{moreMoney}}</td>
+                            <th>合计退款</th>
+                            <td>RMB {{returnMoneyAll}}</td>
                           </tr>
                         </table>
                       </div>
@@ -373,6 +365,7 @@
 
 <script>
 import transitionBox from "@/components/transitionBox";
+import { setTimeout } from 'timers';
 export default {
   name: "order",
   components: {
@@ -380,6 +373,11 @@ export default {
   },
   data() {
     return {
+      returnMoneyAll:"",//合计退款
+      returnMoney:"",//应退还房费
+      payMoney1:"",//支付实际金额（退款需要）
+      payMoney:"",//实际入住日期的价格
+      moreMoney:"0",//消费金额
       isBG :false,//当前列表是否有订单  如果没有展示背景图
       iSseach:false,//是否为查询到的订单
       iSadd: false,
@@ -394,6 +392,8 @@ export default {
       isClick: true,
       activeIndex: "1",
       dataIndex: 0,
+      dateToday:"",// 得到今天是几月几号
+      practicalNight:"",//实际几晚
       //入住人数组
       addpeople: [],
       boxData: {
@@ -424,23 +424,66 @@ export default {
     };
   },
   methods: {
+    getDayMoney(){//获取实际入住的日期的价格
+      this.$axios.post("/zftds/hotel/house/selectHotelCalendar",{
+        merchantid:this.$store.state.mchid,
+        hotelid:this.searchData[this.dataIndex].hotelid,
+        starttime:this.searchData[this.dataIndex].starttime,
+        endtime:this.dateToday
+      }).then(res=>{
+        console.log("res",res);
+        if(res.code == 0){
+          this.payMoney = this.searchData[this.dataIndex].roomPrice*this.practicalNight
+          console.log(this.payMoney);
+        }else if(res.code == 1){
+            let arr = []
+            res.data.map(item=>{
+              arr.push(item.activityprice)
+            })
+            var sum = 0
+            for(let i=0; i<arr.length;i++){
+              sum += Number(arr[i])
+            }
+            this.payMoney = (this.searchData[this.dataIndex].roomPrice*(Number(this.practicalNight)-Number(arr.length))+sum)
+            *this.searchData[this.dataIndex].roomamount
+            this.payMoney1 = Number(this.payMoney)+Number(this.searchData[this.dataIndex].cashPledge)+Number(this.moreMoney)
+            this.returnMoney = Number(this.searchData[this.dataIndex].payCountPrice)-Number(this.payMoney1)
+
+            // console.log(this.searchData,"11111")
+            // console.log("0000",this.payMoney1);
+            // console.log("1111",this.moreMoney);
+        }
+      })
+    },
+    getToday(){//得到今天是几月几号
+      var date = new Date()
+      let date1 = date.toLocaleDateString()
+      let date2 = date1.replace(/\//g,"-")
+      this.dateToday = date2
+      var date3 = new Date(this.dateToday.replace(/-/g,"/")).getTime()//今天的时间戳
+      var date4 = new Date(this.searchData[this.dataIndex].starttime).getTime()//开始时间的时间戳
+      // console.log(parseInt((date3-date4)/1000/60/60/24));
+      this.practicalNight = parseInt((date3-date4)/1000/60/60/24)
+    },
     // 添加入住人
     addPeople() {
       //   console.log(this.addpeople.length);
       if (this.addpeople.length == 0) {
         this.addpeople.push({
-          username: "",
-          userid: ""
+          merchantid:this.$store.state.mchid,
+          name: "",
+          card: ""
         });
         this.iSadd = true;
       } else {
         if (
-          this.addpeople[this.addpeople.length - 1].username &&
-          this.addpeople[this.addpeople.length - 1].userid
+          this.addpeople[this.addpeople.length - 1].name &&
+          this.addpeople[this.addpeople.length - 1].card
         ) {
           this.addpeople.push({
-            username: "",
-            userid: ""
+            merchantid:this.$store.state.mchid,
+            name: "",
+            card: ""
           });
         } else {
           this.$message.warning("请先完善上一入住人信息哦~");
@@ -450,18 +493,58 @@ export default {
     handleMore() {
       this.moreSearch = !this.moreSearch;
     }, //点击更多-----搜索
-    handleRoomId() { //分配房间号 已接单订单
-      if(this.searchData[dataIndex].roomnumber!=""){
+    handleRoomId() { //分配房间号 已接单订单 有入住人的话添加入住人  
+      var hop = []
+      if(this.addpeople[0]!=""){
+        // 过滤掉数组中的空对象
+        this.addpeople.map(i=>{ 
+          if(i.name !=""){
+              hop.push(i)
+          }
+        })
+      }
+      if(this.searchData[this.dataIndex].roomnumber!=""){
         this.$axios.post("/zftds/hotel/order/updateHotelOrder",{
           id:this.searchData[this.dataIndex].id,
           orderType:2,
-          roomnumber:this.searchData[dataIndex].roomnumbers,
+          roomnumber:this.searchData[this.dataIndex].roomnumber,
+          hop:hop
         }).then(res=>{
-          console.log(res)
+          // console.log(res)
+          if(res.code == 1){
+            this.$message.success(res.msg)
+            if(this.activeIndex == 1){
+              this.getOrder()
+              this.getFirstOrder()
+            }else{
+              this.getOrderByType()
+            }
+          }
         })
       }
     },
-    handleLeaveYES() {}, //确认离店，退押金
+    handleLeaveYES(){//确认离店，退押金
+      let data = {
+        id:this.searchData[this.dataIndex].id,
+        hotelid:this.searchData[this.dataIndex].hotelid,
+        orderType:3,
+        roomRefund:this.returnMoney,//应退房费合计金额
+        totalRefund:this.returnMoneyAll,//总退款金额
+      }
+        this.$axios.post("/zftds/hotel/order/updateHotelOrder",data).then(res=>{
+          console.log(res);
+          if(res.code == 1){
+            this.$message.success(res.msg)
+            this.dialogVisible = false
+            if(this.activeIndex == 1){
+                this.getOrder()
+                this.getFirstOrder()
+              }else{
+                this.getOrderByType()
+              }
+          }
+        })
+    }, 
     handleGoon() {
       this.$router.push("/layout/still/still");
     }, //点击续住
@@ -474,6 +557,14 @@ export default {
       }).then(res=>{
           if(res.code == 1){
             this.$message.success('接受订单成功')
+            if(this.activeIndex == 1){
+              this.getOrder()
+              this.getFirstOrder()
+            }else{
+              this.getOrderByType()
+            }
+          }else{
+            this.$message.error("未知错误")
           }
       })
     },
@@ -490,8 +581,14 @@ export default {
                   if(res.code == 1){
                     this.$message.success("已拒绝该订单")
                     this.dialogFormVisible = false;
-                    this.getOrder()
-                    this.getOrderByType()
+                   if(this.activeIndex == 1){
+                      this.getOrder()
+                      this.getFirstOrder()
+                    }else{
+                      this.getOrderByType()
+                    }
+                  }else{
+                    this.$message.error("未知错误")
                   }
               })
       }else{
@@ -526,9 +623,12 @@ export default {
         merchantid: this.$store.state.mchid,
         orderType:number
       }).then(res=>{
+        console.log(res);
         if(res.code == 1){
             let datas2 = [...res.data];
             this.searchData = datas2.filter(item=>item.orderType!=5)
+            // console.log("this.searchData",this.searchData)
+            // console.log("调用了getOrderByType()并且成功了");
         }else if(res.code == 0){
           this.isBG = true
         }
@@ -542,6 +642,7 @@ export default {
           if(res.code == 1){
               let datas1 = [...res.data];
               this.searchData = datas1.filter(item=>item.orderType!=5)
+              // console.log("调用了getOrder()并且成功了");
           }else if(res.code == 0){
             this.isBG = true
           }
@@ -588,7 +689,7 @@ export default {
       console.log(key, keyPath);
       this.dataIndex = 0;
       this.activeIndex = key;
-      console.log("index", this.activeIndex);
+      // console.log("index", this.activeIndex);
     },
     activeData(index) {
       this.dataIndex = index;
@@ -641,7 +742,7 @@ export default {
           (this.isLeave = false), //是否已离店
           (this.isLose = false),
           this.getOrder()
-          // this.getFirstOrder()
+          this.getFirstOrder()
       } else if (val == 2) {
         (this.isBG = false),
           (this.isInsert = false), //是否已入住
@@ -666,7 +767,11 @@ export default {
           (this.isLose = false), //是否已失效
           (this.isLeave = false), //是否已离店
           (this.isInsert = true),
-           this.getOrderByType()
+           this.getOrderByType(),
+            this.getToday()
+            setTimeout(()=>{
+              this.getDayMoney()
+            },1000)
 
       } else if (val == 5) {
         (this.isBG = false),
@@ -687,7 +792,16 @@ export default {
            this.getOrderByType()
 
       }
+    },
+    moreMoney(va){
+      console.log(va);
+      // console.log(this.payMoney);
+      this.payMoney1 = Number(this.payMoney)+Number(this.searchData[this.dataIndex].cashPledge)+Number(this.moreMoney)
+      console.log(this.payMoney1);
+      this.returnMoney = Number(this.searchData[this.dataIndex].payCountPrice)-Number(this.payMoney1)
+      this.returnMoneyAll = this.returnMoney +Number(this.searchData[this.dataIndex].cashPledge)
     }
+
   }
 };
 </script>
@@ -695,7 +809,7 @@ export default {
 <style scoped lang='scss'>
     .isbg{//加的暂无订单大背景图
         border: 1px solid #fff;
-        width: 100%;
+        // width: 100%;
         background: #fff;
         .wrap{
           background: #fff;
@@ -707,7 +821,7 @@ export default {
           transform: translate(-50%,-50%);
         }
         img{
-          width: 100%;
+          width: 106%;
         }
         p{
           text-align: center;
@@ -789,7 +903,7 @@ export default {
 .insert {
   margin: 0 auto;
   width: 240px;
-  margin-top: 40px;
+  margin-top: 15px;
   .dialog-table {
     // border: 1px solid #d6e4ff;
     margin: 10px;
