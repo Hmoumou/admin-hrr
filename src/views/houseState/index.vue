@@ -107,7 +107,7 @@
         </p>
       </div>
       <div slot="footer" class="dialog-footer clearfix">
-        <div class="btns fs14 flr" @click="isShowDialog = false">确 定</div>
+        <div class="btns fs14 flr" @click="handleClose(houseData2.houseType[row].arr[col])">确 定</div>
         <div class="leftGoBack fll clearfix">
           <div class="imgleft mr15 fll" @click="isShowDialog = false">
           </div>
@@ -206,6 +206,30 @@
       }
     },
     methods: {
+      handleClose(val){//点击关闭网订渠道
+        let data = {
+            merchantid:this.$store.state.mchid,
+            hotelid:val.id,
+            roomType: 0,
+            ytd:val.date.formatStr,
+        }
+        if(val.isPre){  
+          data.roomType = 0
+        
+        }else{
+          data.roomType = 1
+        }
+        this.$axios.post("/zftds/hotel/house/insertHotelCalendar",data).then(res=>{
+          console.log(res);
+          if(res.code == 1){
+            console.log(res);
+            this.isShowDialog = false
+          }else{
+            this.$message.error(res.msg)
+            this.isShowDialog = false
+          }
+        })
+      },
       // 修改价格
       //
       handleEditPrice(){
@@ -226,7 +250,7 @@
             roomNumber: this.houseData2.houseType[this.row1].arr[this.col1].roomsnum
           }
           this.$axios.post('/zftds/hotel/house/insertHotelCalendar',params).then(res=>{
-            console.log('添加活动价格',res)
+            // console.log('添加活动价格',res)
             if(res.code == 1){
               this.$message.success('添加价格成功')
               this.isShowDialog1 = false;
@@ -238,7 +262,7 @@
             }
           })
         }else if(activityprice&&activityprice != ""){
-          console.log("更新");
+          // console.log("更新");
           // this.EditPriceData.activityprice = this.houseData2.houseType[this.youHaveIndex].arr[this.youHaveIndex1].activityprice
           let params = {
             id: this.$store.state.mchid,
@@ -250,7 +274,7 @@
             roomNumber: this.houseData2.houseType[this.row1].arr[this.col1].roomsnum
           }
             this.$axios.post('/zftds/hotel/house/updateHotelCalendar',params).then(res=>{
-              console.log('更新活动价格',res);
+              // console.log('更新活动价格',res);
               this.isShowDialog1 = false;
             })
         }
@@ -261,8 +285,9 @@
           this.$axios.post(url,
             {merchantid:this.$store.state.mchid})
             .then(res=>{
+              console.log(res,"1234214234");
               resolve(res.data)
-              console.log('rereresrers',res);
+              // console.log('rereresrers',res);
             }).catch(err => {
               reject(err)
           })
@@ -283,7 +308,7 @@
         }
       },
       pickerChange (date) {
-        console.log(date);
+        // console.log(date);
         let newDate = new Date(date);
         this.currentDate = newDate;
         this.getHouseType();
@@ -320,8 +345,9 @@
       },
       handleClick(item, index) {
           // 单元格点击事件===房态点击
-          // console.log("item",item);
-          // console.log("item",index);
+          console.log("房态item",item);
+          console.log("房态index",index);
+          console.log(item.isPre);
           this.col = item.col;
           this.row = item.row;
           this.isShowDialog = true;
@@ -329,8 +355,8 @@
           //   // 单元格点击事件在这里写
         },
       handleClickPrice(item, index) {
-        console.log("item",item);
-        console.log("index",index);
+        // console.log("item",item);
+        // console.log("index",index);
         this.youHaveIndex = item.row
         this.youHaveIndex1 = item.col
         // console.log(this.youHaveIndex)
@@ -370,12 +396,12 @@
           loading.close();
           if(res.code == 1){
             this.houseType = res.data;
-            console.log(this.houseType);
+            // console.log(this.houseType);
             this.getPrice().then(priceArr => {
               // 1. 先截取15天的有效数据
               let filterArr = priceArr.filter(item => {
                 // console.log('你要的item',item.id);
-                console.log("item", item.ytd)
+                // console.log("item", item.ytd)
                 let itemDateStr = moment(item.ytd).format("YYYY-MM-DD"); // 生成 2018-12-02这样的时间字符串
                 let nowDateStr = moment(this.currentDate).format("YYYY-MM-DD"); // 注释同上
                 let itemParseUnix = Date.parse(itemDateStr); // 生成以日为标准的unix时间戳既不考虑时分秒毫秒
@@ -412,14 +438,14 @@
                   }
                 }
               });
-              console.log(secondFilter, "second");
+              // console.log(secondFilter, "second");
               this.houseData2.houseType = res.data.map((item, row) => {
                 let arr = [];
                 for(let i=0; i < 15; i++) {
                   let activeItem = secondFilter.find(it => this.dateData.weekDate[i].formatStr == it.ytd && item.id == it.hotelid);
                   // 每次生成项目的时候，去二次过滤的数组里查找，同行同列的项目。因为没有重复的，找到的就是有效值。
                   let activityprice = activeItem && activeItem.activityprice? activeItem.activityprice: "";
-                  console.log(activeItem, "active");
+                  // console.log(activeItem, "active");
                   // 如果找到了，就返回，找不到给空的字符串让上方渲染的值可以通过或运算符运算
                   arr.push({
                     activityprice,//活动价格
@@ -446,6 +472,7 @@
     },
     created(){
       this.getHouseType()
+      // console.log();
       // this.getPrice()
     },
     watch:{

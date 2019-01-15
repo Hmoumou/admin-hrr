@@ -10,12 +10,12 @@
         <el-card class="box-card mesList">
         <div class="mesBox">
           <div class="leftText">酒店中文名称</div>
-          <div class="rightText"><el-input v-model="message.hotelNmame" placeholder="请输入酒店中文名称"></el-input></div>
+          <div class="rightText"><el-input v-model="Data.hotelName" placeholder="请输入酒店中文名称"></el-input></div>
         </div>
         <div class="mesBox">
           <div class="leftText">酒店星级</div>
           <div class="rightText">
-            <el-select v-model="message.star" placeholder="请选择">
+            <el-select v-model="Data.star" placeholder="请选择">
               <el-option
                 v-for="item in options"
                 :key="item.value"
@@ -27,11 +27,11 @@
         </div>
         <div class="mesBox">
           <div class="leftText">酒店地址</div>
-          <div class="rightText"><el-input  v-model="message.palce" placeholder="请输入酒店酒店地址"></el-input></div>
+          <div class="rightText"><el-input  v-model="Data.locating" placeholder="请输入酒店酒店地址"></el-input></div>
         </div>
         <div class="mesBox">
           <div class="leftText">附近商圈</div>
-          <div class="rightText"><el-input  v-model="message.allFood" placeholder="请输入附近商圈"></el-input></div>
+          <div class="rightText"><el-input  v-model="Data.business" placeholder="请输入附近商圈"></el-input></div>
         </div>
       </el-card>
         <el-card class="box-card mesList">
@@ -40,7 +40,7 @@
             <div class="rightText">
               <div class="block">
                 <el-date-picker
-                  v-model="message.startTime"
+                  v-model="Data.starttime"
                   type="date"
                   placeholder="请选择 年 - 月 - 日 ">
                 </el-date-picker>
@@ -52,7 +52,7 @@
             <div class="rightText">
               <div class="block">
                 <el-date-picker
-                  v-model="message.newTime"
+                  v-model="Data.decorateTime"
                   type="date"
                   placeholder="请选择 年 - 月 - 日 ">
                 </el-date-picker>
@@ -61,14 +61,14 @@
           </div>
           <div class="mesBox">
             <div class="leftText">客房总数</div>
-            <div class="rightText"><el-input placeholder="请输入客房总数"></el-input></div>
+            <div class="rightText"><el-input v-model="Data.roomNum" placeholder="请输入客房总数"></el-input></div>
           </div>
         </el-card>
         <el-card class="box-card mesList">
 
           <div class="mesBox">
             <div class="leftText">酒店总机</div>
-            <div class="rightText"><el-input placeholder="请输入酒店总机"></el-input></div>
+            <div class="rightText"><el-input v-model="Data.hotelMobile" placeholder="请输入酒店总机"></el-input></div>
           </div>
           <div class="mesBox" style="height: auto;width: 1200px">
             <div class="leftText">酒店介绍</div>
@@ -77,7 +77,7 @@
                 type="textarea"
                 :autosize="{ minRows: 8, maxRows: 50}"
                 placeholder="请输入酒店介绍"
-                v-model="message.mesDetail">
+                v-model="Data.introduce">
               </el-input>
             </div>
           </div>
@@ -96,6 +96,7 @@
 		name: "change",
   data() {
     return {
+      Data:{},
       message:{
         hotelNmame:"",  //酒店中文名称
         star:"", //星级
@@ -109,20 +110,20 @@
       },
       options: [
           {
-          value: '选项1',
+          value: '5',
           label: '五星'
             },
           {
-            value: '选项2',
+            value: '4',
             label: '四星'
           }, {
-            value: '选项3',
+            value: '3',
             label: '三星'
           }, {
-            value: '选项4',
+            value: '2',
             label: '二星'
           }, {
-            value: '选项5',
+            value: '1',
             label: '一星'
       }],
 
@@ -133,14 +134,25 @@
         this.$router.push("/layout/sellerCenterChange")
       },
       handleOk(){
-        // this.$axios.post('').then(res=>{
-
-        // })
-        this.$router.push('/layout/sellerCenter')
+        console.log(this.Data);
+        this.$axios.post('/zftds/hotel/house/insertHotelInfo',this.Data).then(res=>{
+          console.log(res);
+          if(res.code == 1){
+            this.$message.success("修改成功")
+          }else{
+            this.$message.error(res.msg)
+          }
+        })
+        // this.$router.push('/layout/sellerCenter')
       },
       handleCancel(){
         this.$router.push('/layout/sellerCenter')
       }
+    },
+    created(){
+      // console.log(this.$route.query);
+      this.Data = this.$route.query
+      console.log(this.Data);
     }
 	}
 </script>

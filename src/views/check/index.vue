@@ -145,8 +145,8 @@
     </div> -->
   </div>
 </template>
-
 <script>
+import moment from "moment"
   export default {
     name: 'Check',
     data() {
@@ -200,6 +200,13 @@
                 mobile: '',
               }
             ],
+            hoy:[
+                {
+                  merchantid:this.$store.state.mchid,//商户ID
+                  price:"", //价格
+                  ytd:"", //日期
+                }
+            ]
         },
 
         // 入住人数据
@@ -229,6 +236,7 @@
           }
         })
       },
+
       // 选择结束时间之后进行的逻辑  需要请求接口拿到时间段内的房价
       handleTime(){
         var UNIX1 = Number(this.formData.starttime)
@@ -241,6 +249,20 @@
           // 拼接天数 总天数
           var days = d1.getTime()-d.getTime()
           var dayy = parseInt(days/(1000*60*60*24))
+          //以下操作是为了求两个时间段之间的时间集合start
+          var timeArr = [];
+          var date1 = new Date(this.formData.starttime);
+          var date2 = new Date(this.formData.endtime);
+          var dateSpan = (date2.getTime() - date1.getTime()) / 86400000;
+          // console.log(dateSpan); 
+          // timeArr.push(moment(startDate).format("YYYY-MM-DD")); // 利用momentjs生成指定格式的字符串
+          for(let i = 0; i < dateSpan; i++) {
+              let startDate = new Date(this.formData.starttime); // 开始时间
+              var nowDate = new Date(startDate.setDate(startDate.getDate()+i)); // setDate设置一个日期天数，getDate得到日期天数。然后返回一个新的日期的unix时间戳。然后利用new Date方法生成新的时间对象。
+              timeArr.push(moment(nowDate).format("YYYY-MM-DD"))
+          }
+          console.log("timeArrtimeArr",timeArr);
+          // 时间集合end
           this.formData.count = String(dayy)
            var data = {
             merchantid:this.$store.state.mchid,
@@ -253,19 +275,24 @@
                 this.formData.countPrice = String(this.formData.roomPrice*dayy*this.formData.roomamount)
                 this.formData.payCountPrice = String(Number(this.formData.countPrice) + Number(this.formData.cashPledge))
               }else{
-                // console.log(res);
+                console.log(res);
+               
                 let arr = []
+                let arr1 = []
                 res.data.map(item=>{
+                  console.log('item', item)
                   arr.push(item.activityprice)
+                  arr1.push(item.ytd)
                 })
-                // console.log(arr);
-                var sum = 0
-                for(let i=0; i<arr.length;i++){
-                  sum += Number(arr[i])
-                }
+                console.log(arr);
+                console.log(arr1);
+                // var sum = 0
+                // for(let i=0; i<arr.length;i++){
+                //   sum += Number(arr[i])
+                // }
                 //有活动价的时候计算的房间总价
-                this.formData.countPrice = String((this.formData.roomPrice*(Number(dayy)-Number(arr.length))+sum)*this.formData.roomamount)
-                this.formData.payCountPrice = String(Number(this.formData.countPrice) + Number(this.formData.cashPledge))
+                // this.formData.countPrice = String((this.formData.roomPrice*(Number(dayy)-Number(arr.length))+sum)*this.formData.roomamount)
+                // this.formData.payCountPrice = String(Number(this.formData.countPrice) + Number(this.formData.cashPledge))
               }
             })        
         }else{

@@ -14,21 +14,24 @@
               <div class="left ">
                 <el-form :model='formData' label-width="140px" label-position='left'>
                   <el-form-item label="续住房型" prop="houseType">
-                    <el-input v-model="formData.houseType" disabled></el-input>
+                    {{formData.houseinfo}}
+                    <!-- <el-input v-model="" disabled></el-input> -->
                   </el-form-item>
                   <!--改编版-->
                   <el-form-item label="预定时间" prop="bookTime">
-                   <el-input  v-model="formData.bookTime" disabled></el-input>
+                    {{formData.starttime}}  至  {{formData.endtime}}
+                   <!-- <el-input disabled></el-input> -->
                   </el-form-item>
                   <el-form-item label="续住至" prop="LeaveTimePlus">
                     <el-date-picker
-                      v-model="formData.LeaveTimePlus"
+                      v-model="Data.endtime"
                       type="datetime"
                       placeholder="选择日期时间">
                     </el-date-picker>
                   </el-form-item>
                   <el-form-item label="房间编号" prop="houseId">
-                    <el-input class="w300" v-model="formData.houseId" disabled></el-input>
+                    {{formData.roomnumber}}
+                    <!-- <el-input class="w300" v-model="formData.roomnumber" disabled></el-input> -->
                   </el-form-item>
                   <el-form-item label="支付方式" prop="payType" class="payType">
                     <label :class="{ active: checkPay == 1}">
@@ -55,23 +58,23 @@
           <el-col :span="10">
             <div class="grid-content bg-purple">
               <div class="right  clearfix">
-                <div class="right-data " :model="moneyData">
-                  <div class="item">房价<span class="span data">RMB {{moneyData.price}} /晚</span></div>
-                  <div class="item">时间<span class="span data">{{moneyData.long}}/晚</span></div>
-                  <div class="item">押金 <span class="span data">RMB {{moneyData.earnest}}</span></div>
-                  <div class="lastItem">总金额<span class="span lastData">RMB {{moneyData.total}}/晚</span></div>
+                <div class="right-data " >
+                  <div class="item">房价<span class="span data">RMB {{formData.price}} /晚</span></div>
+                  <div class="item">时间<span class="span data">{{formData.long}}/晚</span></div>
+                  <div class="item">押金 <span class="span data">RMB {{formData.earnest}}</span></div>
+                  <div class="lastItem">总金额<span class="span lastData">RMB {{formData.total}}/晚</span></div>
                   <div class="btnss fs14" @click="handleCheck">办理续住</div>
                   <el-dialog
                     :visible.sync="centerDialogVisible"
                     width="30%"
                     center>
                     <div class="content" v-if="isSuccess">
-                      <p class="fw">{{userData.username}}</p>
-                      <p>已成功入住{{userData.houseType}} <span class="blue">{{userData.houseId}}</span> 室</p>
+                      <p class="fw">{{formData.username}}</p>
+                      <p>已成功入住{{formData.houseType}} <span class="blue">{{formData.houseId}}</span> 室</p>
                     </div>
                     <div class="content" v-else>
                       <p class="blue fs16 mb15 fw">入住失败</p>
-                      <p>{{userData.houseType}} <span class="blue">{{userData.houseId}}</span> 室,已被网上预订</p>
+                      <p>{{formData.houseType}} <span class="blue">{{formData.houseId}}</span> 室,已被网上预订</p>
                     </div>
                     <div slot="footer" class="dialog-footer">
                       <div class="btn1" @click="centerDialogVisible = false">确 定</div>
@@ -86,19 +89,19 @@
     </div>
     <div class="btm">
       <el-row :gutter="20">
-        <el-col :span="8" v-for="(item, index) in arr" style="margin-bottom: 15px" :key="index">
+        <el-col :span="8" v-for="(item, index) in formData.hop" style="margin-bottom: 15px" :key="index">
           <div class="grid-content bg-purple">
             <el-card class="btm-left box-card carditem clearfix">
               <div slot="header" class="header"><span class="title">入住人0{{index + 1}}</span></div>
-              <el-form :model='userData' label-width="100px" label-position='left'>
+              <el-form  label-width="100px" label-position='left'>
                 <el-form-item label="姓名" prop="username">
-                  <el-input placeholder='请输入姓名' v-model="item.username" disabled></el-input>
+                  <el-input placeholder='请输入姓名' v-model="item.name" disabled></el-input>
                 </el-form-item>
                 <el-form-item label="身份证号" prop="IDcard">
-                  <el-input placeholder='请输入身份证号' v-model="item.idCard" disabled></el-input>
+                  <el-input placeholder='请输入身份证号' v-model="item.card" disabled></el-input>
                 </el-form-item>
                 <el-form-item label="联系电话" prop="phone">
-                  <el-input placeholder='请输入联系电话' v-model="item.phone" disabled></el-input>
+                  <el-input placeholder='请输入联系电话' v-model="item.mobile" disabled></el-input>
                 </el-form-item>
               </el-form>
             </el-card>
@@ -109,8 +112,8 @@
     <div class="box" v-if="Yes">
       <div class="box-inner">
         <div class="face">
-          <span>{{username}}</span>
-          <span>已成功入住{{houseType}} {{201}}室</span>
+          <span>{{formData.username}}</span>
+          <span>已成功入住{{formData.houseType}} {{201}}室</span>
           <div class="btn" @click="handleOk">确定</div>
         </div>
         <div class="back">
@@ -130,52 +133,33 @@
         isSuccess: false,
         Yes: false,
         isOk: true,
-        // 入住订单绑定的数据
-        formData: {
-          bookTime:'2018/12/29-2019/1/1',
-          houseType: '亲子房',
-          check: '',
-          leaveTime: '2019-3-7',
-          leaveTimePlus:'',
-          houseId: '2019',
-          payType: '1',
-        },
-        moneyData: {
-          price: 888,
-          long: 5,
-          earnest: 88,
-          total: 4528
-        },
-        // 入住人数据
-        userData: {
-          username: '王小明',
-          houseId: '110',
-          houseType: '豪华大床房',
-          IDcard: '',
-          phone: ''
-        },
         checkPay: 2,
-        arr: [
+        // 入住订单绑定的数据
+        formData: {},
+        Data:{
+          endtime:'',
+          merchantid:"",//商户ID
+          hoy:[
+            {
+              merchantid:"",//商户ID
+              price:"",  //价格
+              ytd :"",//日期
+            }
+          ],
+          price:"",  //价格
+          ytd :"",//日期
+        },
+        formData1: {
+           hop: [
           {
-            username: '小明',
-            houseId: '2',
-            houseType: '亲子房',
-            idCard: '2018',
-            phone: '110',
-            idIsOk: false,
-            phoneIsOk: false,
-          },
-           {
-            username: '小强',
-            houseId: '2',
-            houseType: '豪华海景房',
-            idCard: '2019',
-            phone: '110',
-            idIsOk: false,
-            phoneIsOk: false,
-          },
-        
+            name: '小明',
+            card: '2018',
+            mobile: '110',
+          }
         ]
+        },
+
+
       }
     },
     methods: {
@@ -204,11 +188,11 @@
       handleClose() {
         this.centerDialogVisible = false
       }
-
-
     },
     created() {
-      console.log(this.$store.state.mchid);
+      console.log(this.$route.query);
+      this.formData = this.$route.query
+      console.log(this.formData);
     }
   }
 </script>
@@ -217,7 +201,7 @@
 
   .top {
     /deep/ .el-card__header{border-bottom: none; padding:15px 20px 0px;}
-   /deep/ .el-input__inner{color:#333; background: #f9fafd; }
+   /deep/ .el-input__inner{color:#333; background: #f9fafd;padding-left:30px}
     .payType {
       label {
         box-sizing: border-box;
@@ -343,7 +327,7 @@
   }
 
   .btm {
-     /deep/ .el-input__inner{color:#333; background: #fff; }
+     /deep/ .el-input__inner{color:#555; text-align: center;background: #fff;}
     margin-top: 10px;
     .btm-left {
       padding: 10px;
@@ -420,20 +404,13 @@
   .el-date-editor .el-range-separator {
     width: 10%;
   }
-
   .el-main {
     text-align: left !important;
     line-height: 1;
   }
-
   .el-select__caret {
     color: #409eff;
   }
-
-  .el-input__inner {
-    padding-left: 20px;
-  }
-
   .el-dialog--center {
     color: #2b2b2b;
     margin-top: 30vh !important;

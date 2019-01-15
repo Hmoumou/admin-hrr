@@ -420,7 +420,8 @@ export default {
       ],
       searchData: [
           //里面存放请求回来的订单
-       ]
+       ],
+      startTime:"",
     };
   },
   methods: {
@@ -448,22 +449,19 @@ export default {
             *this.searchData[this.dataIndex].roomamount
             this.payMoney1 = Number(this.payMoney)+Number(this.searchData[this.dataIndex].cashPledge)+Number(this.moreMoney)
             this.returnMoney = Number(this.searchData[this.dataIndex].payCountPrice)-Number(this.payMoney1)
-
-            // console.log(this.searchData,"11111")
-            // console.log("0000",this.payMoney1);
-            // console.log("1111",this.moreMoney);
         }
       })
     },
     getToday(){//得到今天是几月几号
+      console.log('this.searchData[this.dataIndex].starttime', this.searchData[this.dataIndex].starttime)
       var date = new Date()
       let date1 = date.toLocaleDateString()
       let date2 = date1.replace(/\//g,"-")
       this.dateToday = date2
       var date3 = new Date(this.dateToday.replace(/-/g,"/")).getTime()//今天的时间戳
       var date4 = new Date(this.searchData[this.dataIndex].starttime).getTime()//开始时间的时间戳
-      // console.log(parseInt((date3-date4)/1000/60/60/24));
-      this.practicalNight = parseInt((date3-date4)/1000/60/60/24)
+      this.practicalNight = Math.ceil((date3-date4)/1000/60/60/24)
+      // console.log("this.practicalNight",this.practicalNight);
     },
     // 添加入住人
     addPeople() {
@@ -546,7 +544,13 @@ export default {
         })
     }, 
     handleGoon() {
-      this.$router.push("/layout/still/still");
+      console.log("this.searchData[this.dataIndex]",this.searchData[this.dataIndex]);
+      var data = this.searchData[this.dataIndex]
+      console.log("data",data);
+      this.$router.push({
+        path:"/layout/still/still",
+        query:data
+      });
     }, //点击续住
     // 点击接受订单
     handleUntreated() {//点击接受订单
@@ -693,6 +697,8 @@ export default {
     },
     activeData(index) {
       this.dataIndex = index;
+      this.startTime = this.searchData[this.dataIndex].starttime
+      this.getToday()
       // console.log(this.searchData[index].orderType)
       if(this.searchData[index].orderType == 0){
           (this.isInsert = false), //是否已入住
@@ -731,6 +737,7 @@ export default {
     // this.getHouseType()
     this.getOrder();
     this.getFirstOrder()
+    console.log(this.startTime);
   },
   watch: {
     activeIndex(val) {
@@ -768,8 +775,8 @@ export default {
           (this.isLeave = false), //是否已离店
           (this.isInsert = true),
            this.getOrderByType(),
-            this.getToday()
             setTimeout(()=>{
+              this.getToday()
               this.getDayMoney()
             },1000)
 
@@ -794,12 +801,16 @@ export default {
       }
     },
     moreMoney(va){
-      console.log(va);
+      // console.log(va);
       // console.log(this.payMoney);
       this.payMoney1 = Number(this.payMoney)+Number(this.searchData[this.dataIndex].cashPledge)+Number(this.moreMoney)
       console.log(this.payMoney1);
       this.returnMoney = Number(this.searchData[this.dataIndex].payCountPrice)-Number(this.payMoney1)
       this.returnMoneyAll = this.returnMoney +Number(this.searchData[this.dataIndex].cashPledge)
+    },
+    startTime(v){
+      this.searchData[this.dataIndex].starttime = v
+      // console.log(this.searchData[this.dataIndex].starttime);
     }
 
   }

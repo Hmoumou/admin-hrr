@@ -209,23 +209,23 @@ export default {
       },
       options: [
         {
-          value: "选项1",
+          value: "5",
           label: "五星"
         },
         {
-          value: "选项2",
+          value: "4",
           label: "四星"
         },
         {
-          value: "选项3",
+          value: "3",
           label: "三星"
         },
         {
-          value: "选项4",
+          value: "2",
           label: "二星"
         },
         {
-          value: "选项5",
+          value: "1",
           label: "一星"
         }
       ],
@@ -233,8 +233,9 @@ export default {
   },
   methods: {
     toChange() {
-      this.$router.push("/layout/sellerCenterChange", {
-        params: this.formData
+      this.$router.push({
+        path:"/layout/sellerCenterChange",
+        query: this.formData
       });
       // this.iSsecond = true
     },
