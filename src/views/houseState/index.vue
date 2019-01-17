@@ -254,7 +254,7 @@
             if(res.code == 1){
               this.$message.success('添加价格成功')
               this.isShowDialog1 = false;
-              this.getPrice()
+              this.getHouseType()
               // this.
             }else{
               this.$message.error(res.msg)
@@ -285,9 +285,7 @@
           this.$axios.post(url,
             {merchantid:this.$store.state.mchid})
             .then(res=>{
-              console.log(res,"1234214234");
               resolve(res.data)
-              // console.log('rereresrers',res);
             }).catch(err => {
               reject(err)
           })
@@ -438,7 +436,7 @@
                   }
                 }
               });
-              // console.log(secondFilter, "second");
+              console.log(secondFilter, "second");
               this.houseData2.houseType = res.data.map((item, row) => {
                 let arr = [];
                 for(let i=0; i < 15; i++) {
@@ -458,6 +456,7 @@
                     col: i,
                     formatStr: this.dateData.weekDate[i].formatStr
                   })
+                  console.log("arr",arr);
                 }
                 return {
                   arr,

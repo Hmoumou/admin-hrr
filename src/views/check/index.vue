@@ -81,7 +81,7 @@
                     <div class="content" v-if="isSuccess">
                       <!-- <p class="fw">{{userData.username}}</p> -->
                       <p class="blue fs16 mb15 fw">入住成功</p>
-                      <p>已成功入住{{userData.houseType}} <span class="blue">{{formData.roomnumber}}</span> 室</p>
+                      <p>已成功入住{{userData.houseType}} <span class="blue" v-text="formData.roomnumber">{{formData.roomnumber}}</span> 室</p>
                     </div>
                     <div class="content" v-else>
                       <p class="blue fs16 mb15 fw">入住失败</p>
@@ -172,12 +172,10 @@ import moment from "moment"
           countPrice:'0',//房间总价
           payCountPrice:'0',//订单支付总金额
           roomPrice:'',//房间单价
-          roomamount:'',//预订房间数量
+          roomamount:'1',//预订房间数量
           orderNumber:'', //订单编号
           name:'', //预订人姓名
           moble:'',//联系方式
-          roomPrice :'' , // 房间价格
-          count :'' ,  // 入驻天数
           lateTime :'' , // 最晚到店时间        
           remark :'' ,  // 备注             
           preferentialPrice :'' , //优惠价格
@@ -195,9 +193,9 @@ import moment from "moment"
                 // idIsOk: false,
                 // phoneIsOk: false,
                 //需要数据
-                name:'',
-                card:'',
-                mobile: '',
+                name:'胡然然',
+                card:'412722199502106143',
+                mobile: '17335468823',
               }
             ],
             hoy:[
@@ -227,7 +225,7 @@ import moment from "moment"
       },
       // 根据房型id的变化得到相对应的押金
       handleGetCash(){
-        // console.log("触发了change事件...",this.formData.hotelid)
+        // console.log("触发了change事件...",this.formData)
         this.AData.map(item=>{       
           if(item.id == this.formData.hotelid){
             this.formData.cashPledge = item.cash
@@ -261,38 +259,66 @@ import moment from "moment"
               var nowDate = new Date(startDate.setDate(startDate.getDate()+i)); // setDate设置一个日期天数，getDate得到日期天数。然后返回一个新的日期的unix时间戳。然后利用new Date方法生成新的时间对象。
               timeArr.push(moment(nowDate).format("YYYY-MM-DD"))
           }
-          console.log("timeArrtimeArr",timeArr);
           // 时间集合end
           this.formData.count = String(dayy)
            var data = {
             merchantid:this.$store.state.mchid,
             hotelid:this.formData.hotelid,
             starttime:this.formData.starttime,
-            endtime:this.formData.endtime
+            endtime:this.formData.endtime,
+            // price:this.formData.roomPrice
           }
             this.$axios.post('/zftds/hotel/house/selectHotelCalendar',data).then(res=>{
+              console.log("res",res);
               if(res.code == 0){
                 this.formData.countPrice = String(this.formData.roomPrice*dayy*this.formData.roomamount)
                 this.formData.payCountPrice = String(Number(this.formData.countPrice) + Number(this.formData.cashPledge))
               }else{
-                console.log(res);
-               
-                let arr = []
-                let arr1 = []
+                var arr = []
+                var arr1 = []
                 res.data.map(item=>{
-                  console.log('item', item)
+                 if(item.activityprice!=""){
                   arr.push(item.activityprice)
                   arr1.push(item.ytd)
+                 }
                 })
-                console.log(arr);
-                console.log(arr1);
-                // var sum = 0
-                // for(let i=0; i<arr.length;i++){
-                //   sum += Number(arr[i])
-                // }
+                // console.log("timeArrtimeArr",timeArr);//这是两个时间段的所有日期
+                // 去掉整体日期里面相同的日期，不同时存在的日期即为原价日期
+                var arr2 = []
+                var arr3 = []
+                for(var j=0;j<arr1.length;j++){
+                  arr2[arr1[j]]=true
+                }
+                for(var c=0;c<timeArr.length;c++){//得到应原价日期
+                  if(!arr2[timeArr[c]]){
+                    arr3.push(timeArr[c])
+                  }
+                }
+                console.log("arr3arr3arr3arr3arr3",arr3);
+                let ress = []//这是最后拼成的数组
+                for(let i=0; i<arr.length;i++){
+                  ress.push({
+                  merchantid:this.$store.state.mchid,
+                  ytd:arr1[i],
+                  price:arr[i]
+                })
+                } 
+                 for(let n=0; n<arr3.length;n++){
+                  ress.push({
+                    merchantid:this.$store.state.mchid,
+                    ytd:arr3[n],
+                    price:this.formData.roomPrice
+                  })
+                }
+                this.formData.hoy = [...ress]
+                console.log("this.formData.hoy",this.formData.hoy);
+                var sum = 0
+                for(let q=0; q<arr.length;q++){
+                  sum += Number(arr[q])
+                }
                 //有活动价的时候计算的房间总价
-                // this.formData.countPrice = String((this.formData.roomPrice*(Number(dayy)-Number(arr.length))+sum)*this.formData.roomamount)
-                // this.formData.payCountPrice = String(Number(this.formData.countPrice) + Number(this.formData.cashPledge))
+                this.formData.countPrice = String((this.formData.roomPrice*(Number(dayy)-Number(arr.length))+sum)*this.formData.roomamount)
+                this.formData.payCountPrice = String(Number(this.formData.countPrice) + Number(this.formData.cashPledge))
               }
             })        
         }else{
@@ -343,11 +369,12 @@ import moment from "moment"
           ) {
           //   添加一个新的空白入住人盒子
           this.formData.hop.push({
-            name: '',
+            merchantid:this.$store.state.mchid,
+            name: '胡然然',
             // houseId: this.formData.hop[this.formData.hop.length - 1].houseId,
             // houseType: this.formData.hop[this.formData.hop.length - 1].houseType,
-            card: '',
-            mobile: '',
+            card: '412722199502106143',
+            mobile: '17335468823',
             // idIsOk: false,
             // phoneIsOk: false
           })
@@ -356,6 +383,7 @@ import moment from "moment"
         }
       },
       handleCheck() {
+        // console.log(this.formData);
         this.$axios.post('/zftds/hotel/order/insertHotelOrder',this.formData).then(res=>{
           // console.log(res)
           if(res.code == 1){

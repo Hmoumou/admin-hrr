@@ -13,6 +13,13 @@
           <el-input :value="o.detail" v-else></el-input>
         </div>
       </div>
+       <!-- <div class="mesBox">
+        <div class="leftText">姓名</div>
+        <div class="rightText">
+          <span v-if="changeF">{{formData.name}}</span>
+          <el-input v-model="formData.name" v-else></el-input>
+        </div>
+      </div> -->
     </el-card>
     <el-card class="box-card carditem clearfix mesList">
       <div slot="header" class="header">

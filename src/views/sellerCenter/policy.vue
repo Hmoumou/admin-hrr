@@ -99,6 +99,18 @@
     name: "policy",
     data() {
       return {
+        formData:{
+        // mResideTime: "", //最早入住时间',
+        // eResideTime: "", //最晚入住时间',
+        // mLeaveTime: "", //最早离店时间',
+        // eLeaveTime: "", //最晚离店时间',
+        // child: "", //儿童政策',
+        // pet: "", //宠物政策',
+        // breakfast: "", //早餐',
+        // lunch: "", //午餐',
+        // afternoontea: "", //下午茶',
+        // supper: "", //晚餐',
+        },
         //入离时间
         titleF: [
           {title: "最早入住", detail: "06:30"},

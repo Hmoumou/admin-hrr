@@ -212,8 +212,9 @@
                   class="fll"
                   type="primary"
                   style="width:98px"
-                  @click="dialogVisible = true"
+                  @click="handleReadyLeave"
                 >离 店</el-button>
+                  <!-- @click="dialogVisible = true" -->
                 <el-dialog title="离店办理" :visible.sync="dialogVisible">
                   <div class="mian">
                     <div class="leave-Details">
@@ -366,6 +367,7 @@
 <script>
 import transitionBox from "@/components/transitionBox";
 import { setTimeout } from 'timers';
+import moment from 'moment'
 export default {
   name: "order",
   components: {
@@ -425,35 +427,39 @@ export default {
     };
   },
   methods: {
-    getDayMoney(){//获取实际入住的日期的价格
-      this.$axios.post("/zftds/hotel/house/selectHotelCalendar",{
-        merchantid:this.$store.state.mchid,
-        hotelid:this.searchData[this.dataIndex].hotelid,
-        starttime:this.searchData[this.dataIndex].starttime,
-        endtime:this.dateToday
-      }).then(res=>{
-        console.log("res",res);
-        if(res.code == 0){
-          this.payMoney = this.searchData[this.dataIndex].roomPrice*this.practicalNight
-          console.log(this.payMoney);
-        }else if(res.code == 1){
-            let arr = []
-            res.data.map(item=>{
-              arr.push(item.activityprice)
-            })
-            var sum = 0
-            for(let i=0; i<arr.length;i++){
-              sum += Number(arr[i])
-            }
-            this.payMoney = (this.searchData[this.dataIndex].roomPrice*(Number(this.practicalNight)-Number(arr.length))+sum)
-            *this.searchData[this.dataIndex].roomamount
-            this.payMoney1 = Number(this.payMoney)+Number(this.searchData[this.dataIndex].cashPledge)+Number(this.moreMoney)
-            this.returnMoney = Number(this.searchData[this.dataIndex].payCountPrice)-Number(this.payMoney1)
-        }
+    handleReadyLeave(){//点击准备离店
+      this.dialogVisible = true
+      //以下操作是为了求两个时间段之间的时间集合start
+      var timeArr = [];
+      var date1 = new Date(this.startTime);
+      var date2 = new Date(this.dateToday);
+      var dateSpan = (date2.getTime() - date1.getTime()) / 86400000;
+      // console.log(dateSpan); 
+      // timeArr.push(moment(startDate).format("YYYY-MM-DD")); // 利用momentjs生成指定格式的字符串
+      for(let i = 0; i < dateSpan; i++) {
+          let startDate = new Date(this.startTime); // 开始时间
+          var nowDate = new Date(startDate.setDate(startDate.getDate()+i)); // setDate设置一个日期天数，getDate得到日期天数。然后返回一个新的日期的unix时间戳。然后利用new Date方法生成新的时间对象。
+          timeArr.push(moment(nowDate).format("YYYY-MM-DD"))
+      }
+      let timeArr2 = this.searchData[this.dataIndex].hoy
+      let sums = 0
+      for(let s=0;s<timeArr.length;s++){
+        sums += Number(timeArr2[s].price)
+      }
+      console.log("实际的钱",sums);
+      this.payMoney = sums
+      this.payMoney1 = sums + Number(this.searchData[this.dataIndex].cashPledge)
+      let nums = 0
+      timeArr2.map(item=>{
+        nums += Number(item.price)
       })
+      this.returnMoney = Number(nums)-Number(sums)
+      this.returnMoneyAll = Number(this.returnMoney) + Number(this.searchData[this.dataIndex].cashPledge) 
+      // 时间集合end
     },
+    getDayMoney(){},
     getToday(){//得到今天是几月几号
-      console.log('this.searchData[this.dataIndex].starttime', this.searchData[this.dataIndex].starttime)
+      // console.log('this.searchData[this.dataIndex].starttime', this.searchData[this.dataIndex].starttime)
       var date = new Date()
       let date1 = date.toLocaleDateString()
       let date2 = date1.replace(/\//g,"-")
@@ -461,7 +467,6 @@ export default {
       var date3 = new Date(this.dateToday.replace(/-/g,"/")).getTime()//今天的时间戳
       var date4 = new Date(this.searchData[this.dataIndex].starttime).getTime()//开始时间的时间戳
       this.practicalNight = Math.ceil((date3-date4)/1000/60/60/24)
-      // console.log("this.practicalNight",this.practicalNight);
     },
     // 添加入住人
     addPeople() {
@@ -524,13 +529,15 @@ export default {
     handleLeaveYES(){//确认离店，退押金
       let data = {
         id:this.searchData[this.dataIndex].id,
+        orderNumber:this.searchData[this.dataIndex].orderNumber,
+        roomnumber:this.searchData[this.dataIndex].roomnumber,
         hotelid:this.searchData[this.dataIndex].hotelid,
         orderType:3,
         roomRefund:this.returnMoney,//应退房费合计金额
         totalRefund:this.returnMoneyAll,//总退款金额
       }
         this.$axios.post("/zftds/hotel/order/updateHotelOrder",data).then(res=>{
-          console.log(res);
+          // console.log(res);
           if(res.code == 1){
             this.$message.success(res.msg)
             this.dialogVisible = false
@@ -627,7 +634,7 @@ export default {
         merchantid: this.$store.state.mchid,
         orderType:number
       }).then(res=>{
-        console.log(res);
+        // console.log(res);
         if(res.code == 1){
             let datas2 = [...res.data];
             this.searchData = datas2.filter(item=>item.orderType!=5)
@@ -654,7 +661,7 @@ export default {
     },
     getFirstOrder(){
       var num = this.dataIndex
-      console.log(num);
+      // console.log(num);
       setTimeout(()=>{
         if(this.searchData[num]&&this.searchData[num].orderType==0){
           (this.isInsert = false), //是否已入住
@@ -737,7 +744,7 @@ export default {
     // this.getHouseType()
     this.getOrder();
     this.getFirstOrder()
-    console.log(this.startTime);
+    // console.log(this.startTime);
   },
   watch: {
     activeIndex(val) {
@@ -779,7 +786,6 @@ export default {
               this.getToday()
               this.getDayMoney()
             },1000)
-
       } else if (val == 5) {
         (this.isBG = false),
         (this.isUntreated = false), //是否未处理
@@ -801,18 +807,13 @@ export default {
       }
     },
     moreMoney(va){
-      // console.log(va);
-      // console.log(this.payMoney);
-      this.payMoney1 = Number(this.payMoney)+Number(this.searchData[this.dataIndex].cashPledge)+Number(this.moreMoney)
-      console.log(this.payMoney1);
+      this.payMoney1 = Number(this.payMoney) + Number(this.moreMoney) + Number(this.searchData[this.dataIndex].cashPledge)
       this.returnMoney = Number(this.searchData[this.dataIndex].payCountPrice)-Number(this.payMoney1)
-      this.returnMoneyAll = this.returnMoney +Number(this.searchData[this.dataIndex].cashPledge)
+      this.returnMoneyAll = Number(this.returnMoney) + Number(this.searchData[this.dataIndex].cashPledge) 
     },
     startTime(v){
       this.searchData[this.dataIndex].starttime = v
-      // console.log(this.searchData[this.dataIndex].starttime);
     }
-
   }
 };
 </script>

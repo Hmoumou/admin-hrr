@@ -12,7 +12,7 @@
           <el-col :span="14">
             <div class="grid-content bg-purple">
               <div class="left ">
-                <el-form :model='formData' label-width="140px" label-position='left'>
+                <el-form  label-width="140px" label-position='left'>
                   <el-form-item label="续住房型" prop="houseType">
                     {{formData.houseinfo}}
                     <!-- <el-input v-model="" disabled></el-input> -->
@@ -26,7 +26,9 @@
                     <el-date-picker
                       v-model="Data.endtime"
                       type="datetime"
-                      placeholder="选择日期时间">
+                      placeholder="选择日期时间"
+                      @change="handleChange" 
+                      default-time="12:00:00">
                     </el-date-picker>
                   </el-form-item>
                   <el-form-item label="房间编号" prop="houseId">
@@ -59,10 +61,10 @@
             <div class="grid-content bg-purple">
               <div class="right  clearfix">
                 <div class="right-data " >
-                  <div class="item">房价<span class="span data">RMB {{formData.price}} /晚</span></div>
-                  <div class="item">时间<span class="span data">{{formData.long}}/晚</span></div>
-                  <div class="item">押金 <span class="span data">RMB {{formData.earnest}}</span></div>
-                  <div class="lastItem">总金额<span class="span lastData">RMB {{formData.total}}/晚</span></div>
+                  <div class="item">房价<span class="span data">RMB {{formData.countPrice}}</span></div>
+                  <div class="item">时间<span class="span data">共{{formData.count}}晚</span></div>
+                  <div class="item">押金 <span class="span data">RMB {{formData.cashPledge}}</span></div>
+                  <div class="lastItem">总金额<span class="span lastData">RMB {{formData.payCountPrice}}</span></div>
                   <div class="btnss fs14" @click="handleCheck">办理续住</div>
                   <el-dialog
                     :visible.sync="centerDialogVisible"
@@ -70,11 +72,11 @@
                     center>
                     <div class="content" v-if="isSuccess">
                       <p class="fw">{{formData.username}}</p>
-                      <p>已成功入住{{formData.houseType}} <span class="blue">{{formData.houseId}}</span> 室</p>
+                      <p>已成功入住{{formData.houseType}} <span class="blue">{{formData.roomnumber}}</span> 室</p>
                     </div>
                     <div class="content" v-else>
                       <p class="blue fs16 mb15 fw">入住失败</p>
-                      <p>{{formData.houseType}} <span class="blue">{{formData.houseId}}</span> 室,已被网上预订</p>
+                      <p>{{formData.houseType}} <span class="blue">{{formData.roomnumber}}</span> 室,已被网上预订</p>
                     </div>
                     <div slot="footer" class="dialog-footer">
                       <div class="btn1" @click="centerDialogVisible = false">确 定</div>
@@ -113,7 +115,7 @@
       <div class="box-inner">
         <div class="face">
           <span>{{formData.username}}</span>
-          <span>已成功入住{{formData.houseType}} {{201}}室</span>
+          <span>已成功入住{{formData.houseType}} {{formData.roomnumber}}室</span>
           <div class="btn" @click="handleOk">确定</div>
         </div>
         <div class="back">
@@ -125,6 +127,8 @@
 </template>
 
 <script>
+import { format } from 'url'
+import moment from 'moment'
   export default {
     name: 'Check',
     data() {
@@ -137,32 +141,143 @@
         // 入住订单绑定的数据
         formData: {},
         Data:{
-          endtime:'',
-          merchantid:"",//商户ID
+          merchantid:this.$store.state.mchid,//商户ID
+          endtime:"",
+          hotelid:"",
+          orderNumber:"",
+          orderType:2,
+          count:"",
+          payType:"",
+          payCountPrice:"",
           hoy:[
-            {
-              merchantid:"",//商户ID
-              price:"",  //价格
-              ytd :"",//日期
-            }
+              {
+                merchantid:this.$store.state.mchid,//商户ID
+                // orderNumber:this.formData.orderNumber,
+                orderNumber:'',
+                price:"",  //价格
+                ytd :"",//日期
+              }
           ],
-          price:"",  //价格
-          ytd :"",//日期
         },
-        formData1: {
-           hop: [
-          {
-            name: '小明',
-            card: '2018',
-            mobile: '110',
-          }
-        ]
-        },
-
-
       }
     },
     methods: {
+      handleChange(){//选择时间之后的事件
+        let d1 = this.Data.endtime
+        let d2 = new Date(this.formData.endtime)
+        let d3 = d1.getTime()
+        let d4 = d2.getTime()
+        console.log(d1,d2,d3,d4);
+        // 拼接日期字符串
+        let Y1 = d1.getFullYear() + '-';
+        let M1 = (d1.getMonth()+1 < 10 ? '0'+(d1.getMonth()+1) : d1.getMonth()+1) + '-';
+        let D1 = d1.getDate() + ' ';
+        let h1 = d1.getHours() + ':';
+        let m1 = d1.getMinutes() + ':';
+        let s1 = d1.getSeconds(); 
+        let str = Y1+M1+D1+h1+m1+s1  
+        str = str.split(" ")[0]
+        // console.log(str);
+        if(d3>d4){
+          // let da = { //这是续住需要的数据
+          //    merchantid:this.$store.state.mchid,
+          //    hotelid:this.formData.hotelid,
+          //    orderNumber:this.formData.orderNumber,
+          //    payType:this.formData.payType,
+          //   //  sign:"",//验签码
+          //    orderType:2,
+          //    endtime:str,
+          //    payCountPrice:"",//订单支付总金额
+          //    count:"",//入住总天数
+          //    hoy:[]
+          // }
+          // console.log(da);
+          console.log(this.formData);
+          let dat = {
+            merchantid:this.$store.state.mchid,
+            hotelid:this.formData.hotelid,
+            starttime:this.formData.endtime,
+            endtime:str
+          }
+          console.log(dat); 
+          var dayy = parseInt((d3-d4)/(1000*60*60*24)) // 拼接天数 总天数
+          this.formData.count = Number(this.formData.count) + Number(dayy)
+          console.log(this.formData.count);
+          // 计算拼接后的房价
+            //以下操作是为了求两个时间段之间的时间集合start
+          var timeArr = [];
+          var date1 = new Date(this.formData.endtime);
+          var date2 = new Date(str);
+          var dateSpan = (date2.getTime() - date1.getTime()) / 86400000;
+          // console.log(dateSpan); 
+          // timeArr.push(moment(startDate).format("YYYY-MM-DD")); // 利用momentjs生成指定格式的字符串
+          for(let i = 0; i < dateSpan; i++) {
+              let startDate = new Date(this.formData.endtime); // 开始时间
+              var nowDate = new Date(startDate.setDate(startDate.getDate()+i)); // setDate设置一个日期天数，getDate得到日期天数。然后返回一个新的日期的unix时间戳。然后利用new Date方法生成新的时间对象。
+              timeArr.push(moment(nowDate).format("YYYY-MM-DD"))
+          }
+          console.log("timeArr",timeArr);
+          // 时间集合end
+
+          //计算拼接后的Hoy
+          this.$axios.post("/zftds/hotel/house/selectHotelCalendar",dat).then(res=>{
+              console.log(res);
+              if(res.code == 0){
+                this.formData.countPrice = String(this.formData.roomPrice*dayy*this.formData.roomamount)
+                this.formData.payCountPrice = String(Number(this.formData.countPrice) + Number(this.formData.cashPledge))
+              }else{
+                var arr = []
+                var arr1 = []
+                res.data.map(item=>{
+                 if(item.activityprice!=""){
+                  arr.push(item.activityprice)
+                  arr1.push(item.ytd)
+                 }
+                })
+                // console.log("timeArrtimeArr",timeArr);//这是两个时间段的所有日期
+                // 去掉整体日期里面相同的日期，不同时存在的日期即为原价日期
+                var arr2 = []
+                var arr3 = []
+                for(var j=0;j<arr1.length;j++){
+                  arr2[arr1[j]]=true
+                }
+                for(var c=0;c<timeArr.length;c++){//得到应原价日期
+                  if(!arr2[timeArr[c]]){
+                    arr3.push(timeArr[c])
+                  }
+                }
+                console.log("arr3arr3arr3arr3arr3",arr3);
+                let ress = []//这是最后拼成的数组
+                for(let i=0; i<arr.length;i++){
+                  ress.push({
+                  merchantid:this.$store.state.mchid,
+                  ytd:arr1[i],
+                  price:arr[i]
+                })
+                } 
+                 for(let n=0; n<arr3.length;n++){
+                  ress.push({
+                    merchantid:this.$store.state.mchid,
+                    ytd:arr3[n],
+                    price:this.formData.roomPrice
+                  })
+                }
+                this.formData.hoy = [...ress]
+                console.log("this.formData.hoy",this.formData.hoy);
+                var sum = 0
+                for(let q=0; q<arr.length;q++){
+                  sum += Number(arr[q])
+                }
+                //有活动价的时候计算的房间总价
+                this.formData.countPrice = String((this.formData.roomPrice*(Number(dayy)-Number(arr.length))+sum)*this.formData.roomamount)
+                this.formData.payCountPrice = String(Number(this.formData.countPrice) + Number(this.formData.cashPledge))
+              }
+          })
+        }else{
+          this.$message.warning("续订日期需大于预订日期")
+          this.Data.endtime = ""
+        }
+      },
       goBack(){//点击返回按钮，返回订单页
         this.$router.go(-1)
       },
@@ -180,7 +295,24 @@
         console.log('现金支付');
       },
       handleCheck() {
+        console.log(this.formData.endtime);
+        console.log(this.Data);
+        // if(this.Data.endtime){
+        //   this.$axios.post("",{
+        //     endtime:this.Data.endtime
+        //   }).then(res=>{
+        //     console.log(res);
+        //     if(res.code==1){
+
+        //     }else{
+        //       this.$message.error(res.msg)
+        //     }
+        //   })
+        // }else{
+        //   this.$message.warning("请输入续订日期")
+        // }
         this.centerDialogVisible = true
+        console.log(this.formData);
       },
       handleOk() {
         this.isOk = false;
@@ -190,9 +322,10 @@
       }
     },
     created() {
-      console.log(this.$route.query);
+      // console.log(this.$route.query);
       this.formData = this.$route.query
-      console.log(this.formData);
+      this.Data.orderNumber = this.formData.orderNumber
+      // console.log(this.formData.endtime);
     }
   }
 </script>
