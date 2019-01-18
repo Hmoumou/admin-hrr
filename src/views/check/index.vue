@@ -9,11 +9,11 @@
               <div class="left ">
                 <el-form  label-width="140px" label-position='left'>
                   <el-form-item label="房型选择" prop="houseType" >
-                    <el-select class="w300" 
+                    <el-select class="w300"
                     v-model="formData.hotelid"
-                    @change="handleGetCash"   
+                    @change="handleGetCash"
                     placeholder="请选择房型">
-                      <el-option 
+                      <el-option
                       v-for="(item,index) in AData"
                       :key="index"
                       :label="item.houseinfo"
@@ -176,16 +176,16 @@ import moment from "moment"
           orderNumber:'', //订单编号
           name:'', //预订人姓名
           moble:'',//联系方式
-          lateTime :'' , // 最晚到店时间        
-          remark :'' ,  // 备注             
+          lateTime :'' , // 最晚到店时间
+          remark :'' ,  // 备注
           preferentialPrice :'' , //优惠价格
           roomRefund  :'' ,  // 应退房费合计金额
           otherRefund :'' ,  //其他退款金额
           totalRefund :'' ,  //总计应退款金额
-          sign :'' , //设备收款验签码        
-          starttime :'' , // 开始时间      
-          endtime :'' , // 结束时间      
-          refusal :'' , //拒绝描述    
+          sign :'' , //设备收款验签码
+          starttime :'' , // 开始时间
+          endtime :'' , // 结束时间
+          refusal :'' , //拒绝描述
           renewType :'0' , // 续租状态0直接入住1续租
           hop: [
               {
@@ -226,7 +226,7 @@ import moment from "moment"
       // 根据房型id的变化得到相对应的押金
       handleGetCash(){
         // console.log("触发了change事件...",this.formData)
-        this.AData.map(item=>{       
+        this.AData.map(item=>{
           if(item.id == this.formData.hotelid){
             this.formData.cashPledge = item.cash
             this.formData.roomPrice = item.price
@@ -252,7 +252,7 @@ import moment from "moment"
           var date1 = new Date(this.formData.starttime);
           var date2 = new Date(this.formData.endtime);
           var dateSpan = (date2.getTime() - date1.getTime()) / 86400000;
-          // console.log(dateSpan); 
+          // console.log(dateSpan);
           // timeArr.push(moment(startDate).format("YYYY-MM-DD")); // 利用momentjs生成指定格式的字符串
           for(let i = 0; i < dateSpan; i++) {
               let startDate = new Date(this.formData.starttime); // 开始时间
@@ -277,10 +277,10 @@ import moment from "moment"
                 var arr = []
                 var arr1 = []
                 res.data.map(item=>{
-                 if(item.activityprice!=""){
-                  arr.push(item.activityprice)
-                  arr1.push(item.ytd)
-                 }
+                  if(item.activityprice!=""){
+                    arr.push(item.activityprice)
+                    arr1.push(item.ytd)
+                  }
                 })
                 // console.log("timeArrtimeArr",timeArr);//这是两个时间段的所有日期
                 // 去掉整体日期里面相同的日期，不同时存在的日期即为原价日期
@@ -302,7 +302,7 @@ import moment from "moment"
                   ytd:arr1[i],
                   price:arr[i]
                 })
-                } 
+                }
                  for(let n=0; n<arr3.length;n++){
                   ress.push({
                     merchantid:this.$store.state.mchid,
@@ -320,7 +320,7 @@ import moment from "moment"
                 this.formData.countPrice = String((this.formData.roomPrice*(Number(dayy)-Number(arr.length))+sum)*this.formData.roomamount)
                 this.formData.payCountPrice = String(Number(this.formData.countPrice) + Number(this.formData.cashPledge))
               }
-            })        
+            })
         }else{
           this.$message.warning('入住时间不能为空且必须小于离店时间')
           this.formData.starttime = ''
@@ -363,7 +363,7 @@ import moment from "moment"
         // 如果数据不为空且身份证号手机号验证通过
         if (this.formData.hop[this.formData.hop.length - 1].name &&
           this.formData.hop[this.formData.hop.length - 1].card &&
-          this.formData.hop[this.formData.hop.length - 1].mobile 
+          this.formData.hop[this.formData.hop.length - 1].mobile
           // this.formData.hop[this.formData.hop.length - 1].idIsOk &&
           // this.formData.hop[this.formData.hop.length - 1].phoneIsOk
           ) {
@@ -410,16 +410,16 @@ import moment from "moment"
               moble:'',//联系方式
               roomPrice :'' , // 房间价格
               count :'' ,  // 入驻天数
-              lateTime :'' , // 最晚到店时间        
-              remark :'' ,  // 备注             
+              lateTime :'' , // 最晚到店时间
+              remark :'' ,  // 备注
               preferentialPrice :'' , //优惠价格
               roomRefund  :'' ,  // 应退房费合计金额
               otherRefund :'' ,  //其他退款金额
               totalRefund :'' ,  //总计应退款金额
-              sign :'' , //设备收款验签码        
-              starttime :'' , // 开始时间      
-              endtime :'' , // 结束时间      
-              refusal :'' , //拒绝描述    
+              sign :'' , //设备收款验签码
+              starttime :'' , // 开始时间
+              endtime :'' , // 结束时间
+              refusal :'' , //拒绝描述
               renewType :'0' , // 续租状态0直接入住1续租
               hop: [
                   {
@@ -630,7 +630,7 @@ import moment from "moment"
     line-height: 1;
   }
   .el-select__caret {color: #409eff;}
- 
+
   .el-dialog--center {
     color: #2b2b2b;
     margin-top: 30vh !important;

@@ -213,9 +213,9 @@
             roomType: 0,
             ytd:val.date.formatStr,
         }
-        if(val.isPre){  
+        if(val.isPre){
           data.roomType = 0
-        
+
         }else{
           data.roomType = 1
         }
@@ -366,9 +366,13 @@
         this.row1 = item.row;
         this.isShowDialog1 = true;
       },
+      fixdZero(num) {
+        return num>=10?"" + num: "0" + num;
+      },
       getDate () {
         let unix = this.currentDate.getTime();
         let minDate = new Date(unix); // 重新生成新的日期对象，避免相互影响
+
 
         this.dateData.weekDate = [];
         for(let i = 0; i < 15; i++){ // 获得15天的号数和星期几
@@ -378,7 +382,7 @@
             month: minDate.getMonth() + 1, // 得到星期几
             unix: minDate.getTime(), // 得到Unix时间戳
             year: minDate.getFullYear(), // 得到今天是哪一年
-            formatStr: `${minDate.getFullYear()}-${minDate.getMonth() + 1}-${minDate.getDate()}`,
+            formatStr: `${minDate.getFullYear()}-${this.fixdZero(minDate.getMonth() + 1)}-${this.fixdZero(minDate.getDate())}`,
           });
           minDate.setDate(minDate.getDate() + 1) // 递增操作
         }
@@ -397,6 +401,7 @@
             // console.log(this.houseType);
             this.getPrice().then(priceArr => {
               // 1. 先截取15天的有效数据
+              console.log(priceArr, "原始数据");
               let filterArr = priceArr.filter(item => {
                 // console.log('你要的item',item.id);
                 // console.log("item", item.ytd)
@@ -412,6 +417,7 @@
                   return 0 // 代替false来用，转换为false
                 }
               });
+              console.log(filterArr, "one");
               // 2. 数组去重操作。保留最新的操作项。思路: mysql数据库id自增，可以考虑id作为最新修改的依据。去重
               /*
               情况1：有重复项
@@ -456,7 +462,6 @@
                     col: i,
                     formatStr: this.dateData.weekDate[i].formatStr
                   })
-                  console.log("arr",arr);
                 }
                 return {
                   arr,

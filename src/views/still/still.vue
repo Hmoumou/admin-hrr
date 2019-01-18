@@ -27,7 +27,7 @@
                       v-model="Data.endtime"
                       type="datetime"
                       placeholder="选择日期时间"
-                      @change="handleChange" 
+                      @change="handleChange"
                       default-time="12:00:00">
                     </el-date-picker>
                   </el-form-item>
@@ -199,33 +199,46 @@ import moment from 'moment'
             starttime:this.formData.endtime,
             endtime:str
           }
-          console.log(dat); 
+          this.Data.endtime = str
+          console.log(dat);
           var dayy = parseInt((d3-d4)/(1000*60*60*24)) // 拼接天数 总天数
-          this.formData.count = Number(this.formData.count) + Number(dayy)
           console.log(this.formData.count);
+          this.Data.count = Number(this.formData.count) + Number(dayy)
+          console.log(this.Data.count,"22222");
           // 计算拼接后的房价
             //以下操作是为了求两个时间段之间的时间集合start
           var timeArr = [];
           var date1 = new Date(this.formData.endtime);
           var date2 = new Date(str);
           var dateSpan = (date2.getTime() - date1.getTime()) / 86400000;
-          // console.log(dateSpan); 
+          // console.log(dateSpan);
           // timeArr.push(moment(startDate).format("YYYY-MM-DD")); // 利用momentjs生成指定格式的字符串
           for(let i = 0; i < dateSpan; i++) {
               let startDate = new Date(this.formData.endtime); // 开始时间
               var nowDate = new Date(startDate.setDate(startDate.getDate()+i)); // setDate设置一个日期天数，getDate得到日期天数。然后返回一个新的日期的unix时间戳。然后利用new Date方法生成新的时间对象。
               timeArr.push(moment(nowDate).format("YYYY-MM-DD"))
           }
-          console.log("timeArr",timeArr);
+          // console.log("timeArr",timeArr);
           // 时间集合end
 
           //计算拼接后的Hoy
           this.$axios.post("/zftds/hotel/house/selectHotelCalendar",dat).then(res=>{
               console.log(res);
               if(res.code == 0){
-                this.formData.countPrice = String(this.formData.roomPrice*dayy*this.formData.roomamount)
-                this.formData.payCountPrice = String(Number(this.formData.countPrice) + Number(this.formData.cashPledge))
+                this.Data.countPrice = Number(this.formData.countPrice)+Number(this.formData.roomPrice*dayy*this.formData.roomamount)
+                this.Data.payCountPrice = Number(this.formData.payCountPrice)+Number(this.Data.countPrice) + Number(this.formData.cashPledge)
+                console.log(this.Data.countPrice);
+                console.log(this.Data.payCountPrice);
               }else{
+                var ress = [];
+                var json = {};
+                for(var i = 0; i < res.data.length; i++){
+                  if(!json[res.data[i]]){
+                    ress.push(res.data[i]);
+                    json[res.data[i]] = 1;
+                  }
+                }
+                console.log(ress);
                 var arr = []
                 var arr1 = []
                 res.data.map(item=>{
@@ -254,7 +267,7 @@ import moment from 'moment'
                   ytd:arr1[i],
                   price:arr[i]
                 })
-                } 
+                }
                  for(let n=0; n<arr3.length;n++){
                   ress.push({
                     merchantid:this.$store.state.mchid,
@@ -263,14 +276,15 @@ import moment from 'moment'
                   })
                 }
                 this.formData.hoy = [...ress]
-                console.log("this.formData.hoy",this.formData.hoy);
+                // console.log("this.formData.hoy我要的",this.formData.hoy);
                 var sum = 0
                 for(let q=0; q<arr.length;q++){
                   sum += Number(arr[q])
                 }
                 //有活动价的时候计算的房间总价
-                this.formData.countPrice = String((this.formData.roomPrice*(Number(dayy)-Number(arr.length))+sum)*this.formData.roomamount)
-                this.formData.payCountPrice = String(Number(this.formData.countPrice) + Number(this.formData.cashPledge))
+                this.Data.countPrice = Number(this.formData.countPrice)+Number((this.formData.roomPrice*(Number(dayy)-Number(arr.length))+sum)*this.formData.roomamount)
+                this.Data.payCountPrice = Number(this.formData.payCountPrice)+Number(this.Data.countPrice) + Number(this.formData.cashPledge)
+                console.log(this.Data,"last");
               }
           })
         }else{
@@ -518,7 +532,7 @@ import moment from 'moment'
         line-height: 40px;
       }
     }
-    
+
   }
 
   .content {
