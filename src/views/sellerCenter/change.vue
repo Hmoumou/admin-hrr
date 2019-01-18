@@ -173,12 +173,12 @@
       height: 50px;
       line-height: 50px;
       display: block;
-     width: 100%;
-     margin-bottom: 10px;
+      width: 100%;
+      margin-bottom: 10px;
       .leftText{
         font-weight: 600;
         font-size: 14px;
-        width:120px;
+        width:200px;
         float: left;
       }
       .rightText{

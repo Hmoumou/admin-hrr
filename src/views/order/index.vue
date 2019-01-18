@@ -5,11 +5,11 @@
         <div slot="header" class="header clearfix">
           <el-button style="float: right; padding: 3px 0" type="text" @click="handleMore">
             更多搜索选项
-            <i class="iconfont icon-arw-top-copy" :class="{'active-rotate': moreSearch}"></i>
+            <i class="iconfont icon-arw-top-copy" :class="{'active-rotate': !moreSearch}"></i>
           </el-button>
           <div class="seachBox clearfix">
             <div class="seek-box">
-              <input type="text" v-model="boxData.searchdata" placeholder="订单号/预定人/预订人手机号">
+              <input type="text" v-model="searchdatas" placeholder="订单号/预定人/预订人手机号">
               <div class="seek" @click="handleSearch">搜索</div>
             </div>
           </div>
@@ -24,23 +24,32 @@
           <div class="dialog">
             <el-form>
               <el-form-item label="按房型选择">
-                <el-select v-model="typeSearch" placeholder="请选择">
+                 <el-select class="w300"
+                    v-model="boxData.hotelid"
+                    placeholder="请选择房型">
+                      <el-option
+                      v-for="(item,index) in AData"
+                      :key="index"
+                      :label="item.houseinfo"
+                      :value="item.id"
+                      ></el-option>
+                <!-- <el-select v-model="typeSearch" placeholder="请选择">
                   <el-option
                     v-for="item in options"
                     :key="item.value"
                     :label="item.label"
                     :value="item.value"
-                  ></el-option>
+                  ></el-option> -->
                 </el-select>
               </el-form-item>
               <el-form-item label="按时间选择" class="clearfix">
-                <el-button type="primary" class="flr">查询</el-button>
+                <el-button type="primary" class="flr" @click="ClickmoreSearch">查询</el-button>
                 <!-- <el-date-picker
                  v-model="dateSearch"
                  type="datetime"
                  placeholder="选择日期时间">
                 </el-date-picker>-->
-                <el-date-picker v-model="dateSearch" type="date" placeholder="选择日期"></el-date-picker>
+                <el-date-picker v-model="boxData.starttime" type="date" placeholder="选择日期"></el-date-picker>
               </el-form-item>
             </el-form>
           </div>
@@ -398,12 +407,17 @@ export default {
       practicalNight:"",//实际几晚
       //入住人数组
       addpeople: [],
+      AData:[],//房型数组 按房型搜索使用
       boxData: {
-        // username:'梁朝伟',
-        searchdata: ""
+        merchantid:this.$store.state.mchid,//商户id
+        name:null,//预订人姓名       
+        moble:null,//联系方式
+        starttime:null, // 开始时间      
+        // endtime:"",// 结束时间
+        hotelid:null, //房型ID主键
+        orderNumber:null,//订单号
       },
-      dateSearch: "", //按时间搜索
-      typeSearch: "", //按房型搜索
+      searchdatas: "",
       options: [
         {
           value: "1",
@@ -427,6 +441,22 @@ export default {
     };
   },
   methods: {
+    ClickmoreSearch(){//隐藏框查询
+      console.log(this.boxData)
+      if(this.boxData.starttime){
+        let dd = this.boxData.starttime
+        let dd1 = dd.toLocaleDateString()
+        let dd2 = dd1.replace(/\//g,"-")
+        this.boxData.starttime = dd2
+      }
+      this.getOrder()
+    },
+    // 得到房型信息与房价信息等
+    getHotelData(){
+      this.$axios.post('/zftds/hotel/house/selectHotelHouseS',{merchantid:this.$store.state.mchid}).then(res=>{
+        this.AData = [...res.data]
+      })
+    },
     handleReadyLeave(){//点击准备离店
       this.dialogVisible = true
       //以下操作是为了求两个时间段之间的时间集合start
@@ -610,13 +640,17 @@ export default {
       //点击搜索进行验证
       let reg1 = /^[\u4e00-\u9fa5]{1,}$/; //输入的为汉字
       let reg2 = /^(13[0-9]|14[579]|15[0-3,5-9]|16[6]|17[0135678]|18[0-9]|19[89])\d{8}$/; //手机号验证
-      if (reg1.test(this.boxData.searchdata)) {
-        console.log("可以按名字搜索了..");
-      } else if (reg2.test(this.boxData.searchdata)) {
-        console.log("可以按手机号搜索了..");
+      if (reg1.test(this.searchdatas)) {
+        // console.log("可以按名字搜索了..");
+        this.boxData.name = this.searchdatas
+      } else if (reg2.test(this.searchdatas)) {
+        this.boxData.moble = this.searchdatas
+        // console.log("可以按手机号搜索了..");
       } else {
-        console.log("全部去订单里吧..");
+        this.boxData.orderNumber = this.searchdatas
+        // console.log("全部去订单里吧..");
       }
+      this.getOrder()
       // 点击限制
       // if(this.isClick){
       //     this.isClick = false
@@ -630,10 +664,8 @@ export default {
     getOrderByType(){
       // console.log(this.activeIndex)
       var number = Number(this.activeIndex)-2
-      this.$axios.post("/zftds/hotel/order/selectHotelOrder",{
-        merchantid: this.$store.state.mchid,
-        orderType:number
-      }).then(res=>{
+      this.boxData.orderType = number
+      this.$axios.post("/zftds/hotel/order/selectHotelOrder",this.boxData).then(res=>{
         // console.log(res);
         if(res.code == 1){
             let datas2 = [...res.data];
@@ -646,14 +678,12 @@ export default {
       })
     },
     getOrder() {
-      this.$axios.post("/zftds/hotel/order/selectHotelOrder",{
-          merchantid: this.$store.state.mchid
-          // orderType:this.activeIndex-1
-        }).then(res => {
+      this.boxData.orderType = null
+      this.$axios.post("/zftds/hotel/order/selectHotelOrder",this.boxData).then(res => {
           if(res.code == 1){
               let datas1 = [...res.data];
               this.searchData = datas1.filter(item=>item.orderType!=5)
-              // console.log("调用了getOrder()并且成功了");
+              console.log("调用了getOrder()并且成功了");
           }else if(res.code == 0){
             this.isBG = true
           }
@@ -740,11 +770,12 @@ export default {
       }
     }
   },
-  created() {
+  created(){
     // this.getHouseType()
     this.getOrder();
     this.getFirstOrder()
     // console.log(this.startTime);
+    this.getHotelData()
   },
   watch: {
     activeIndex(val) {
@@ -756,6 +787,7 @@ export default {
           (this.isLeave = false), //是否已离店
           (this.isLose = false),
           this.getOrder()
+          // console.log('这是第一个');
           this.getFirstOrder()
       } else if (val == 2) {
         (this.isBG = false),

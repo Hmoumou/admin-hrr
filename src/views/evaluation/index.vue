@@ -218,19 +218,19 @@ export default {
         }
       ],
       selectData: {
+        merchantid:this.$store.state.mchid,
         inDate: "",
-        goDate: ""
+        goDate: "",
+        orderNumber:null,
+        name:null,
+        starttime:null,//开始时间
+        endtime:null,//结束时间
+        hotelid:null, //房型ID主键
+        // ssid:null //评论人主键
       }
     };
   },
-  created() {
-    this.userData = this.userData.map(item => {
-      return {
-        ...item,
-        isShow: false
-      }
-    })
-  },
+ 
   components: {
     Star
   },
@@ -251,6 +251,11 @@ export default {
             message: '已取消删除'
           });          
         });
+    },
+    getData(){//获取评价数据
+      this.$axios.post("/zftds/hotel/order/selectHotleEvaluate",this.selectData).then(res=>{
+
+      })
     },
     handleSelect() {
       console.log("点击按时间查询");
@@ -286,10 +291,17 @@ export default {
     },
     handleNo(index){
         this.userData[index].isShow = false
-
     },
 
-  }
+  },
+   created() {
+    this.userData = this.userData.map(item => {
+      return {
+        ...item,
+        isShow: false
+      }
+    })
+  },
 };
 </script>
 

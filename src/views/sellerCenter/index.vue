@@ -169,43 +169,6 @@ export default {
         roomNum: "", //房间总数',
         hotelMobile: "", //酒店总机电话',
         introduce: "" //酒店介绍',
-        // mResideTime: "", //最早入住时间',
-        // eResideTime: "", //最晚入住时间',
-        // mLeaveTime: "", //最早离店时间',
-        // eLeaveTime: "", //最晚离店时间',
-        // child: "", //儿童政策',
-        // pet: "", //宠物政策',
-        // breakfast: "", //早餐',
-        // lunch: "", //午餐',
-        // afternoontea: "", //下午茶',
-        // supper: "", //晚餐',
-        // outerImg1: "", //酒店外观图片',
-        // outerImg2: "", //酒店外观图片',
-        // outerImg3: "", //酒店外观图片',
-        // outerImg4: "", //酒店外观图片',
-        // outerImg5: "", //酒店外观图片',
-        // sellName: "", //销售员姓名',
-        // sellMobile: "", //销售员手机号',
-        // sellPhone: "", //销售员固话',
-        // sellEmail: "", //销售员邮箱',
-        // yName: "", //预订员姓名',
-        // yMobile: "", //预订员手机号',
-        // yPhone: "", //预订员固话',
-        // yEmail: "", //预订员邮箱',
-        // cName: "", //财务员姓名',
-        // cMobile: "", //财务员手机号',
-        // cPhone: "", //财务员固话',
-        // cEmail: "", //财务员邮箱',
-        // innerImg6: "", //酒店内景图片',
-        // innerImg7: "", //酒店内景图片',
-        // innerImg8: "", //酒店内景图片',
-        // innerImg9: "", //酒店内景图片',
-        // innerImg10: "", //酒店内景图片',
-        // elseImg11: "", //酒店其他图片',
-        // elseImg12: "", //酒店其他图片',
-        // elseImg13: "", //酒店其他图片',
-        // elseImg14: "", //酒店其他图片',
-        // elseImg15: "" //酒店其他图片',
       },
       options: [
         {
@@ -287,7 +250,6 @@ export default {
           if (res.code == 1) {
             this.iSsecond = true
             this.formData = res.data;
-            // console.log("this.formData",this.formData)
           }
         });
     }
@@ -297,8 +259,6 @@ export default {
   }
 };
 </script>
-
-
 <style scoped lang='scss'>
 .active {
   border: 1px solid #9dccfa;
@@ -321,7 +281,7 @@ export default {
 .mesList {
   padding: 0px 20px;
   margin-bottom: 10px;
-  .mesBox {
+  .mesBoxs {
     height: 50px;
     line-height: 50px;
     display: block;
@@ -330,24 +290,7 @@ export default {
     .leftText {
       font-weight: 600;
       font-size: 14px;
-      width: 120px;
-      float: left;
-    }
-    .rightText {
-      width: 60%;
-      display: inline-block;
-    }
-  }
-   .mesBoxs{
-    height: 50px;
-    line-height: 50px;
-    display: block;
-    width: 100%;
-    margin-bottom: 10px;
-    .leftText {
-      font-weight: 600;
-      font-size: 14px;
-      width: 120px;
+      width: 200px;
       float: left;
     }
     .rightText {

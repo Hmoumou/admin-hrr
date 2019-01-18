@@ -79,6 +79,23 @@ import upload from '@/components/imgupload/hotel-photo.vue'
           title:"",
           img:""
       },
+      formData:{
+        outerImg1: "", //酒店外观图片',
+        outerImg2: "", //酒店外观图片',
+        outerImg3: "", //酒店外观图片',
+        outerImg4: "", //酒店外观图片',
+        outerImg5: "", //酒店外观图片',
+        innerImg6: "", //酒店内景图片',
+        innerImg7: "", //酒店内景图片',
+        innerImg8: "", //酒店内景图片',
+        innerImg9: "", //酒店内景图片',
+        innerImg10: "", //酒店内景图片',
+        elseImg11: "", //酒店其他图片',
+        elseImg12: "", //酒店其他图片',
+        elseImg13: "", //酒店其他图片',
+        elseImg14: "", //酒店其他图片',
+        elseImg15: "" //酒店其他图片',
+      },
         photoDetailF: [
           {title: "酒店大堂", detail: "/static/img/0001.2890d64.jpg"},
         ],
