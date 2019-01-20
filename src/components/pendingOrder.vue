@@ -8,19 +8,25 @@
                     <el-row :gutter="20">
                         <el-col :span="24">
                             <div class="grid-content bg-purple">
-                                 <div v-for="o in 2" :key="o" class="text orderitem clearfix">
+                                 <div v-for="(item,index) in arr" :key="index" class="text orderitem clearfix">
                                     <div class="orderRight flr clearfix">
-                                        <span class="fs14">共<span class="time">{{1}}</span>晚</span>
-                                        <span class= "money fw fs16">RMB {{888}}</span>
+                                        <span class="fs14">共<span class="time">{{item.count}}</span>晚</span>
+                                        <span class= "money fw fs16">RMB {{item.countPrice}}</span>
                                         <div class="btn flr">接受</div>
-                                    </div>      
+                                    </div>
                                     <div class="orderLeft fll">
-                                        <span class="fs14 mb5"><span class="time">{{2018}}-{{6}}-{{21}}</span> 至 <span class="time">{{2018}}-{{6}}-{{21}}</span></span>
-                                        <div class="fs14 fw">豪华大床房</div>
-                                        <span class="fs14">梁朝伟</span>
+                                        <span class="fs14 mb5">
+                                          <span class="time">{{item.starttime}}</span>
+                                              至
+                                          <span class="time">
+                                            {{item.endtime}}
+                                          </span>
+                                        </span>
+                                        <div class="fs14 fw">{{item.houseinfo}}</div>
+                                        <span class="fs14">{{item.name}}</span>
                                         <span class="time">查看详情</span>
                                     </div>
-            
+
                                 </div>
                             </div>
                         </el-col>
@@ -29,7 +35,7 @@
                             </div>
                         </el-col> -->
                     </el-row>
-                   
+
                 </el-card>
     </div>
 </template>
@@ -37,26 +43,32 @@
 <script>
     export default {
         name:'pendingOreder',
+      data(){
+              return{
+                arr:[]
+              }
+      }   ,
          methods:{
             handleMuch(){
                 this.$router.push('/layout/order')
             },
             getData(){
                 // let date = moment().format("YYYY-MM-DD")
-                let date = "2019-01-17"
                 this.$axios.post('/zftds/hotel/order/selectHotelOrder',{
                     merchantid:this.$store.state.mchid,
                     orderType:0
                 }).then(res=>{
                     console.log(res);
-                   
-                    // if(res.code==1){
+                     this.arr = [...res.data]
+                  this.arr = this.arr.splice(0,2)
+                 // console.log(this.arr);
+                  // if(res.code==1){
                     // }
                 })
             }
         },
         created(){
-
+                 this.getData()
         }
     }
 </script>
@@ -76,15 +88,15 @@
             }
         .padingOrder{
             line-height: 1.8;
-             box-sizing: border-box;       
+             box-sizing: border-box;
             .orderLeft{
-                margin-right: 10px; 
+                margin-right: 10px;
                  .time{
                     display: inline-block;
                     font-size: 12px;
                     color:#409eff;
-                }  
-                   
+                }
+
             }
             .orderRight{
                 text-align: right;
@@ -96,9 +108,9 @@
                 }
                 .money{font-size: 16px; display: block;margin-bottom: 15px;}
             }
-            
-          
-        } 
+
+
+        }
         .carditem{ margin-bottom: 10px;}
         .title{ padding-left: 6px;border-left:3px solid #75b8fc;}
         .header{font-weight: 700;}

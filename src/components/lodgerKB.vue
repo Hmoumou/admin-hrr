@@ -7,44 +7,44 @@
       </div>
       <div class="progress clearfix">
         <div class="inline arriveHotelTime">
-          <span class="arriveHotelTimeSpan fs14">5月12日</span>
+          <span class="arriveHotelTimeSpan fs14">{{arr[0]&&arr[0].starttime}}</span>
           <br/>
           <span class="arriveHotelTimeTitleSpan fs14">预计到店时间</span>
         </div>
         <div class="inline timeItem">
           <hr size=1 class="dottedLine">
-          <div v-for="i in 2" :key="i" class="inline inlineTimeItem">
-            <div v-if="i == 1" class="beginTime">
-              <span class="inline inlineTimeItemSpan fs14">09:30</span>
+          <div v-for="(i,d) in arr" :key="d" class="inline inlineTimeItem">
+            <div v-if="d == 0" class="beginTime">
+              <span class="inline inlineTimeItemSpan fs14">{{date}}</span>
               <br/>
               <img class="circle">
             </div>
-            <div v-if="i == 2" class="endTime">
-              <span class="inline inlineTimeItemSpan fs14">12:10</span>
-              <br/>
-              <img class="circle">
-            </div>
+            <!--<div v-if="d == 1" class="endTime">-->
+              <!--<span class="inline inlineTimeItemSpan fs14">{{i.lateTime}}}</span>-->
+              <!--<br/>-->
+              <!--<img class="circle">-->
+            <!--</div>-->
           </div>
         </div>
         <div class="inline rightTitlt">
           <span class="arriveHotelTimeSpan fs14">仅显示</span>
           <br/>
-          <span class="arriveHotelTimeSpan fs14">三条信息</span>
+          <span class="arriveHotelTimeSpan fs14">两条信息</span>
         </div>
       </div>
-      <div v-for="o in 3" :key="o" class="text orderitem" :model="KBdata">
+      <div v-for="(item,index) in arr" :key="index" class="text orderitem" >
         <div class="auditLeave-top ">
           <div class="first clearfix">
-            <span class="flr fs14">共 <span class="time">{{1}}</span> 晚</span>
-            <span class="name fs14 fw">梁朝伟</span>
+            <span class="flr fs14">共 <span class="time">{{item.count}}</span> 晚</span>
+            <span class="name fs14 fw">{{item.name}}</span>
           </div>
-          <span class="summoney fs12 mb5">{{1500000}}</span>
-          <div class="fs12 clearfix"><span class="fll cb5">预订时间</span><span class="time-time blue fll">09:30</span></div>
-          <div class="fw fs14">豪华大床房</div>
+          <span class="summoney fs12 mb5"><span class="fw" style="display: inline-block;margin-right: 5px">RMB</span>{{item.countPrice}}</span>
+          <div class="fs12 clearfix"><span class="fll cb5">预达时间</span><span class="time-time blue fll">{{item.lateTime}}</span></div>
+          <div class="fw fs14">{{item.houseinfo}}</div>
         </div>
         <div class="auditLeave-btm">
-          <el-button type="primary">已入住</el-button>
-          <el-button>未入住</el-button>
+          <el-button type="primary">接受</el-button>
+          <el-button>拒绝</el-button>
         </div>
       </div>
     </el-card>
@@ -56,22 +56,44 @@
     name: 'lodgerKB',
     data(){
         return{
+          date:"",
+           arr:[],
             KBdata:{
                 arriveTime:'09-30'
             }
         }
     },
     methods:{
+      getData(){
+        // let date = moment().format("YYYY-MM-DD")
+        this.$axios.post('/zftds/hotel/order/selectHotelOrder',{
+          merchantid:this.$store.state.mchid,
+          orderType:0
+        }).then(res=>{
+          console.log(res);
+          this.arr = [...res.data]
+          this.arr = this.arr.splice(0,2)
+          this.date = this.arr[0].lateTime.substring(10)
+          console.log(this.date);
+          // console.log(this.arr);
+          // if(res.code==1){
+          // }
+        })
+      },
+
       handleMuch(){
         this.$router.push('/layout/order')
       }
+    },
+    created(){
+      this.getData()
     }
   }
 </script>
 
 <style scoped lang='scss'>
   .orderitem {
-    width: 30.8%;
+    width: 47.8%;
     border: 1px solid #f1f1f1;
     padding: 18px;
     margin-right: 10px;
