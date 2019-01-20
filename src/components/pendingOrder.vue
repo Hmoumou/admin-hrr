@@ -41,6 +41,22 @@
             handleMuch(){
                 this.$router.push('/layout/order')
             },
+            getData(){
+                // let date = moment().format("YYYY-MM-DD")
+                let date = "2019-01-17"
+                this.$axios.post('/zftds/hotel/order/selectHotelOrder',{
+                    merchantid:this.$store.state.mchid,
+                    orderType:0
+                }).then(res=>{
+                    console.log(res);
+                   
+                    // if(res.code==1){
+                    // }
+                })
+            }
+        },
+        created(){
+
         }
     }
 </script>

@@ -15,22 +15,24 @@
 </template>
 
 <script>
+// import { get } from 'http';
+import moment from 'moment'
     export default {
         name:'todaySummary',
         data(){
             return{
+                one:0,
+                two:0,
+                three:0,
                 today:[{
                     type:'未处理',
-                    num:2
+                    num:0
                 },{
-                    type:'待审核',
-                    num:13
+                    type:'已接单',
+                    num:0
                 },{
-                    type:'今日入住',
-                    num:12
-                },{
-                    type:'今日新订',
-                    num:22
+                    type:'已入住',
+                    num:0
                 }]
             }
         },
@@ -38,7 +40,37 @@
             handleMuch(){
                 this.$router.push('/layout/order')
             },
+            getData(){
+                // let date = moment().format("YYYY-MM-DD")
+                let date = "2019-01-17"
+                this.$axios.post('/zftds/hotel/order/selectHotelOrder',{
+                    merchantid:this.$store.state.mchid,
+                    starttime:date
+                }).then(res=>{
+                    // console.log(res);
+                   
+                    if(res.code==1){
+                        res.data.map(item=>{
+                            if(item.orderType == 0){
+                                this.one = Number(this.one) + 1
+                            }else if(item.orderType == 1){
+                                this.two = Number(this.two) + 1
+                            }else if(item.orderType == 2){
+                                this.three = Number(this.three) + 1
+                            }
+                        })
+                        this.today[0].num = this.one
+                        this.today[1].num = this.two
+                        this.today[2].num = this.three
+                        // console.log(this.one,this.two,this.three);
+                    }
+                })
+            }
+        },
+        created(){
+            this.getData()
         }
+
 
     }
 </script>
@@ -49,7 +81,7 @@
             box-sizing: border-box;
             .todayitem{
                 overflow: hidden;
-                width: 21.5%;
+                width: 25%;
                 font-size: 14px;
                 padding:5px; 
                 line-height: 2;
