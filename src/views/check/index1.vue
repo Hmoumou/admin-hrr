@@ -29,10 +29,9 @@
                     <el-date-picker
                       v-model="formData.starttime"
                       type="date"
-                      @change="noyesToday"
+                      @change="getAllPriceArr"
                       placeholder="选择日期">
                     </el-date-picker>
-                    <!-- @change="getAllPriceArr" -->
                   </el-form-item>
                   <el-form-item label="离店时间" prop="leaveTime">
                     <el-date-picker
@@ -220,9 +219,6 @@ import moment from "moment"
       }
     },
     methods: {
-      noyesToday(){
-
-      },
       computeCount(){//input失焦的时候计算总价
         this.formData.cashPledge = String(this.formData.cashPledge*this.formData.roomamount)
       },
@@ -382,7 +378,7 @@ import moment from "moment"
         }
       },
       handleCheck() {
-        console.log(this.formData);
+        // console.log(this.formData);
         this.$axios.post('/zftds/hotel/order/insertHotelOrder',this.formData).then(res=>{
           // console.log(res)
           if(res.code == 1){
@@ -426,7 +422,6 @@ import moment from "moment"
                     mobile: '',
                   }
                 ],
-              hoy:[]
             }
           }else{
             this.centerDialogVisible = true
@@ -452,22 +447,21 @@ import moment from "moment"
       getAllPriceArr() {
         let startTime = this.formData.starttime;
         let endTime = this.formData.endtime;
+
         if(startTime&&endTime){ // 两个时间都有值才能进行比较操作
           let startStr = moment(startTime).format("YYYY-MM-DD");
           let endStr = moment(endTime).format("YYYY-MM-DD");
           let startUnix = Date.parse(startStr);
           let endUnix = Date.parse(endStr);
           let daySpan = (endUnix - startUnix) / 86400000;
-          this.formData.count = daySpan
+          console.log(daySpan,"daySpan");
 
           let params = {
             merchantid:this.$store.state.mchid,
             hotelid:this.formData.hotelid,
-            starttime:startStr,
-            endtime:endStr,
+            starttime:this.formData.starttime,
+            endtime:this.formData.endtime,
           };
-          this.formData.starttime = startStr
-          this.formData.endtime = endStr
 
           this.$axios.post('/zftds/hotel/house/selectHotelCalendar',params).then(res=> {
             console.log("优惠价格", res);
@@ -506,7 +500,7 @@ import moment from "moment"
                     return true
                   }
                 })
-                  // console.log(pushItem,"aaaaaaaaa");
+
                 if(pushItem){ // 如果存在优惠的
                   secondFilter.push(pushItem)
                 } else { // 如果不存在优惠的
@@ -517,26 +511,11 @@ import moment from "moment"
                   })
                 }
               }
-              console.log(secondFilter, "二次过滤")
-              let threeFilter = secondFilter.map(item => {
-                if(item.activityprice){
-                  item.price = item.activityprice;
-                  return item
-                } else {
-                  return {
-                    price: this.AData.find(item => item.id == this.formData.hotelid).price,
-                    ytd: item.ytd,
-                    merchantid: item.merchantid
-                  }
-                }
-              })
-              this.formData.count = threeFilter.length||0;
-              console.log(threeFilter, "最终数据");
-              this.formData.hoy = [...threeFilter]
-              console.log(this.formData.hoy);
+
+              console.log(secondFilter, "最终数据");
               let allPrice = 0;
-                threeFilter.forEach(item => {
-                  allPrice+=Number(item.price);
+                secondFilter.forEach(item => {
+                  allPrice+=Number(item.activityprice||item.price);
                 })
               console.log(allPrice);
               this.formData.countPrice = this.formData.roomamount * allPrice;

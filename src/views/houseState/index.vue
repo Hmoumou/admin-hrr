@@ -285,6 +285,8 @@
           this.$axios.post(url,
             {merchantid:this.$store.state.mchid})
             .then(res=>{
+            console.log(res,"终极数据");
+
               resolve(res.data)
             }).catch(err => {
               reject(err)
@@ -372,8 +374,6 @@
       getDate () {
         let unix = this.currentDate.getTime();
         let minDate = new Date(unix); // 重新生成新的日期对象，避免相互影响
-
-
         this.dateData.weekDate = [];
         for(let i = 0; i < 15; i++){ // 获得15天的号数和星期几
           this.dateData.weekDate.push({

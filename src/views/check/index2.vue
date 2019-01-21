@@ -29,17 +29,15 @@
                     <el-date-picker
                       v-model="formData.starttime"
                       type="date"
-                      @change="noyesToday"
                       placeholder="选择日期">
                     </el-date-picker>
-                    <!-- @change="getAllPriceArr" -->
                   </el-form-item>
                   <el-form-item label="离店时间" prop="leaveTime">
                     <el-date-picker
                       v-model="formData.endtime"
                       type="date"
                       placeholder="选择日期"
-                      @change="getAllPriceArr">
+                      @change="handleTime">
                     </el-date-picker>
                   </el-form-item>
                   <el-form-item label="房间编号" prop="roomnumber">
@@ -163,11 +161,11 @@ import moment from "moment"
           // 需要上传的数据
           merchantid:this.$store.state.mchid,//商户id
           orderType:"2",//订单状态
-          hotelid: '',
+          hotelid:'',
           orderSource:'酒店订单',//订单来源
           cashPledge:'0',//押金 （需要根据选择的房型渲染）
-          starttime: '',//开始时间
-          endtime: '',//开始时间,
+          starttime:'',//开始时间
+          endtime:'',//开始时间,
           roomnumber:'',//房间编号
           payType:'1',
           count:'0',//入住天数 需自己计算
@@ -185,6 +183,8 @@ import moment from "moment"
           otherRefund :'' ,  //其他退款金额
           totalRefund :'' ,  //总计应退款金额
           sign :'' , //设备收款验签码
+          starttime :'' , // 开始时间
+          endtime :'' , // 结束时间
           refusal :'' , //拒绝描述
           renewType :'0' , // 续租状态0直接入住1续租
           hop: [
@@ -220,18 +220,19 @@ import moment from "moment"
       }
     },
     methods: {
-      noyesToday(){
-
-      },
       computeCount(){//input失焦的时候计算总价
         this.formData.cashPledge = String(this.formData.cashPledge*this.formData.roomamount)
       },
       // 根据房型id的变化得到相对应的押金
       handleGetCash(){
         // console.log("触发了change事件...",this.formData)
-        let selectItem = this.AData.find(item => item.id == this.formData.hotelid);
-        this.formData.cashPledge = selectItem.cash;
-        this.formData.roomPrice = selectItem.price;
+        this.AData.map(item=>{
+          if(item.id == this.formData.hotelid){
+            this.formData.cashPledge = item.cash
+            this.formData.roomPrice = item.price
+            // console.log(this.formData.countPrice)
+          }
+        })
       },
 
       // 选择结束时间之后进行的逻辑  需要请求接口拿到时间段内的房价
@@ -382,7 +383,7 @@ import moment from "moment"
         }
       },
       handleCheck() {
-        console.log(this.formData);
+        // console.log(this.formData);
         this.$axios.post('/zftds/hotel/order/insertHotelOrder',this.formData).then(res=>{
           // console.log(res)
           if(res.code == 1){
@@ -395,8 +396,8 @@ import moment from "moment"
               hotelid:'',
               orderSource:'酒店订单',//订单来源
               cashPledge:'0',//押金 （需要根据选择的房型渲染）
-              starttime:"",//开始时间
-              endtime:"",//开始时间,
+              starttime:'',//开始时间
+              endtime:'',//开始时间,
               roomnumber:'',//房间编号
               payType:'1',
               count:'0',//入住天数 需自己计算
@@ -416,6 +417,8 @@ import moment from "moment"
               otherRefund :'' ,  //其他退款金额
               totalRefund :'' ,  //总计应退款金额
               sign :'' , //设备收款验签码
+              starttime :'' , // 开始时间
+              endtime :'' , // 结束时间
               refusal :'' , //拒绝描述
               renewType :'0' , // 续租状态0直接入住1续租
               hop: [
@@ -426,7 +429,6 @@ import moment from "moment"
                     mobile: '',
                   }
                 ],
-              hoy:[]
             }
           }else{
             this.centerDialogVisible = true
@@ -446,112 +448,8 @@ import moment from "moment"
           // res.data.map(item=>{
           //   //  console.log(item.id,item.houseinfo,item.price,item.cash)
           //    })
-          this.AData = [...res.data];
+          this.AData = [...res.data]
         })
-      },
-      getAllPriceArr() {
-        let startTime = this.formData.starttime;
-        let endTime = this.formData.endtime;
-        if(startTime&&endTime){ // 两个时间都有值才能进行比较操作
-          let startStr = moment(startTime).format("YYYY-MM-DD");
-          let endStr = moment(endTime).format("YYYY-MM-DD");
-          let startUnix = Date.parse(startStr);
-          let endUnix = Date.parse(endStr);
-          let daySpan = (endUnix - startUnix) / 86400000;
-          this.formData.count = daySpan
-
-          let params = {
-            merchantid:this.$store.state.mchid,
-            hotelid:this.formData.hotelid,
-            starttime:startStr,
-            endtime:endStr,
-          };
-          this.formData.starttime = startStr
-          this.formData.endtime = endStr
-
-          this.$axios.post('/zftds/hotel/house/selectHotelCalendar',params).then(res=> {
-            console.log("优惠价格", res);
-            if (res.code == 0) { // 没有优惠价格
-              this.formData.countPrice = this.formData.roomPrice * daySpan * this.formData.roomamount;
-              this.formData.payCountPrice = Number(this.formData.countPrice) + Number(this.formData.cashPledge);
-            } else {// 有优惠价格
-              // 去重操作
-              console.log(res.data, "未去重数据");
-              let firstFilter = [];
-              res.data.forEach(item => {
-                let index;
-                let findItem = firstFilter.find((it, idx) => {
-                  if(it&&item.ytd == it.ytd){
-                    index = idx;
-                    return true
-                  }
-                })
-
-                if(!findItem){ // 如果没有找到，则第一次出现
-                  firstFilter.push(item)
-                } else { // 找到了，则第二次出现，取id最大的，也就是数据库中最新的替换掉当前的
-                  let replaceItem = item.id>findItem.id? item: findItem;
-                  firstFilter.splice(index, 1, replaceItem)
-                }
-              })
-              console.log(firstFilter, "去重数据");
-
-              let secondFilter = [];
-              for(let i = 0; i < daySpan; i++){
-                let countDate = new Date(startStr);
-                countDate.setDate(countDate.getDate() + i);
-                let countStr = moment(countDate).format("YYYY-MM-DD"); // 生成和ytd一样格式的数据
-                let pushItem = firstFilter.find(item => { // 按照日期查找有没有优惠日期
-                  if(item.ytd == countStr){
-                    return true
-                  }
-                })
-                  // console.log(pushItem,"aaaaaaaaa");
-                if(pushItem){ // 如果存在优惠的
-                  secondFilter.push(pushItem)
-                } else { // 如果不存在优惠的
-                  secondFilter.push({
-                    merchantid:this.$store.state.mchid,
-                    ytd: countStr,
-                    price: this.AData.find(item => item.id == this.formData.hotelid).price
-                  })
-                }
-              }
-              console.log(secondFilter, "二次过滤")
-              let threeFilter = secondFilter.map(item => {
-                if(item.activityprice){
-                  item.price = item.activityprice;
-                  return item
-                } else {
-                  return {
-                    price: this.AData.find(item => item.id == this.formData.hotelid).price,
-                    ytd: item.ytd,
-                    merchantid: item.merchantid
-                  }
-                }
-              })
-              this.formData.count = threeFilter.length||0;
-              console.log(threeFilter, "最终数据");
-              this.formData.hoy = [...threeFilter]
-              console.log(this.formData.hoy);
-              let allPrice = 0;
-                threeFilter.forEach(item => {
-                  allPrice+=Number(item.price);
-                })
-              console.log(allPrice);
-              this.formData.countPrice = this.formData.roomamount * allPrice;
-              this.formData.payCountPrice = String(Number(this.formData.countPrice) + Number(this.formData.cashPledge))
-            }
-          })
-        }
-        else {
-            this.$message({
-              message: '结束日期必须大于开始日期',
-              type: 'warning'
-            });
-        }
-
-
       }
     },
     created() {

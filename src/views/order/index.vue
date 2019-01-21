@@ -614,9 +614,12 @@ export default {
       // console.log(this.searchData[this.dataIndex].refusal!="");
       if(this.searchData[this.dataIndex].refusal!=""){
         this.$axios.post("/zftds/hotel/order/updateHotelOrder",{
+                merchantid:this.$store.state.mchid,
                 id:this.searchData[this.dataIndex].id,
                 orderType:4,
-                refusal:this.searchData[this.dataIndex].refusal
+                totalRefund:this.searchData[this.dataIndex].payCountPrice,
+                refusal:this.searchData[this.dataIndex].refusal,
+                orderNumber:this.searchData[this.dataIndex].orderNumber
               }).then(res=>{
                   // console.log(res)
                   if(res.code == 1){
@@ -666,7 +669,7 @@ export default {
       var number = Number(this.activeIndex)-2
       this.boxData.orderType = number
       this.$axios.post("/zftds/hotel/order/selectHotelOrder",this.boxData).then(res=>{
-        // console.log(res);
+        console.log(res,"看一眼");
         if(res.code == 1){
             let datas2 = [...res.data];
             this.searchData = datas2.filter(item=>item.orderType!=5)

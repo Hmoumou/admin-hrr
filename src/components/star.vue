@@ -13,7 +13,7 @@
     export default {
         props:{
             score:{
-                type:Number
+                type:String
             }
         },
         data(){

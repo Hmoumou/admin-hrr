@@ -111,7 +111,7 @@
     .auditLeave-btm {
       width: 100%;
       /deep/ .el-button{
-        width:48%;
+        width:43%;
       }
       // span, strong {
       //   display: block;
