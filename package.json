@@ -18,7 +18,7 @@
     "babel-polyfill": "^6.26.0",
     "element-ui": "^2.4.11",
     "es6-promise": "^4.2.5",
-    "iview": "^3.2.0",
+    "iview": "^3.2.2",
     "jquery": "^3.3.1",
     "moment": "^2.22.2",
     "node-sass": "^4.10.0",
