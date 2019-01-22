@@ -12,7 +12,7 @@
                                     <div class="orderRight flr clearfix">
                                         <span class="fs14">共<span class="time">{{item.count}}</span>晚</span>
                                         <span class= "money fw fs16">RMB {{item.countPrice}}</span>
-                                        <div class="btn flr">接受</div>
+                                        <div class="btn flr" @click="handleok(item,index)">接受</div>
                                     </div>
                                     <div class="orderLeft fll">
                                         <span class="fs14 mb5">
@@ -43,12 +43,26 @@
 <script>
     export default {
         name:'pendingOreder',
-      data(){
-              return{
+        data(){
+            return{
                 arr:[]
-              }
-      }   ,
+            }
+        },
          methods:{
+            handleok(item,index){
+        //  console.log(item.id);
+                this.$axios.post('/zftds/hotel/order/updateHotelOrder',{
+                    id:item.id,
+                    orderType:1
+                }).then(res=>{
+                    if(res.code == 1){
+                        this.$message.success('接受订单成功')
+                        this.getData()
+                    }else{
+                        this.$message.error("未知错误")
+                    }
+                })
+            },
             handleMuch(){
                 this.$router.push('/layout/order')
             },
@@ -58,11 +72,11 @@
                     merchantid:this.$store.state.mchid,
                     orderType:0
                 }).then(res=>{
-                    console.log(res);
-                     this.arr = [...res.data]
-                  this.arr = this.arr.splice(0,2)
-                 // console.log(this.arr);
-                  // if(res.code==1){
+                    // console.log(res);
+                    this.arr = [...res.data]
+                    this.arr = this.arr.splice(0,2)
+                    // console.log(this.arr,"arrrrrrrrrr");
+                    // if(res.code==1){
                     // }
                 })
             }
@@ -115,6 +129,7 @@
         .title{ padding-left: 6px;border-left:3px solid #75b8fc;}
         .header{font-weight: 700;}
         .btn{
+            cursor: pointer;
             box-sizing: border-box;
             width: 90px;
             height: 40px;

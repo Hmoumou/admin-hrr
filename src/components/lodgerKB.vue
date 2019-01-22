@@ -43,8 +43,15 @@
           <div class="fw fs14">{{item.houseinfo}}</div>
         </div>
         <div class="auditLeave-btm">
-          <el-button type="primary">接受</el-button>
-          <el-button>拒绝</el-button>
+          <el-button type="primary" @click="handleok(item,index)">接受</el-button>
+          <el-button @click="dialogFormVisible = true">拒绝</el-button>
+           <el-dialog title="拒绝原因" :visible.sync="dialogFormVisible">
+              <el-input v-model="arr[index].refusal"></el-input>
+              <div slot="footer" class="dialog-footer">
+                <el-button @click="dialogFormVisible = false">取 消</el-button>
+                <el-button type="primary" @click="handleRefase(item,index)">确 定</el-button>
+              </div>
+            </el-dialog>
         </div>
       </div>
     </el-card>
@@ -56,6 +63,7 @@
     name: 'lodgerKB',
     data(){
         return{
+          dialogFormVisible:false,
           date:"",
            arr:[],
             KBdata:{
@@ -64,17 +72,57 @@
         }
     },
     methods:{
+       handleRefase(item,index) {
+      // console.log(this.arr[index].refusal)
+      if(this.arr[index].refusal!=""){
+        this.$axios.post("/zftds/hotel/order/updateHotelOrder",{
+                merchantid:this.$store.state.mchid,
+                id:item.id,
+                orderType:4,
+                payCountPrice:item.payCountPrice,
+                totalRefund:item.payCountPrice,
+                refusal:this.arr[index].refusal,
+                orderNumber:item.orderNumber
+              }).then(res=>{
+                  // console.log(res)
+                  if(res.code == 1){
+                    this.$message.success("已拒绝该订单")
+                    this.dialogFormVisible = false;
+                    this.getData()
+                  }else{
+                    this.$message.error(res.msg)
+                    this.dialogFormVisible = false;
+                  }
+              })
+        }else{
+          this.$message.warning('请填写拒绝原因')
+        }
+      },
+      handleok(item,index){
+        //  console.log(item.id);
+        this.$axios.post('/zftds/hotel/order/updateHotelOrder',{
+            id:item.id,
+            orderType:1
+        }).then(res=>{
+            if(res.code == 1){
+                this.$message.success('接受订单成功')
+                this.getData()
+            }else{
+                this.$message.error("未知错误")
+            }
+        })
+        },
       getData(){
         // let date = moment().format("YYYY-MM-DD")
         this.$axios.post('/zftds/hotel/order/selectHotelOrder',{
           merchantid:this.$store.state.mchid,
           orderType:0
         }).then(res=>{
-          console.log(res);
+          // console.log(res);
           this.arr = [...res.data]
           this.arr = this.arr.splice(0,2)
           this.date = this.arr[0].lateTime.substring(10)
-          console.log(this.date);
+          // console.log(this.date);
           // console.log(this.arr);
           // if(res.code==1){
           // }

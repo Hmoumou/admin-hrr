@@ -103,7 +103,7 @@ let commentitems = document.getElementsByClassName('commentitem')
                 this.$axios.post("/zftds/hotel/order/selectHotleEvaluate",{
                     merchantid:this.$store.state.mchid
                 }).then(res=>{
-                    console.log(res,"sssssssssss");
+                    // console.log(res,"sssssssssss");
                 if(res.code == 1){
                     this.Data = [...res.data]
                     this.Data = this.Data.slice(0,3)
@@ -139,7 +139,7 @@ let commentitems = document.getElementsByClassName('commentitem')
                 })
                 },
             handleReply(item,index){
-                console.log(index)
+                // console.log(index)
                 this.userData[index].isShow = true
             },
             handleYes(item,index){
@@ -149,7 +149,7 @@ let commentitems = document.getElementsByClassName('commentitem')
                         id:item.id,
                         reply:this.userData[index].reply
                         }).then(res=>{
-                        console.log(res);
+                        // console.log(res);
                         if(res.code == 1){
                             this.$message.success(res.msg)
                             this.getData()

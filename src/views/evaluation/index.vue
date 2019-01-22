@@ -79,7 +79,8 @@
       </div>
 
       <!-- 当点击好评时显示 -->
-      <div class="userItem" v-if="appraise == 0" v-for="(item,index) in userData" :key="index" >
+    <div class="wrapers" v-if="appraise == 0">
+        <div class="userItem"  v-for="(item,index) in userData" :key="index" >
         <el-row>
           <el-col :span="4">
             <div class="grid-content bg-purple">
@@ -171,8 +172,9 @@
           </el-col>
         </el-row>
        </div>
+    </div>
       <div class="caping"  v-if="appraise == 1">
-        暂无差评哦~,我们会更加努力哒！
+        暂无差评哦~我们会更加努力哒！
       </div>
     </el-card>
   </div>

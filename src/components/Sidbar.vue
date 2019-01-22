@@ -74,11 +74,11 @@
                 <router-link  to='/layout/tradingRecord' >交易记录</router-link>
               </template>
             </el-menu-item>
-            <el-menu-item index="/layout/test" id="item" :class="{active:$route.name === 'test'}">
+            <!-- <el-menu-item index="/layout/test" id="item" :class="{active:$route.name === 'test'}">
               <template slot="title">
                 <router-link  to='/layout/test' >测试页</router-link>
               </template>
-            </el-menu-item>
+            </el-menu-item> -->
           </el-menu>
         </el-col>
       </el-row>
@@ -155,6 +155,9 @@
 .el-submenu-item{
     height: 52px;
     line-height: 52px;
+}
+a{
+  color: #333;
 }
 .el-aside{
   height: 100%;

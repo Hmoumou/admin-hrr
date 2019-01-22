@@ -105,15 +105,6 @@ export default new Router({
             title:'订单查询'
           },
         },
-         //测试页 ---结束的时候请删掉
-         {
-          path: '/layout/test',
-          name: 'test',
-          component:()=>import('../views/test/index.vue'),
-          meta:{
-            title:'测试页'
-          },
-        },
         {
           path: '/layout/member',
           name: 'member',
@@ -180,8 +171,6 @@ export default new Router({
             title:'酒店相册'
           },
         },
-
-
 
         {
           path: '/layout/auditCenter',

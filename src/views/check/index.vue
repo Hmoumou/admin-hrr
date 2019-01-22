@@ -83,11 +83,11 @@
                     <div class="content" v-if="isSuccess">
                       <!-- <p class="fw">{{userData.username}}</p> -->
                       <p class="blue fs16 mb15 fw">入住成功</p>
-                      <p>已成功入住{{userData.houseType}} <span class="blue" v-text="formData.roomnumber">{{formData.roomnumber}}</span> 室</p>
+                      <p>已成功入住{{houseinfo}} <span class="blue">{{roomnumber}}</span> 室</p>
                     </div>
                     <div class="content" v-else>
                       <p class="blue fs16 mb15 fw">入住失败</p>
-                      <p>{{userData.houseType}}<span class="blue">{{formData.roomnumber}}</span> 室,已被网上预订</p>
+                      <p>{{houseinfo}}<span class="blue">{{roomnumber}}</span> 室,已被网上预订</p>
                     </div>
                     <div slot="footer" class="dialog-footer">
                       <div class="btn1" @click="centerDialogVisible = false">确 定</div>
@@ -153,6 +153,8 @@ import moment from "moment"
     name: 'Check',
     data() {
       return {
+        houseinfo:'',
+        roomnumber:'',
         centerDialogVisible: false, //弹框是否显示
         isSuccess: false,//是否成功入住
         getcashIndex:'',
@@ -193,9 +195,12 @@ import moment from "moment"
                 // idIsOk: false,
                 // phoneIsOk: false,
                 //需要数据
-                name:'胡然然',
-                card:'412722199502106143',
-                mobile: '17335468823',
+                // name:'胡然然',
+                // card:'412722199502106143',
+                // mobile: '17335468823',
+                name:'',
+                card:'',
+                mobile: '',
               }
             ],
             hoy:[
@@ -382,10 +387,14 @@ import moment from "moment"
         }
       },
       handleCheck() {
-        console.log(this.formData);
+        // console.log(this.formData);
+        let selectItem = this.AData.find(item => item.id == this.formData.hotelid);
+        // console.log(selectItem,"selectItem ");
+        this.roomnumber = this.formData.roomnumber
+        this.houseinfo = selectItem.houseinfo
         this.$axios.post('/zftds/hotel/order/insertHotelOrder',this.formData).then(res=>{
           // console.log(res)
-          if(res.code == 1){
+          if(res.code == 1){        
             this.centerDialogVisible = true
             this.isSuccess = true
             this.formData = {
