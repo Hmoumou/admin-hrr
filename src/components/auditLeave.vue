@@ -8,10 +8,10 @@
             <div v-for="(item,index) in arr" :key="index" class="text orderitem">      
                 <div class="auditLeave-top ">
                     <div class="first clearfix">
-                            <span class="flr fs14">共<span class="time">{{item.count}}</span>晚</span>
+                            <span class="flr fs14 mb5">共<span class="time">{{item.count}}</span>晚</span>
                         <span class="name fs14 fw">{{item.name?item.name:item.hop[0].name}}</span>
                     </div>
-                    <span class="summoney fs12 mb5">{{item.countPrice}}</span>
+                    <span class="summoney fs12 mb5 fw" >RMB {{item.countPrice}}</span>
                     <div class="fs14 fw">{{item.houseinfo}}</div>
                 </div>
                 <div class="auditLeave-btm">
@@ -87,7 +87,7 @@
                     </div>
                     <div slot="footer" class="dialog-footer">
                         <el-button @click="dialogVisible = false">取 消</el-button>
-                        <el-button type="primary" @click="handleLeaveYES">确 定</el-button>
+                        <el-button type="primary" @click="handleLeaveYES(item,index)">确 定</el-button>
                     </div>
                     </el-dialog>
                 </div>
@@ -104,7 +104,7 @@
                 returnMoneyAll:"",//合计退款
                 returnMoney:"",//应退还房费
                 payMoney1:"",//支付实际金额（退款需要）
-                payMoney:"",//实际入住日期的价格
+                payMoney:"0",//实际入住日期的价格
                 moreMoney:0,//消费金额
                 practicalNight:"",
                 dialogVisible:false,
@@ -124,10 +124,11 @@
                 
             },
             handleReadyLeave(item,index){//点击准备离店
+                this.dialogVisible = true
                 this.indexs = index
                 this.getToday()
-                // console.log(item,"iaudaifa");
                 this.payMoney1 = item.countPrice
+                // console.log(this.payMoney1,"payMoney1");
                 this.aData = item
                 var date3 = new Date(this.dateToday.replace(/-/g,"/")).getTime()//今天的时间戳
                 var date4 = new Date(item.starttime).getTime()//开始时间的时间戳
@@ -138,8 +139,7 @@
                 var date2 = new Date(this.dateToday);
                 var dateSpan = (date2.getTime() - date1.getTime()) / 86400000;
                 // console.log(dateSpan); 
-                // if(dateSpan>0){
-                    // timeArr.push(moment(startDate).format("YYYY-MM-DD")); // 利用momentjs生成指定格式的字符串
+                if(dateSpan>0){
                 for(let i = 0; i < dateSpan; i++) {
                     let startDate = new Date(item.startTime); // 开始时间
                     var nowDate = new Date(startDate.setDate(startDate.getDate()+i)); // setDate设置一个日期天数，getDate得到日期天数。然后返回一个新的日期的unix时间戳。然后利用new Date方法生成新的时间对象。
@@ -147,51 +147,31 @@
                 }
                 let timeArr2 = item.hoy
                 let sums = 0
-                for(let s=0;s<timeArr.length;s++){
+                for(let s=0;s<timeArr2.length;s++){
                     sums += Number(timeArr2[s].price)
                 }
-                console.log("实际的钱",sums);
+                // console.log("实际的钱",sums);
                 this.payMoney = sums
                 this.payMoney1 = sums + Number(item.cashPledge)
-                let nums = 0
-                timeArr2.map(item=>{
-                    nums += Number(item.price)
-                })
-                this.returnMoney = Number(nums)-Number(sums)
-                this.returnMoneyAll = Number(this.returnMoney) + Number(item.cashPledge) 
-                // 处理小数点问题
-                var varNumber = this.returnMoney
-                if (varNumber.toFixed){
-                varNumber = varNumber.toFixed(2);
-                }else {//浏览器不支持toFixed()就使用其他方法
-                var div = Math.pow(10,2);
-                varNumber = Math.round(varNumber * div) / div;
-                }
-                console.log(varNumber,"一个小惊喜");
-                this.returnMoney = varNumber
-                var varNumber1 = this.returnMoneyAll
-                if (varNumber1.toFixed){
-                varNumber1 = varNumber1.toFixed(2);
-                }else {//浏览器不支持toFixed()就使用其他方法
-                var div = Math.pow(10,2);
-                varNumber1 = Math.round(varNumber1 * div) / div;
-                }
-                console.log(varNumber1,"一个小惊喜");
-                this.returnMoneyAll = varNumber1
-                this.dialogVisible = true
+                // let nums = 0
+                // timeArr2.map(item=>{
+                //     nums += Number(item.price)
+                // })
+                this.returnMoney = (Number(sums)*100-Number(item.cashPledge)*100)/100
+                this.returnMoneyAll = Number(this.returnMoney) + Number(item.cashPledge)                 
                 // 时间集合end
-                // }
-                // else{
-                //     this.payMoney1 = Number(this.payMoney) + Number(this.moreMoney) + Number(item.cashPledge)
-                //     this.returnMoney = Number(item.payCountPrice)-Number(this.payMoney1)
-                //     this.returnMoneyAll = Number(this.returnMoney) + Number(item.cashPledge)
-                //     this.dialogVisible = true
-                // }
+                }else{
+                    this.payMoney = this.payMoney1
+                    this.payMoney1 = Number(this.payMoney) + Number(this.moreMoney) + Number(item.cashPledge)
+                    this.returnMoney = (Number(item.payCountPrice)*100-Number(item.cashPledge)*100)/100
+                    this.returnMoneyAll = Number(this.returnMoney) + Number(item.cashPledge)
+                    this.dialogVisible = true
+                }
                 
             },
             handleGoon(item,index) {
                 var data = item
-                console.log("data",data);
+                // console.log("data",data);
                 this.$router.push({
                     path:"/layout/still/still",
                     query:data
@@ -218,6 +198,8 @@
                     }else{
                         this.getOrderByType()
                     }
+                }else{
+                    this.$message.error(res.msg)
                 }
             })
             }, 
@@ -227,11 +209,11 @@
                     merchantid:this.$store.state.mchid,
                     orderType:2
                     }).then(res=>{
-                    console.log(res);
+                    // console.log(res);
                     if(res.code==1){
                     this.arr = [...res.data]
                     this.arr = this.arr.splice(0,3)
-                    console.log(this.arr,"arrrrrrr");
+                    // console.log(this.arr,"arrrrrrr");
                     }else{
                         this.$message.error("未知错误")
                     }
@@ -246,26 +228,8 @@
         },
         watch: {
             moreMoney(va){
-            this.payMoney1 = Number(this.payMoney) + Number(this.moreMoney) + Number(this.arr[indexs].cashPledge)
-            this.returnMoneyAll = Number(this.returnMoney) + Number(this.arr[indexs].cashPledge) - Number(this.moreMoney)
-            var varNumber = this.returnMoney
-                if (varNumber.toFixed){
-                varNumber = varNumber.toFixed(2);
-                }else {//浏览器不支持toFixed()就使用其他方法
-                var div = Math.pow(10,2);
-                varNumber = Math.round(varNumber * div) / div;
-                }
-                console.log(varNumber,"一个小惊喜");
-                this.returnMoney = varNumber
-                var varNumber1 = this.returnMoneyAll
-                if (varNumber1.toFixed){
-                varNumber1 = varNumber1.toFixed(2);
-                }else {//浏览器不支持toFixed()就使用其他方法
-                var div = Math.pow(10,2);
-                varNumber1 = Math.round(varNumber1 * div) / div;
-                }
-                console.log(varNumber1,"一个小惊喜");
-                this.returnMoneyAll = varNumber1
+            this.payMoney1 = Number(this.payMoney) + Number(this.moreMoney) + Number(this.arr[this.indexs].cashPledge)
+            this.returnMoneyAll = (Number(this.returnMoney)*100 + Number(this.arr[this.indexs].cashPledge)*100 - Number(this.moreMoney)*100)/100
             }
         }
 
@@ -274,7 +238,7 @@
 
 <style scoped lang='scss'>
 .orderitem{  
-    width: 31.8%;
+    width: 31%;
     border: 1px solid #f1f1f1;
     padding: 20px;
     margin-right: 10px;
@@ -335,7 +299,8 @@
         }
       }
         margin: 0 auto;
-        width: 240px;
+        // width: 240px;
+        text-align: center;
         margin-top: 15px;
         span,strong{
             display: block;

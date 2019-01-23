@@ -458,73 +458,44 @@ export default {
       })
     },
     handleReadyLeave(){//点击准备离店
-     this.getToday()
+      this.payMoney1 = this.searchData[this.dataIndex].countPrice
+      this.getToday()
       this.dialogVisible = true
       //以下操作是为了求两个时间段之间的时间集合start
       var timeArr = [];
       var date1 = new Date(this.startTime);
       var date2 = new Date(this.dateToday);
       var dateSpan = (date2.getTime() - date1.getTime()) / 86400000;
-      // console.log(dateSpan); 
-         // timeArr.push(moment(startDate).format("YYYY-MM-DD")); // 利用momentjs生成指定格式的字符串
+      // console.log(dateSpan);
+      if(dateSpan>0){
         for(let i = 0; i < dateSpan; i++) {
             var startDate = new Date(this.startTime); // 开始时间
             var nowDate = new Date(startDate.setDate(startDate.getDate()+i)); // setDate设置一个日期天数，getDate得到日期天数。然后返回一个新的日期的unix时间戳。然后利用new Date方法生成新的时间对象。
             timeArr.push(moment(nowDate).format("YYYY-MM-DD"))
         }
-        // console.log(startDate,nowDate,"jiujiujiu");
         let timeArr2 = this.searchData[this.dataIndex].hoy
         let sums = 0
         for(let s=0;s<timeArr2.length;s++){
           sums += Number(timeArr2[s].price)
         }
-        // console.log("实际的钱",sums);
+        console.log("实际的钱",sums);
         this.payMoney = sums
         this.payMoney1 = Number(sums) + Number(this.searchData[this.dataIndex].cashPledge)
-        let nums = 0
-        timeArr2.map(item=>{
-          nums += Number(item.price)
-        })
-        // console.log(nums,sums,"112");
-        this.returnMoney = Number(this.payMoney1)-(Number(nums)-Number(sums))- Number(this.searchData[this.dataIndex].cashPledge)
+        // let nums = 0
+        // timeArr2.map(item=>{
+        //   nums += Number(item.price)
+        // })
+        this.returnMoney = (Number(sums)*100-Number(item.cashPledge)*100)/100
         this.returnMoneyAll = Number(this.returnMoney) + Number(this.searchData[this.dataIndex].cashPledge) 
-        var varNumber = this.returnMoney
-        if (varNumber.toFixed){
-        varNumber = varNumber.toFixed(2);
-        }else {//浏览器不支持toFixed()就使用其他方法
-        var div = Math.pow(10,2);
-        varNumber = Math.round(varNumber * div) / div;
-        }
-        console.log(varNumber,"一个小惊喜");
-        this.returnMoney = varNumber
-        var varNumber1 = this.returnMoneyAll
-        if (varNumber1.toFixed){
-        varNumber1 = varNumber1.toFixed(2);
-        }else {//浏览器不支持toFixed()就使用其他方法
-        var div = Math.pow(10,2);
-        varNumber1 = Math.round(varNumber1 * div) / div;
-        }
-        console.log(varNumber1,"一个小惊喜");
-        this.returnMoneyAll = varNumber1
         // 时间集合end
-        // console.log(this.returnMoneyAll,this.returnMoney);
-      //else{
-      //   console.log(this.payMoney);
-      //   this.payMoney1 = Number(this.payMoney) + Number(this.moreMoney) + Number(this.searchData[this.dataIndex].cashPledge)
-      //   this.returnMoney = Number(this.searchData[this.dataIndex].payCountPrice)-Number(this.payMoney1)
-      //   this.returnMoneyAll = Number(this.returnMoney) + Number(this.searchData[this.dataIndex].cashPledge) 
-      //   let y = String(this.payMoney1).indexOf(".") + 1;//获取小数点的位置
-      //   var count = String(this.payMoney1).length - y;//获取小数点后的个数
-      //   if(y > 0) {
-      //       alert("这个数字是小数，有" + count + "位小数");
-      //   } else {
-      //       alert("不是小数");
-      //   }
-      //   console.log(this.payMoney1);
-      //   console.log(this.returnMoneyAll);
-      //   console.log(this.returnMoney);
-      //   console.log(Number(this.returnMoney) + Number(this.searchData[this.dataIndex].cashPledge));
-      // }
+        } 
+      else{
+        this.payMoney = this.payMoney1
+        this.payMoney1 = Number(this.payMoney) + Number(this.moreMoney) + Number(this.searchData[this.dataIndex].cashPledge)
+        this.returnMoney = (Number(this.searchData[this.dataIndex].payCountPrice)*100-Number(this.searchData[this.dataIndex].cashPledge)*100)/100
+        this.returnMoneyAll = Number(this.returnMoney) + Number(this.searchData[this.dataIndex].cashPledge)
+        this.dialogVisible = true
+      }
      
     },
     getDayMoney(){},

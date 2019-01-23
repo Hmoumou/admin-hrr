@@ -7,23 +7,25 @@
       </div>
       <div class="progress clearfix">
         <div class="inline arriveHotelTime">
-          <span class="arriveHotelTimeSpan fs14">{{arr[0]&&arr[0].starttime}}</span>
+          <span class="arriveHotelTimeSpan fs12">{{arr[0]&&arr[0].starttime}}</span>
           <br/>
-          <span class="arriveHotelTimeTitleSpan fs14">预计到店时间</span>
+          <span class="arriveHotelTimeTitleSpan fs12 blue">预计到店时间</span>
         </div>
         <div class="inline timeItem">
           <hr size=1 class="dottedLine">
-          <div v-for="(i,d) in arr" :key="d" class="inline inlineTimeItem">
-            <div v-if="d == 0" class="beginTime">
+          <!-- v-for="(i,d) in arr" :key="d" -->
+          <div  class="inline inlineTimeItem">
+            <div  class="beginTime">
               <span class="inline inlineTimeItemSpan fs14">{{date}}</span>
+              <br/>
+              <img class="circle" id="imgArr">
+            </div>
+            <!-- v-if="d == 1" -->
+            <div  class="endTime">
+              <span class="inline inlineTimeItemSpan fs14">{{date1}}</span>
               <br/>
               <img class="circle">
             </div>
-            <!--<div v-if="d == 1" class="endTime">-->
-              <!--<span class="inline inlineTimeItemSpan fs14">{{i.lateTime}}}</span>-->
-              <!--<br/>-->
-              <!--<img class="circle">-->
-            <!--</div>-->
           </div>
         </div>
         <div class="inline rightTitlt">
@@ -59,12 +61,14 @@
 </template>
 
 <script>
+var imgArr = document.getElementById("imgArr")
   export default {
     name: 'lodgerKB',
     data(){
         return{
           dialogFormVisible:false,
           date:"",
+          date1:"",
            arr:[],
             KBdata:{
                 arriveTime:'09-30'
@@ -122,10 +126,14 @@
           this.arr = [...res.data]
           this.arr = this.arr.splice(0,2)
           this.date = this.arr[0].lateTime.substring(10)
-          // console.log(this.date);
+          this.date1 = this.arr[1].lateTime.substring(10)
+
+          // console.log(this.date.substring(0,3));
+          
           // console.log(this.arr);
           // if(res.code==1){
           // }
+          console.log(imgArr,"imgArr");
         })
       },
 
@@ -141,7 +149,7 @@
 
 <style scoped lang='scss'>
   .orderitem {
-    width: 47.8%;
+    width:47.8%;
     border: 1px solid #f1f1f1;
     padding: 18px;
     margin-right: 10px;
@@ -158,8 +166,10 @@
     }
     .auditLeave-btm {
       width: 100%;
+      // text-align: center;
       /deep/ .el-button{
-        width:43%;
+        // margin-right: 20px;
+        width:25%;
       }
       // span, strong {
       //   display: block;
@@ -181,6 +191,7 @@
   .progress {
     margin-bottom: 10px;
     .inline {
+      // width: 460px;
       float: left;
     }
     .arriveHotelTime {
@@ -198,40 +209,54 @@
       font-size: 15px;
     }
     .timeItem {
-      width: 75%;
+      width: 480px;
       height: 40px;
     }
     .dottedLine {
+      // width:100%;
       color: #409eff;
       border-style: dashed;
       border-bottom: 1px solid transparent;
       margin-left: 20px;
+      margin-right: 10px;
       margin-top: 25px;
+      box-sizing: border-box;
     }
     .inlineTimeItem {
       position: relative;
     }
     .inlineTimeItemSpan {
       color: #409eff;
-    }
-    .circle {
-      display: block;
-      background-color: #409eff;
-      height: 15px;
-      width: 15px;
-      border-radius: 7.5px;
-      margin-top: 8px;
-      margin-left: 12px;
-    }
-    .beginTime {
-      position: absolute;
-      top: -33px;
+    }  
+    .beginTime{
+      // margin-top: -7px;
+      margin-top: -20px;
+      margin-left: 10px;
+      // position: absolute;
+      // top: -33px;
+      
+      // img:nth-last-child(){
+      //   display: block;
+      //   background-color: #409eff;
+      //   height: 10px;
+      //   width: 10px;
+      //   border-radius: 7.5px;
+      //   }
     }
     .endTime {
       position: absolute;
-      right: -420px;
-      top: -33px;
+      right: -220px;
+      top: -20px;
     }
+     img{
+        // display: none;
+        display: block;
+        background-color: #409eff;
+        height: 10px;
+        width: 10px;
+        border-radius: 7.5px;
+        
+      }
   }
   .time-time{
       margin: 3px 5px;

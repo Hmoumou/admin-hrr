@@ -186,7 +186,7 @@ let commentitems = document.getElementsByClassName('commentitem')
             background-size: 100% 100%;
         }
         .commentitem{
-            padding: 10px 20px;
+            padding: 15px 20px;
             background: #f9fbff;
             margin-bottom: 10px;
             .comment{margin: 10px 0; font-size: 14px;}
@@ -195,10 +195,10 @@ let commentitems = document.getElementsByClassName('commentitem')
         }
         .adminAsk{
             box-sizing: border-box;
-            padding: 10px 20px;
+            padding: 15px;
             background: #f0f5fe;
             width: 100%;
-            height: 60px;
+            // height: 60px;
             span{
                 display: block;
                 margin-bottom: 14px;
@@ -209,8 +209,8 @@ let commentitems = document.getElementsByClassName('commentitem')
         }
         .box-Reply{
             .reply{
-                padding: 10px;
-                height: 60px;
+                padding: 15px;
+                // height: 60px;
                 box-sizing: border-box;
             }
             // display: none;

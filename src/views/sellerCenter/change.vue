@@ -1,4 +1,6 @@
 <template>
+<!-- import { setTimeout } from 'timers';
+import { setTimeout } from 'timers'; -->
     <div>
       <div>
         <el-card class="box-card carditem clearfix order-item">
@@ -138,9 +140,11 @@
         this.$axios.post('/zftds/hotel/house/insertHotelInfo',this.Data).then(res=>{
           console.log(res);
           if(res.code == 1){
-            this.$message.success("修改成功")
+            this.$message.success(res.msg)
+            this.$router.push('/layout/sellerCenter')
           }else{
             this.$message.error(res.msg)
+            this.$router.push('/layout/sellerCenter')
           }
         })
         // this.$router.push('/layout/sellerCenter')

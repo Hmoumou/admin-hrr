@@ -21,7 +21,10 @@
            </div>
            <div class="mesBoxs">
               <div class="leftText">酒店星级</div>
-              <div class="rightText">{{formData.star}}星级酒店</div>
+              <div class="rightText">{{formData.star=="1"?"一":
+                                      formData.star=="2"?"二":
+                                      formData.star=="3"?"三":
+                                      formData.star=="4"?"四":"五"}}星级酒店</div>
            </div>
            <div class="mesBoxs">
               <div class="leftText">酒店地址</div>
@@ -216,11 +219,11 @@ export default {
         .then(res => {
           console.log(res);
           if (res.code == 1) {
-            this.$message.success("添加酒店基本信息成功");
+            this.$message.success(res.msg);
             this.getData();
             this.iSsecond = true;
           } else {
-            this.$message.error("添加酒店基本信息失败");
+            this.$message.error(res.msg);
             this.formData = {
               merchantid: this.$store.state.mchid, //商户id
               hotelName: "", //酒店名称',
@@ -254,8 +257,8 @@ export default {
         });
     }
   },
-  created() {
-    this.getData();
+  created() {  
+      this.getData()
   }
 };
 </script>
@@ -294,7 +297,7 @@ export default {
       float: left;
     }
     .rightText {
-      width: 60%;
+      // width: 60%;
       display: inline-block;
     }
   }
@@ -342,7 +345,7 @@ export default {
   font-size: 14px;
 }
 .el-textarea__inner {
-  width: 60%;
+  /* width: 60%; */
   background-color: #f9fbff;
 }
 </style>

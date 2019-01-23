@@ -542,9 +542,9 @@ export default {
   }
   .adminAsk{
             box-sizing: border-box;
-            padding: 10px 20px;
+            padding: 15px;
             width: 100%;
-            height: 60px;
+            // height: 60px;
             background: #f0f5fe;
             .span{ display: block;margin-bottom: 14px;}
             p{ color:#999; }
